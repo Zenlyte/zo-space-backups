@@ -1,13 +1,13 @@
 ---
 format: zopack
 version: "1.0"
-name: zo-space-backup-2026-03-29T1910
-author: unknown.zo.computer
+name: zo-space-backup-2026-03-29T2214
+author: curtastrophe.zo.computer
 routes: 83
-exported: 2026-03-30
+exported: 2026-03-29
 ---
 
-# zo-space-backup-2026-03-29T1910
+# zo-space-backup-2026-03-29T2214
 
 ## Routes
 
@@ -16522,4 +16522,10 @@ function GlobalNav() {
 - `RECEIPT_TRACKER_PASSCODE`
 - `COSTCO_APP_PASSCODE`
 - `MENGRAM_API_KEY`
+
+## Variables
+
+| Placeholder | Description |
+|---|---|
+| `{{HANDLE}}` | Your zo.space handle (replaces `curtastrophe`) |
 
