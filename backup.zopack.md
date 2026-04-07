@@ -1,118 +1,552 @@
 ---
+format: zopack
+version: "1.0"
 name: zo-space-backup
-version: 1.0
-timestamp: 2026-04-07T17:08:04+00:00
-routes_count: 106
+author: curtastrophe.zo.computer
+routes: 106
+exported: 2026-04-07T21:16:31Z
 ---
-## Routes Metadata
-- Total: 106 routes
-- Pages: 26
-- APIs: 80
 
-### Route List
-/datasets (page, private)
-/temporal (page, private)
-/api/temporal-auth-check (api, public)
-/s/:id (page, public)
-/api/temporal/* (api, public)
-/api/share/:id/download (api, public)
-/zo-space-theme-gallery/:id (page, public)
-/blog (page, public)
-/api/blog/:slug (api, public)
-/Zo-Ops (page, private)
-/api/nav-links (api, public)
-/api/twinmind-callback (api, public)
-/blog/:slug (page, public)
-/api/skills-gallery (api, public)
-/skills-gallery (page, private)
-/api/zo-space-theme-gallery/skill (api, public)
-/api/zo-space-theme-gallery (api, public)
-/api/zo-space-theme-gallery/:id (api, public)
-/icon-configurator (page, public)
-/api/logs (api, public)
-/api/security (api, public)
-/api/failures (api, public)
-/api/trivia/dates (api, public)
-/api/family-log (api, public)
-/api/calendar (api, public)
-/api/extension-save (api, public)
-/api/datasets/proxy/* (api, public)
-/api/generate-icon (api, public)
-/share (page, private)
-/api/test-write (api, public)
-/api/test-exec (api, public)
-/zo-status (page, public)
-/api/benchmarks/refresh (api, public)
-/api/billing (api, public)
-/api/audit (api, public)
-/api/test-env (api, public)
-/ (page, public)
-/receipts (page, public)
-/api/diagnose (api, public)
-/api/receipts (api, public)
-/openclaw-dashboard (page, private)
-/dashboard (page, private)
-/api/twinmind (api, public)
-/api/share/:id (api, public)
-/docs (api, public)
-/api/sites (api, public)
-/api/my-models (api, public)
-/knowledge-graph (page, private)
-/api/x-feed (api, public)
-/api/updates (api, public)
-/api/blog (api, public)
-/kg-search (api, public)
-/api/share (api, public)
-/profile (page, public)
-/kg-entity (api, public)
-/api/models (api, public)
-/kg-by-type (api, public)
-/kg-stats (api, public)
-/kg-recall (api, public)
-/kg-browse (api, public)
-/kg-graph (api, public)
-/api/files (api, public)
-/api/auth-status (api, public)
-/api/services (api, public)
-/api/system-stats (api, public)
-/api/credits (api, public)
-/zo-space-theme-gallery (page, public)
-/zo-control-deck (page, private)
-/job-ops (page, private)
-/api/trivia/user-stats (api, public)
-/telemetry (page, private)
-/api/trivia/leaderboard (api, public)
-/api/trivia/random (api, public)
-/api/trivia/by-date (api, public)
-/api/agents (api, public)
-/trivia (page, private)
-/api/contact (api, public)
-/api/benchmarks (api, public)
-/data/zo-trivia/ (page, private)
-/speech-game (page, public)
-/speech-game/stickers (page, public)
-/api/speech-game-auth (api, public)
-/speech-game-manifest.json (api, public)
-/speech-game-sw.js (api, public)
-/data/zo-trivia/api/query (api, public)
-/buildin-auth (page, private)
-/api/buildin/disconnect (api, public)
-/api/buildin/status (api, public)
-/api/projects (api, public)
-/speech-game/stats (page, public)
-/api/health-check (api, public)
-/api/speech-game-data (api, public)
-/api/telemetry-data (api, public)
-/model-advisor (page, public)
-/api/buildin/callback (api, public)
-/api/trivia/unsubscribe (api, public)
-/zo-city (page, public)
-/api/zo-city-data (api, public)
-/api/datasets/viewer (api, public)
-/data-explorer (page, private)
-/api/datasets/list (api, public)
-/api/trivia/subscribe (api, public)
-/api/trivia (api, public)
-/api/trivia/submit (api, public)
-/api/datasets/start (api, public)
-/api/receipt-images (api, public)
+# zo-space-backup
+
+Backup of all Zo Space routes
+
+## Statistics
+
+- Total routes: 106
+- API routes: 76
+- Page routes: 30
+- Exported: 2026-04-07T21:16:31Z
+
+## Routes
+
+### `/datasets` (page, private)
+
+Route type: page
+Visibility: private
+
+### `/temporal` (page, private)
+
+Route type: page
+Visibility: private
+
+### `/api/temporal-auth-check` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/s/:id` (page, public)
+
+Route type: page
+Visibility: public
+
+### `/api/temporal/*` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/share/:id/download` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/zo-space-theme-gallery/:id` (page, public)
+
+Route type: page
+Visibility: public
+
+### `/blog` (page, public)
+
+Route type: page
+Visibility: public
+
+### `/api/blog/:slug` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/Zo-Ops` (page, private)
+
+Route type: page
+Visibility: private
+
+### `/api/nav-links` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/twinmind-callback` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/blog/:slug` (page, public)
+
+Route type: page
+Visibility: public
+
+### `/api/skills-gallery` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/skills-gallery` (page, private)
+
+Route type: page
+Visibility: private
+
+### `/api/zo-space-theme-gallery/skill` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/zo-space-theme-gallery` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/zo-space-theme-gallery/:id` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/icon-configurator` (page, public)
+
+Route type: page
+Visibility: public
+
+### `/api/logs` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/security` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/failures` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/trivia/dates` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/family-log` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/calendar` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/extension-save` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/datasets/proxy/*` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/generate-icon` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/share` (page, private)
+
+Route type: page
+Visibility: private
+
+### `/api/test-write` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/test-exec` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/zo-status` (page, public)
+
+Route type: page
+Visibility: public
+
+### `/api/benchmarks/refresh` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/billing` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/audit` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/test-env` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/` (page, public)
+
+Route type: page
+Visibility: public
+
+### `/receipts` (page, public)
+
+Route type: page
+Visibility: public
+
+### `/api/diagnose` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/receipts` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/openclaw-dashboard` (page, private)
+
+Route type: page
+Visibility: private
+
+### `/dashboard` (page, private)
+
+Route type: page
+Visibility: private
+
+### `/api/twinmind` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/share/:id` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/docs` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/sites` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/my-models` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/knowledge-graph` (page, private)
+
+Route type: page
+Visibility: private
+
+### `/api/x-feed` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/updates` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/blog` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/kg-search` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/share` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/profile` (page, public)
+
+Route type: page
+Visibility: public
+
+### `/kg-entity` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/models` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/kg-by-type` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/kg-stats` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/kg-recall` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/kg-browse` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/kg-graph` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/files` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/auth-status` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/services` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/system-stats` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/credits` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/zo-space-theme-gallery` (page, public)
+
+Route type: page
+Visibility: public
+
+### `/zo-control-deck` (page, private)
+
+Route type: page
+Visibility: private
+
+### `/job-ops` (page, private)
+
+Route type: page
+Visibility: private
+
+### `/api/trivia/user-stats` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/telemetry` (page, private)
+
+Route type: page
+Visibility: private
+
+### `/api/trivia/leaderboard` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/trivia/random` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/trivia/by-date` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/agents` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/trivia` (page, private)
+
+Route type: page
+Visibility: private
+
+### `/api/contact` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/benchmarks` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/data/zo-trivia/` (page, private)
+
+Route type: page
+Visibility: private
+
+### `/speech-game` (page, public)
+
+Route type: page
+Visibility: public
+
+### `/speech-game/stickers` (page, public)
+
+Route type: page
+Visibility: public
+
+### `/api/speech-game-auth` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/speech-game-manifest.json` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/speech-game-sw.js` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/data/zo-trivia/api/query` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/buildin-auth` (page, private)
+
+Route type: page
+Visibility: private
+
+### `/api/buildin/disconnect` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/buildin/status` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/projects` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/speech-game/stats` (page, public)
+
+Route type: page
+Visibility: public
+
+### `/api/health-check` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/speech-game-data` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/telemetry-data` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/model-advisor` (page, public)
+
+Route type: page
+Visibility: public
+
+### `/api/buildin/callback` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/trivia/unsubscribe` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/zo-city` (page, public)
+
+Route type: page
+Visibility: public
+
+### `/api/zo-city-data` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/datasets/viewer` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/data-explorer` (page, private)
+
+Route type: page
+Visibility: private
+
+### `/api/datasets/list` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/trivia/subscribe` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/trivia` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/trivia/submit` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/datasets/start` (api, public)
+
+Route type: api
+Visibility: public
+
+### `/api/receipt-images` (api, public)
+
+Route type: api
+Visibility: public
+
