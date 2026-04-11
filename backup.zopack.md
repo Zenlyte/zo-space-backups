@@ -2,551 +2,693 @@
 format: zopack
 version: "1.0"
 name: zo-space-backup
-author: curtastrophe.zo.computer
-routes: 106
-exported: 2026-04-07T21:16:31Z
+description: "Backup of all Zo Space routes - metadata inventory"
+author: unknown.zo.computer
+routes: 113
+exported: 2026-04-11
 ---
 
 # zo-space-backup
 
-Backup of all Zo Space routes
-
-## Statistics
-
-- Total routes: 106
-- API routes: 76
-- Page routes: 30
-- Exported: 2026-04-07T21:16:31Z
+Backup of all Zo Space routes - metadata inventory
 
 ## Routes
 
-### `/datasets` (page, private)
+### `/` (page, public)
 
-Route type: page
-Visibility: private
+```tsx
 
-### `/temporal` (page, private)
-
-Route type: page
-Visibility: private
-
-### `/api/temporal-auth-check` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/s/:id` (page, public)
-
-Route type: page
-Visibility: public
-
-### `/api/temporal/*` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/share/:id/download` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/zo-space-theme-gallery/:id` (page, public)
-
-Route type: page
-Visibility: public
-
-### `/blog` (page, public)
-
-Route type: page
-Visibility: public
-
-### `/api/blog/:slug` (api, public)
-
-Route type: api
-Visibility: public
+```
 
 ### `/Zo-Ops` (page, private)
 
-Route type: page
-Visibility: private
+```tsx
 
-### `/api/nav-links` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/twinmind-callback` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/blog/:slug` (page, public)
-
-Route type: page
-Visibility: public
-
-### `/api/skills-gallery` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/skills-gallery` (page, private)
-
-Route type: page
-Visibility: private
-
-### `/api/zo-space-theme-gallery/skill` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/zo-space-theme-gallery` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/zo-space-theme-gallery/:id` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/icon-configurator` (page, public)
-
-Route type: page
-Visibility: public
-
-### `/api/logs` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/security` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/failures` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/trivia/dates` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/family-log` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/calendar` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/extension-save` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/datasets/proxy/*` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/generate-icon` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/share` (page, private)
-
-Route type: page
-Visibility: private
-
-### `/api/test-write` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/test-exec` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/zo-status` (page, public)
-
-Route type: page
-Visibility: public
-
-### `/api/benchmarks/refresh` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/billing` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/audit` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/test-env` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/` (page, public)
-
-Route type: page
-Visibility: public
-
-### `/receipts` (page, public)
-
-Route type: page
-Visibility: public
-
-### `/api/diagnose` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/receipts` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/openclaw-dashboard` (page, private)
-
-Route type: page
-Visibility: private
-
-### `/dashboard` (page, private)
-
-Route type: page
-Visibility: private
-
-### `/api/twinmind` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/share/:id` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/docs` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/sites` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/my-models` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/knowledge-graph` (page, private)
-
-Route type: page
-Visibility: private
-
-### `/api/x-feed` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/updates` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/blog` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/kg-search` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/share` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/profile` (page, public)
-
-Route type: page
-Visibility: public
-
-### `/kg-entity` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/models` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/kg-by-type` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/kg-stats` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/kg-recall` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/kg-browse` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/kg-graph` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/files` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/auth-status` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/services` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/system-stats` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/credits` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/zo-space-theme-gallery` (page, public)
-
-Route type: page
-Visibility: public
-
-### `/zo-control-deck` (page, private)
-
-Route type: page
-Visibility: private
-
-### `/job-ops` (page, private)
-
-Route type: page
-Visibility: private
-
-### `/api/trivia/user-stats` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/telemetry` (page, private)
-
-Route type: page
-Visibility: private
-
-### `/api/trivia/leaderboard` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/trivia/random` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/trivia/by-date` (api, public)
-
-Route type: api
-Visibility: public
+```
 
 ### `/api/agents` (api, public)
 
-Route type: api
-Visibility: public
+```typescript
 
-### `/trivia` (page, private)
+```
 
-Route type: page
-Visibility: private
+### `/api/audit` (api, public)
 
-### `/api/contact` (api, public)
+```typescript
 
-Route type: api
-Visibility: public
+```
+
+### `/api/auth-status` (api, public)
+
+```typescript
+
+```
 
 ### `/api/benchmarks` (api, public)
 
-Route type: api
-Visibility: public
+```typescript
 
-### `/data/zo-trivia/` (page, private)
+```
 
-Route type: page
-Visibility: private
+### `/api/benchmarks/refresh` (api, public)
 
-### `/speech-game` (page, public)
+```typescript
 
-Route type: page
-Visibility: public
+```
 
-### `/speech-game/stickers` (page, public)
+### `/api/billing` (api, public)
 
-Route type: page
-Visibility: public
+```typescript
 
-### `/api/speech-game-auth` (api, public)
+```
 
-Route type: api
-Visibility: public
+### `/api/blog` (api, public)
 
-### `/speech-game-manifest.json` (api, public)
+```typescript
 
-Route type: api
-Visibility: public
+```
 
-### `/speech-game-sw.js` (api, public)
+### `/api/blog/:slug` (api, public)
 
-Route type: api
-Visibility: public
+```typescript
 
-### `/data/zo-trivia/api/query` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/buildin-auth` (page, private)
-
-Route type: page
-Visibility: private
-
-### `/api/buildin/disconnect` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/buildin/status` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/projects` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/speech-game/stats` (page, public)
-
-Route type: page
-Visibility: public
-
-### `/api/health-check` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/speech-game-data` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/api/telemetry-data` (api, public)
-
-Route type: api
-Visibility: public
-
-### `/model-advisor` (page, public)
-
-Route type: page
-Visibility: public
+```
 
 ### `/api/buildin/callback` (api, public)
 
-Route type: api
-Visibility: public
+```typescript
 
-### `/api/trivia/unsubscribe` (api, public)
+```
 
-Route type: api
-Visibility: public
+### `/api/buildin/disconnect` (api, public)
 
-### `/zo-city` (page, public)
+```typescript
 
-Route type: page
-Visibility: public
+```
 
-### `/api/zo-city-data` (api, public)
+### `/api/buildin/status` (api, public)
 
-Route type: api
-Visibility: public
+```typescript
 
-### `/api/datasets/viewer` (api, public)
+```
 
-Route type: api
-Visibility: public
+### `/api/calendar` (api, public)
 
-### `/data-explorer` (page, private)
+```typescript
 
-Route type: page
-Visibility: private
+```
+
+### `/api/career-ops` (api, public)
+
+```typescript
+
+```
+
+### `/api/career-ops/applications` (api, public)
+
+```typescript
+
+```
+
+### `/api/career-ops/pipeline` (api, public)
+
+```typescript
+
+```
+
+### `/api/contact` (api, public)
+
+```typescript
+
+```
+
+### `/api/credits` (api, public)
+
+```typescript
+
+```
 
 ### `/api/datasets/list` (api, public)
 
-Route type: api
-Visibility: public
+```typescript
 
-### `/api/trivia/subscribe` (api, public)
+```
 
-Route type: api
-Visibility: public
+### `/api/datasets/proxy/*` (api, public)
 
-### `/api/trivia` (api, public)
+```typescript
 
-Route type: api
-Visibility: public
-
-### `/api/trivia/submit` (api, public)
-
-Route type: api
-Visibility: public
+```
 
 ### `/api/datasets/start` (api, public)
 
-Route type: api
-Visibility: public
+```typescript
+
+```
+
+### `/api/datasets/viewer` (api, public)
+
+```typescript
+
+```
+
+### `/api/diagnose` (api, public)
+
+```typescript
+
+```
+
+### `/api/extension-save` (api, public)
+
+```typescript
+
+```
+
+### `/api/failures` (api, public)
+
+```typescript
+
+```
+
+### `/api/family-log` (api, public)
+
+```typescript
+
+```
+
+### `/api/files` (api, public)
+
+```typescript
+
+```
+
+### `/api/flowpulse` (api, public)
+
+```typescript
+
+```
+
+### `/api/generate-icon` (api, public)
+
+```typescript
+
+```
+
+### `/api/health-check` (api, public)
+
+```typescript
+
+```
+
+### `/api/logs` (api, public)
+
+```typescript
+
+```
+
+### `/api/models` (api, public)
+
+```typescript
+
+```
+
+### `/api/my-models` (api, public)
+
+```typescript
+
+```
+
+### `/api/nav-links` (api, public)
+
+```typescript
+
+```
+
+### `/api/projects` (api, public)
+
+```typescript
+
+```
+
+### `/api/puzzle-callback` (page, public)
+
+```tsx
+
+```
 
 ### `/api/receipt-images` (api, public)
 
-Route type: api
-Visibility: public
+```typescript
+
+```
+
+### `/api/receipts` (api, public)
+
+```typescript
+
+```
+
+### `/api/security` (api, public)
+
+```typescript
+
+```
+
+### `/api/services` (api, public)
+
+```typescript
+
+```
+
+### `/api/share` (api, public)
+
+```typescript
+
+```
+
+### `/api/share/:id` (api, public)
+
+```typescript
+
+```
+
+### `/api/share/:id/download` (api, public)
+
+```typescript
+
+```
+
+### `/api/sites` (api, public)
+
+```typescript
+
+```
+
+### `/api/skills-gallery` (api, public)
+
+```typescript
+
+```
+
+### `/api/speech-game-auth` (api, public)
+
+```typescript
+
+```
+
+### `/api/speech-game-data` (api, public)
+
+```typescript
+
+```
+
+### `/api/system-stats` (api, public)
+
+```typescript
+
+```
+
+### `/api/telemetry-data` (api, public)
+
+```typescript
+
+```
+
+### `/api/temporal-auth-check` (api, public)
+
+```typescript
+
+```
+
+### `/api/temporal/*` (api, public)
+
+```typescript
+
+```
+
+### `/api/test-env` (api, public)
+
+```typescript
+
+```
+
+### `/api/test-exec` (api, public)
+
+```typescript
+
+```
+
+### `/api/test-write` (api, public)
+
+```typescript
+
+```
+
+### `/api/trivia` (api, public)
+
+```typescript
+
+```
+
+### `/api/trivia/by-date` (api, public)
+
+```typescript
+
+```
+
+### `/api/trivia/dates` (api, public)
+
+```typescript
+
+```
+
+### `/api/trivia/leaderboard` (api, public)
+
+```typescript
+
+```
+
+### `/api/trivia/random` (api, public)
+
+```typescript
+
+```
+
+### `/api/trivia/submit` (api, public)
+
+```typescript
+
+```
+
+### `/api/trivia/subscribe` (api, public)
+
+```typescript
+
+```
+
+### `/api/trivia/unsubscribe` (api, public)
+
+```typescript
+
+```
+
+### `/api/trivia/user-stats` (api, public)
+
+```typescript
+
+```
+
+### `/api/twinmind` (api, public)
+
+```typescript
+
+```
+
+### `/api/twinmind-callback` (api, public)
+
+```typescript
+
+```
+
+### `/api/updates` (api, public)
+
+```typescript
+
+```
+
+### `/api/x-feed` (api, public)
+
+```typescript
+
+```
+
+### `/api/zo-city-data` (api, public)
+
+```typescript
+
+```
+
+### `/api/zo-space-theme-gallery` (api, public)
+
+```typescript
+
+```
+
+### `/api/zo-space-theme-gallery/:id` (api, public)
+
+```typescript
+
+```
+
+### `/api/zo-space-theme-gallery/skill` (api, public)
+
+```typescript
+
+```
+
+### `/blog` (page, public)
+
+```tsx
+
+```
+
+### `/blog/:slug` (page, public)
+
+```tsx
+
+```
+
+### `/buildin-auth` (page, private)
+
+```tsx
+
+```
+
+### `/career-ops` (page, private)
+
+```tsx
+
+```
+
+### `/dashboard` (page, private)
+
+```tsx
+
+```
+
+### `/data-explorer` (page, private)
+
+```tsx
+
+```
+
+### `/data/zo-trivia/` (page, private)
+
+```tsx
+
+```
+
+### `/data/zo-trivia/api/query` (api, public)
+
+```typescript
+
+```
+
+### `/datasets` (page, private)
+
+```tsx
+
+```
+
+### `/docs` (api, public)
+
+```typescript
+
+```
+
+### `/flowpulse` (page, private)
+
+```tsx
+
+```
+
+### `/icon-configurator` (page, public)
+
+```tsx
+
+```
+
+### `/job-ops` (page, private)
+
+```tsx
+
+```
+
+### `/kg-browse` (api, public)
+
+```typescript
+
+```
+
+### `/kg-by-type` (api, public)
+
+```typescript
+
+```
+
+### `/kg-entity` (api, public)
+
+```typescript
+
+```
+
+### `/kg-graph` (api, public)
+
+```typescript
+
+```
+
+### `/kg-recall` (api, public)
+
+```typescript
+
+```
+
+### `/kg-search` (api, public)
+
+```typescript
+
+```
+
+### `/kg-stats` (api, public)
+
+```typescript
+
+```
+
+### `/knowledge-graph` (page, private)
+
+```tsx
+
+```
+
+### `/model-advisor` (page, public)
+
+```tsx
+
+```
+
+### `/openclaw-dashboard` (page, private)
+
+```tsx
+
+```
+
+### `/profile` (page, public)
+
+```tsx
+
+```
+
+### `/receipts` (page, public)
+
+```tsx
+
+```
+
+### `/s/:id` (page, public)
+
+```tsx
+
+```
+
+### `/share` (page, private)
+
+```tsx
+
+```
+
+### `/skills-gallery` (page, private)
+
+```tsx
+
+```
+
+### `/speech-game` (page, public)
+
+```tsx
+
+```
+
+### `/speech-game-manifest.json` (api, public)
+
+```typescript
+
+```
+
+### `/speech-game-sw.js` (api, public)
+
+```typescript
+
+```
+
+### `/speech-game/stats` (page, public)
+
+```tsx
+
+```
+
+### `/speech-game/stickers` (page, public)
+
+```tsx
+
+```
+
+### `/telemetry` (page, private)
+
+```tsx
+
+```
+
+### `/temporal` (page, private)
+
+```tsx
+
+```
+
+### `/trivia` (page, private)
+
+```tsx
+
+```
+
+### `/zo-city` (page, public)
+
+```tsx
+
+```
+
+### `/zo-control-deck` (page, private)
+
+```tsx
+
+```
+
+### `/zo-space-theme-gallery` (page, public)
+
+```tsx
+
+```
+
+### `/zo-space-theme-gallery/:id` (page, public)
+
+```tsx
+
+```
+
+### `/zo-status` (page, public)
+
+```tsx
+
+```
 
