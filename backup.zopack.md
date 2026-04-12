@@ -3,7 +3,7 @@ format: zopack
 version: "1.0"
 name: zo-space-backup
 author: unknown.zo.computer
-routes: 115
+routes: 116
 exported: 2026-04-12
 ---
 
@@ -11,9 +11,9 @@ exported: 2026-04-12
 
 ## Routes
 
-### `/temporal` (page, private)
+### `/api/share/:id/download` (api, public)
 
-```tsx
+```typescript
 
 ```
 
@@ -23,37 +23,13 @@ exported: 2026-04-12
 
 ```
 
-### `/api/temporal/*` (api, public)
-
-```typescript
-
-```
-
-### `/api/share/:id/download` (api, public)
-
-```typescript
-
-```
-
-### `/api/flowpulse` (api, public)
-
-```typescript
-
-```
-
-### `/zo-space-theme-gallery/:id` (page, public)
+### `/temporal` (page, private)
 
 ```tsx
 
 ```
 
-### `/blog` (page, public)
-
-```tsx
-
-```
-
-### `/api/blog/:slug` (api, public)
+### `/api/twinmind-callback` (api, public)
 
 ```typescript
 
@@ -65,7 +41,31 @@ exported: 2026-04-12
 
 ```
 
-### `/api/twinmind-callback` (api, public)
+### `/api/blog/:slug` (api, public)
+
+```typescript
+
+```
+
+### `/blog` (page, public)
+
+```tsx
+
+```
+
+### `/zo-space-theme-gallery/:id` (page, public)
+
+```tsx
+
+```
+
+### `/api/flowpulse` (api, public)
+
+```typescript
+
+```
+
+### `/api/temporal/*` (api, public)
 
 ```typescript
 
@@ -80,12 +80,6 @@ exported: 2026-04-12
 ### `/flowpulse` (page, private)
 
 ```tsx
-
-```
-
-### `/api/skills-gallery` (api, public)
-
-```typescript
 
 ```
 
@@ -131,19 +125,13 @@ exported: 2026-04-12
 
 ```
 
-### `/api/failures` (api, public)
+### `/api/skills-gallery` (api, public)
 
 ```typescript
 
 ```
 
 ### `/api/trivia/dates` (api, public)
-
-```typescript
-
-```
-
-### `/api/calendar` (api, public)
 
 ```typescript
 
@@ -167,6 +155,18 @@ exported: 2026-04-12
 
 ```
 
+### `/zo-status` (page, private)
+
+```tsx
+
+```
+
+### `/api/benchmarks/refresh` (api, public)
+
+```typescript
+
+```
+
 ### `/api/test-write` (api, public)
 
 ```typescript
@@ -179,13 +179,13 @@ exported: 2026-04-12
 
 ```
 
-### `/zo-status` (page, public)
+### `/api/failures` (api, public)
 
-```tsx
+```typescript
 
 ```
 
-### `/api/benchmarks/refresh` (api, public)
+### `/api/calendar` (api, public)
 
 ```typescript
 
@@ -221,12 +221,6 @@ exported: 2026-04-12
 
 ```
 
-### `/api/diagnose` (api, public)
-
-```typescript
-
-```
-
 ### `/api/receipts` (api, public)
 
 ```typescript
@@ -251,25 +245,13 @@ exported: 2026-04-12
 
 ```
 
+### `/api/diagnose` (api, public)
+
+```typescript
+
+```
+
 ### `/api/datasets/start` (api, public)
-
-```typescript
-
-```
-
-### `/docs` (api, public)
-
-```typescript
-
-```
-
-### `/api/sites` (api, public)
-
-```typescript
-
-```
-
-### `/api/my-models` (api, public)
 
 ```typescript
 
@@ -311,6 +293,24 @@ exported: 2026-04-12
 
 ```
 
+### `/docs` (api, public)
+
+```typescript
+
+```
+
+### `/api/sites` (api, public)
+
+```typescript
+
+```
+
+### `/api/my-models` (api, public)
+
+```typescript
+
+```
+
 ### `/profile` (page, public)
 
 ```tsx
@@ -323,25 +323,7 @@ exported: 2026-04-12
 
 ```
 
-### `/api/models` (api, public)
-
-```typescript
-
-```
-
 ### `/kg-by-type` (api, public)
-
-```typescript
-
-```
-
-### `/kg-stats` (api, public)
-
-```typescript
-
-```
-
-### `/kg-recall` (api, public)
 
 ```typescript
 
@@ -353,13 +335,7 @@ exported: 2026-04-12
 
 ```
 
-### `/kg-graph` (api, public)
-
-```typescript
-
-```
-
-### `/api/files` (api, public)
+### `/kg-recall` (api, public)
 
 ```typescript
 
@@ -371,19 +347,25 @@ exported: 2026-04-12
 
 ```
 
-### `/api/services` (api, public)
+### `/api/files` (api, public)
 
 ```typescript
 
 ```
 
-### `/api/system-stats` (api, public)
+### `/kg-stats` (api, public)
 
 ```typescript
 
 ```
 
-### `/api/credits` (api, public)
+### `/api/models` (api, public)
+
+```typescript
+
+```
+
+### `/kg-graph` (api, public)
 
 ```typescript
 
@@ -431,13 +413,31 @@ exported: 2026-04-12
 
 ```
 
-### `/api/agents` (api, public)
+### `/api/system-stats` (api, public)
+
+```typescript
+
+```
+
+### `/api/services` (api, public)
+
+```typescript
+
+```
+
+### `/api/credits` (api, public)
 
 ```typescript
 
 ```
 
 ### `/trivia` (page, private)
+
+```tsx
+
+```
+
+### `/repurpose` (page, private)
 
 ```tsx
 
@@ -474,6 +474,18 @@ exported: 2026-04-12
 ```
 
 ### `/api/speech-game-auth` (api, public)
+
+```typescript
+
+```
+
+### `/api/datasets/proxy/*` (api, public)
+
+```typescript
+
+```
+
+### `/api/agents` (api, public)
 
 ```typescript
 
@@ -521,12 +533,6 @@ exported: 2026-04-12
 
 ```
 
-### `/api/datasets/proxy/*` (api, public)
-
-```typescript
-
-```
-
 ### `/api/career-ops` (api, public)
 
 ```typescript
@@ -546,12 +552,6 @@ exported: 2026-04-12
 ```
 
 ### `/api/career-ops/applications` (api, public)
-
-```typescript
-
-```
-
-### `/api/health-check` (api, public)
 
 ```typescript
 
@@ -593,13 +593,19 @@ exported: 2026-04-12
 
 ```
 
+### `/api/datasets/viewer` (api, public)
+
+```typescript
+
+```
+
 ### `/api/zo-city-data` (api, public)
 
 ```typescript
 
 ```
 
-### `/api/datasets/viewer` (api, public)
+### `/api/health-check` (api, public)
 
 ```typescript
 
@@ -635,12 +641,6 @@ exported: 2026-04-12
 
 ```
 
-### `/api/share/:id` (api, public)
-
-```typescript
-
-```
-
 ### `/api/trivia` (api, public)
 
 ```typescript
@@ -650,6 +650,12 @@ exported: 2026-04-12
 ### `/trivia/archive` (page, private)
 
 ```tsx
+
+```
+
+### `/api/share/:id` (api, public)
+
+```typescript
 
 ```
 
