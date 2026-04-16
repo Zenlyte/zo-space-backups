@@ -2,708 +2,761 @@
 format: zopack
 version: "1.0"
 name: zo-space-backup
-author: unknown.zo.computer
-routes: 116
-exported: 2026-04-12
+author: curtastrophe.zo.computer
+routes: 125
+exported: 2026-04-16
 ---
 
 # zo-space-backup
 
 ## Routes
 
-### `/api/share/:id/download` (api, public)
-
-```typescript
-
-```
-
-### `/api/temporal-auth-check` (api, public)
-
-```typescript
-
-```
-
-### `/temporal` (page, private)
+### `/temporal` (`page`, private)
 
 ```tsx
 
 ```
 
-### `/api/twinmind-callback` (api, public)
+### `/api/temporal-auth-check` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/Zo-Ops` (page, private)
-
-```tsx
-
-```
-
-### `/api/blog/:slug` (api, public)
+### `/api/temporal/*` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/blog` (page, public)
-
-```tsx
-
-```
-
-### `/zo-space-theme-gallery/:id` (page, public)
-
-```tsx
-
-```
-
-### `/api/flowpulse` (api, public)
+### `/api/share/:id/download` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/temporal/*` (api, public)
+### `/api/flowpulse` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/blog/:slug` (page, public)
+### `/zo-space-theme-gallery/:id` (`page`, public)
 
 ```tsx
 
 ```
 
-### `/flowpulse` (page, private)
+### `/blog` (`page`, public)
 
 ```tsx
 
 ```
 
-### `/skills-gallery` (page, private)
+### `/api/blog/:slug` (`api`, public)
+
+```typescript
+
+```
+
+### `/Zo-Ops` (`page`, private)
 
 ```tsx
 
 ```
 
-### `/api/zo-space-theme-gallery/skill` (api, public)
+### `/api/twinmind-callback` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/zo-space-theme-gallery` (api, public)
-
-```typescript
-
-```
-
-### `/api/zo-space-theme-gallery/:id` (api, public)
-
-```typescript
-
-```
-
-### `/icon-configurator` (page, public)
+### `/blog/:slug` (`page`, public)
 
 ```tsx
 
 ```
 
-### `/api/logs` (api, public)
+### `/api/career-ops/scan-history` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/security` (api, public)
+### `/api/skills-gallery` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/skills-gallery` (api, public)
-
-```typescript
-
-```
-
-### `/api/trivia/dates` (api, public)
-
-```typescript
-
-```
-
-### `/api/extension-save` (api, public)
-
-```typescript
-
-```
-
-### `/api/generate-icon` (api, public)
-
-```typescript
-
-```
-
-### `/share` (page, private)
+### `/skills-gallery` (`page`, private)
 
 ```tsx
 
 ```
 
-### `/zo-status` (page, private)
+### `/api/zo-space-theme-gallery/skill` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/zo-space-theme-gallery` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/zo-space-theme-gallery/:id` (`api`, public)
+
+```typescript
+
+```
+
+### `/icon-configurator` (`page`, public)
 
 ```tsx
 
 ```
 
-### `/api/benchmarks/refresh` (api, public)
+### `/api/logs` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/test-write` (api, public)
+### `/api/security` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/test-exec` (api, public)
+### `/api/failures` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/failures` (api, public)
+### `/api/trivia/dates` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/calendar` (api, public)
+### `/api/calendar` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/billing` (api, public)
+### `/api/extension-save` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/audit` (api, public)
+### `/api/generate-icon` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/test-env` (api, public)
-
-```typescript
-
-```
-
-### `/` (page, public)
+### `/share` (`page`, private)
 
 ```tsx
 
 ```
 
-### `/receipts` (page, public)
+### `/api/test-write` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/test-exec` (`api`, public)
+
+```typescript
+
+```
+
+### `/zo-status` (`page`, public)
 
 ```tsx
 
 ```
 
-### `/api/receipts` (api, public)
+### `/api/benchmarks/refresh` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/openclaw-dashboard` (page, private)
+### `/api/billing` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/audit` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/test-env` (`api`, public)
+
+```typescript
+
+```
+
+### `/` (`page`, public)
 
 ```tsx
 
 ```
 
-### `/dashboard` (page, private)
+### `/receipts` (`page`, public)
 
 ```tsx
 
 ```
 
-### `/api/twinmind` (api, public)
+### `/api/diagnose` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/diagnose` (api, public)
+### `/api/receipts` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/datasets/start` (api, public)
-
-```typescript
-
-```
-
-### `/knowledge-graph` (page, private)
+### `/openclaw-dashboard` (`page`, private)
 
 ```tsx
 
 ```
 
-### `/api/x-feed` (api, public)
-
-```typescript
-
-```
-
-### `/api/updates` (api, public)
-
-```typescript
-
-```
-
-### `/api/blog` (api, public)
-
-```typescript
-
-```
-
-### `/kg-search` (api, public)
-
-```typescript
-
-```
-
-### `/api/share` (api, public)
-
-```typescript
-
-```
-
-### `/docs` (api, public)
-
-```typescript
-
-```
-
-### `/api/sites` (api, public)
-
-```typescript
-
-```
-
-### `/api/my-models` (api, public)
-
-```typescript
-
-```
-
-### `/profile` (page, public)
+### `/dashboard` (`page`, private)
 
 ```tsx
 
 ```
 
-### `/kg-entity` (api, public)
+### `/api/twinmind` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/kg-by-type` (api, public)
+### `/api/datasets/start` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/kg-browse` (api, public)
+### `/docs` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/kg-recall` (api, public)
+### `/api/sites` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/auth-status` (api, public)
+### `/api/my-models` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/files` (api, public)
-
-```typescript
-
-```
-
-### `/kg-stats` (api, public)
-
-```typescript
-
-```
-
-### `/api/models` (api, public)
-
-```typescript
-
-```
-
-### `/kg-graph` (api, public)
-
-```typescript
-
-```
-
-### `/zo-space-theme-gallery` (page, public)
+### `/knowledge-graph` (`page`, private)
 
 ```tsx
 
 ```
 
-### `/zo-control-deck` (page, private)
+### `/api/x-feed` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/updates` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/blog` (`api`, public)
+
+```typescript
+
+```
+
+### `/kg-search` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/share` (`api`, public)
+
+```typescript
+
+```
+
+### `/profile` (`page`, public)
 
 ```tsx
 
 ```
 
-### `/job-ops` (page, private)
+### `/kg-entity` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/models` (`api`, public)
+
+```typescript
+
+```
+
+### `/kg-by-type` (`api`, public)
+
+```typescript
+
+```
+
+### `/kg-stats` (`api`, public)
+
+```typescript
+
+```
+
+### `/kg-recall` (`api`, public)
+
+```typescript
+
+```
+
+### `/kg-browse` (`api`, public)
+
+```typescript
+
+```
+
+### `/kg-graph` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/files` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/auth-status` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/services` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/system-stats` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/credits` (`api`, public)
+
+```typescript
+
+```
+
+### `/zo-space-theme-gallery` (`page`, public)
 
 ```tsx
 
 ```
 
-### `/telemetry` (page, private)
+### `/zo-control-deck` (`page`, private)
 
 ```tsx
 
 ```
 
-### `/api/trivia/leaderboard` (api, public)
-
-```typescript
-
-```
-
-### `/api/trivia/random` (api, public)
-
-```typescript
-
-```
-
-### `/api/trivia/by-date` (api, public)
-
-```typescript
-
-```
-
-### `/api/system-stats` (api, public)
-
-```typescript
-
-```
-
-### `/api/services` (api, public)
-
-```typescript
-
-```
-
-### `/api/credits` (api, public)
-
-```typescript
-
-```
-
-### `/trivia` (page, private)
+### `/job-ops` (`page`, private)
 
 ```tsx
 
 ```
 
-### `/repurpose` (page, private)
+### `/telemetry` (`page`, private)
 
 ```tsx
 
 ```
 
-### `/api/contact` (api, public)
+### `/api/trivia/leaderboard` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/benchmarks` (api, public)
+### `/api/trivia/random` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/data/zo-trivia/` (page, private)
+### `/api/trivia/by-date` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/agents` (`api`, public)
+
+```typescript
+
+```
+
+### `/trivia` (`page`, private)
 
 ```tsx
 
 ```
 
-### `/speech-game` (page, public)
+### `/repurpose` (`page`, private)
 
 ```tsx
 
 ```
 
-### `/speech-game/stickers` (page, public)
+### `/api/datasets/proxy/*` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/contact` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/benchmarks` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/career-ops/scan` (`api`, public)
+
+```typescript
+
+```
+
+### `/data/zo-trivia/` (`page`, private)
 
 ```tsx
 
 ```
 
-### `/api/speech-game-auth` (api, public)
-
-```typescript
-
-```
-
-### `/api/datasets/proxy/*` (api, public)
-
-```typescript
-
-```
-
-### `/api/agents` (api, public)
-
-```typescript
-
-```
-
-### `/speech-game-manifest.json` (api, public)
-
-```typescript
-
-```
-
-### `/speech-game-sw.js` (api, public)
-
-```typescript
-
-```
-
-### `/data/zo-trivia/api/query` (api, public)
-
-```typescript
-
-```
-
-### `/buildin-auth` (page, private)
+### `/speech-game` (`page`, public)
 
 ```tsx
 
 ```
 
-### `/api/buildin/disconnect` (api, public)
-
-```typescript
-
-```
-
-### `/api/projects` (api, public)
-
-```typescript
-
-```
-
-### `/speech-game/stats` (page, public)
+### `/speech-game/stickers` (`page`, public)
 
 ```tsx
 
 ```
 
-### `/api/career-ops` (api, public)
+### `/api/speech-game-auth` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/career-ops` (page, private)
+### `/api/career-ops/batch` (`api`, public)
+
+```typescript
+
+```
+
+### `/speech-game-manifest.json` (`api`, public)
+
+```typescript
+
+```
+
+### `/speech-game-sw.js` (`api`, public)
+
+```typescript
+
+```
+
+### `/data/zo-trivia/api/query` (`api`, public)
+
+```typescript
+
+```
+
+### `/buildin-auth` (`page`, private)
 
 ```tsx
 
 ```
 
-### `/api/career-ops/pipeline` (api, public)
+### `/api/buildin/disconnect` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/career-ops/applications` (api, public)
+### `/api/projects` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/speech-game-data` (api, public)
+### `/api/test-deps` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/telemetry-data` (api, public)
-
-```typescript
-
-```
-
-### `/model-advisor` (page, public)
+### `/speech-game/stats` (`page`, public)
 
 ```tsx
 
 ```
 
-### `/api/buildin/callback` (api, public)
-
-```typescript
-
-```
-
-### `/api/trivia/unsubscribe` (api, public)
-
-```typescript
-
-```
-
-### `/zo-city` (page, public)
+### `/zo-city` (`page`, public)
 
 ```tsx
 
 ```
 
-### `/api/datasets/viewer` (api, public)
-
-```typescript
-
-```
-
-### `/api/zo-city-data` (api, public)
-
-```typescript
-
-```
-
-### `/api/health-check` (api, public)
-
-```typescript
-
-```
-
-### `/data-explorer` (page, private)
+### `/zos` (`page`, public)
 
 ```tsx
 
 ```
 
-### `/api/datasets/list` (api, public)
-
-```typescript
-
-```
-
-### `/api/puzzle-callback` (page, public)
+### `/about-the-build` (`page`, public)
 
 ```tsx
 
 ```
 
-### `/api/nav-links` (api, public)
-
-```typescript
-
-```
-
-### `/s/:id` (page, public)
+### `/404` (`page`, public)
 
 ```tsx
 
 ```
 
-### `/api/trivia` (api, public)
+### `/api/zos/now` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/trivia/archive` (page, private)
+### `/api/zos/signals` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/career-ops` (`api`, public)
+
+```typescript
+
+```
+
+### `/career-ops` (`page`, private)
 
 ```tsx
 
 ```
 
-### `/api/share/:id` (api, public)
+### `/api/career-ops/pipeline` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/trivia/subscribe` (api, public)
+### `/api/career-ops/applications` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/family-log` (api, public)
+### `/api/health-check` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/trivia/leaderboard` (page, private)
+### `/api/speech-game-data` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/telemetry-data` (`api`, public)
+
+```typescript
+
+```
+
+### `/model-advisor` (`page`, public)
 
 ```tsx
 
 ```
 
-### `/api/trivia/user-stats` (api, public)
+### `/api/buildin/callback` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/projects-conversations` (api, public)
+### `/api/trivia/unsubscribe` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/receipt-images` (api, public)
+### `/api/datasets/viewer` (`api`, public)
 
 ```typescript
 
 ```
 
-### `/api/buildin/status` (api, public)
-
-```typescript
-
-```
-
-### `/datasets` (page, private)
+### `/data-explorer` (`page`, private)
 
 ```tsx
 
 ```
 
+### `/api/datasets/list` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/puzzle-callback` (`page`, public)
+
+```tsx
+
+```
+
+### `/api/nav-links` (`api`, public)
+
+```typescript
+
+```
+
+### `/s/:id` (`page`, public)
+
+```tsx
+
+```
+
+### `/api/share/:id` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/trivia` (`api`, public)
+
+```typescript
+
+```
+
+### `/trivia/archive` (`page`, private)
+
+```tsx
+
+```
+
+### `/api/trivia/subscribe` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/family-log` (`api`, public)
+
+```typescript
+
+```
+
+### `/trivia/leaderboard` (`page`, private)
+
+```tsx
+
+```
+
+### `/api/trivia/user-stats` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/projects-conversations` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/receipt-images` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/buildin/status` (`api`, public)
+
+```typescript
+
+```
+
+### `/api/zos/build-log` (`api`, public)
+
+```typescript
+
+```
+
+### `/secret` (`page`, public)
+
+```tsx
+
+```
+
+### `/api/zo-city-data` (`api`, public)
+
+```typescript
+
+```
