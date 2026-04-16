@@ -9,754 +9,1258 @@ exported: 2026-04-16
 
 # zo-space-backup
 
+
+Exported: 2026-04-16T12:16:26.631227
+
+
 ## Routes
 
-### `/temporal` (`page`, private)
 
-```tsx
+### `/temporal` (page, private)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/temporal-auth-check` (api, public)
 
-### `/api/temporal-auth-check` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/temporal/*` (api, public)
 
-### `/api/temporal/*` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/share/:id/download` (api, public)
 
-### `/api/share/:id/download` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/flowpulse` (api, public)
 
-### `/api/flowpulse` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/zo-space-theme-gallery/:id` (page, public)
 
-### `/zo-space-theme-gallery/:id` (`page`, public)
 
-```tsx
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/blog` (page, public)
 
-### `/blog` (`page`, public)
 
-```tsx
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/blog/:slug` (api, public)
 
-### `/api/blog/:slug` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
 
-### `/Zo-Ops` (`page`, private)
+### `/Zo-Ops` (page, private)
 
-```tsx
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/twinmind-callback` (`api`, public)
+### `/api/twinmind-callback` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/blog/:slug` (`page`, public)
+### `/blog/:slug` (page, public)
 
-```tsx
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/career-ops/scan-history` (`api`, public)
+### `/api/career-ops/scan-history` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/skills-gallery` (`api`, public)
+### `/api/skills-gallery` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/skills-gallery` (`page`, private)
+### `/skills-gallery` (page, private)
 
-```tsx
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/zo-space-theme-gallery/skill` (`api`, public)
+### `/api/zo-space-theme-gallery/skill` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/zo-space-theme-gallery` (`api`, public)
+### `/api/zo-space-theme-gallery` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/zo-space-theme-gallery/:id` (api, public)
+
 
-### `/api/zo-space-theme-gallery/:id` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
 
-### `/icon-configurator` (`page`, public)
 
-```tsx
+### `/icon-configurator` (page, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/logs` (api, public)
+
 
-### `/api/logs` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
 
-### `/api/security` (`api`, public)
 
-```typescript
+### `/api/security` (api, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/failures` (api, public)
+
 
-### `/api/failures` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
 
-### `/api/trivia/dates` (`api`, public)
 
-```typescript
+### `/api/trivia/dates` (api, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/calendar` (api, public)
+
 
-### `/api/calendar` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
 
-### `/api/extension-save` (`api`, public)
 
-```typescript
+### `/api/extension-save` (api, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/generate-icon` (api, public)
+
 
-### `/api/generate-icon` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
 
-### `/share` (`page`, private)
 
-```tsx
+### `/share` (page, private)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/test-write` (api, public)
+
 
-### `/api/test-write` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
 
-### `/api/test-exec` (`api`, public)
 
-```typescript
+### `/api/test-exec` (api, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/zo-status` (page, public)
+
 
-### `/zo-status` (`page`, public)
+```lang
 
-```tsx
+# Route code not included in this backup format
 
 ```
 
-### `/api/benchmarks/refresh` (`api`, public)
 
-```typescript
+### `/api/benchmarks/refresh` (api, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/billing` (api, public)
+
 
-### `/api/billing` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
 
-### `/api/audit` (`api`, public)
 
-```typescript
+### `/api/audit` (api, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/test-env` (api, public)
 
-### `/api/test-env` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/` (page, public)
 
-### `/` (`page`, public)
 
-```tsx
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/receipts` (page, public)
 
-### `/receipts` (`page`, public)
 
-```tsx
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/diagnose` (api, public)
 
-### `/api/diagnose` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/receipts` (api, public)
 
-### `/api/receipts` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/openclaw-dashboard` (page, private)
 
-### `/openclaw-dashboard` (`page`, private)
 
-```tsx
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/dashboard` (page, private)
 
-### `/dashboard` (`page`, private)
 
-```tsx
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/twinmind` (api, public)
 
-### `/api/twinmind` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/datasets/start` (api, public)
 
-### `/api/datasets/start` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/docs` (api, public)
 
-### `/docs` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/sites` (api, public)
 
-### `/api/sites` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/my-models` (api, public)
 
-### `/api/my-models` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/knowledge-graph` (page, private)
 
-### `/knowledge-graph` (`page`, private)
 
-```tsx
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/x-feed` (api, public)
 
-### `/api/x-feed` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/updates` (api, public)
 
-### `/api/updates` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/blog` (`api`, public)
+### `/api/blog` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/kg-search` (`api`, public)
+### `/kg-search` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/share` (`api`, public)
+### `/api/share` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/profile` (`page`, public)
+### `/profile` (page, public)
 
-```tsx
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/kg-entity` (`api`, public)
+### `/kg-entity` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/models` (`api`, public)
+### `/api/models` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/kg-by-type` (`api`, public)
+### `/kg-by-type` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/kg-stats` (`api`, public)
+### `/kg-stats` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/kg-recall` (`api`, public)
+### `/kg-recall` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/kg-browse` (`api`, public)
+### `/kg-browse` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/kg-graph` (`api`, public)
+### `/kg-graph` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/files` (`api`, public)
+### `/api/files` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/auth-status` (`api`, public)
+### `/api/auth-status` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/services` (`api`, public)
+### `/api/services` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/system-stats` (`api`, public)
+### `/api/system-stats` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/credits` (`api`, public)
+### `/api/credits` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/zo-space-theme-gallery` (page, public)
+
 
-### `/zo-space-theme-gallery` (`page`, public)
+```lang
 
-```tsx
+# Route code not included in this backup format
 
 ```
 
-### `/zo-control-deck` (`page`, private)
 
-```tsx
+### `/zo-control-deck` (page, private)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/job-ops` (page, private)
+
 
-### `/job-ops` (`page`, private)
+```lang
 
-```tsx
+# Route code not included in this backup format
 
 ```
 
-### `/telemetry` (`page`, private)
 
-```tsx
+### `/telemetry` (page, private)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/trivia/leaderboard` (api, public)
+
 
-### `/api/trivia/leaderboard` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
 
-### `/api/trivia/random` (`api`, public)
 
-```typescript
+### `/api/trivia/random` (api, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/trivia/by-date` (api, public)
+
 
-### `/api/trivia/by-date` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
 
-### `/api/agents` (`api`, public)
 
-```typescript
+### `/api/agents` (api, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/trivia` (page, private)
+
 
-### `/trivia` (`page`, private)
+```lang
 
-```tsx
+# Route code not included in this backup format
 
 ```
 
-### `/repurpose` (`page`, private)
 
-```tsx
+### `/repurpose` (page, private)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/datasets/proxy/*` (api, public)
+
 
-### `/api/datasets/proxy/*` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
 
-### `/api/contact` (`api`, public)
 
-```typescript
+### `/api/contact` (api, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/benchmarks` (api, public)
+
 
-### `/api/benchmarks` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
 
-### `/api/career-ops/scan` (`api`, public)
 
-```typescript
+### `/api/career-ops/scan` (api, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/data/zo-trivia/` (page, private)
+
 
-### `/data/zo-trivia/` (`page`, private)
+```lang
 
-```tsx
+# Route code not included in this backup format
 
 ```
 
-### `/speech-game` (`page`, public)
 
-```tsx
+### `/speech-game` (page, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/speech-game/stickers` (page, public)
 
-### `/speech-game/stickers` (`page`, public)
 
-```tsx
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/speech-game-auth` (api, public)
 
-### `/api/speech-game-auth` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/career-ops/batch` (api, public)
 
-### `/api/career-ops/batch` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/speech-game-manifest.json` (api, public)
 
-### `/speech-game-manifest.json` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/speech-game-sw.js` (api, public)
 
-### `/speech-game-sw.js` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/data/zo-trivia/api/query` (api, public)
 
-### `/data/zo-trivia/api/query` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/buildin-auth` (page, private)
 
-### `/buildin-auth` (`page`, private)
 
-```tsx
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/buildin/disconnect` (api, public)
 
-### `/api/buildin/disconnect` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/projects` (api, public)
 
-### `/api/projects` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/test-deps` (api, public)
 
-### `/api/test-deps` (`api`, public)
 
-```typescript
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/speech-game/stats` (page, public)
 
-### `/speech-game/stats` (`page`, public)
 
-```tsx
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/zo-city` (page, public)
 
-### `/zo-city` (`page`, public)
 
-```tsx
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/zos` (page, public)
 
-### `/zos` (`page`, public)
 
-```tsx
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/about-the-build` (page, public)
 
-### `/about-the-build` (`page`, public)
 
-```tsx
+```lang
 
+# Route code not included in this backup format
+
 ```
+
+
+### `/404` (page, public)
 
-### `/404` (`page`, public)
 
-```tsx
+```lang
 
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/zos/now` (`api`, public)
+### `/api/zos/now` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/zos/signals` (`api`, public)
+### `/api/zos/signals` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/career-ops` (`api`, public)
+### `/api/career-ops` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/career-ops` (`page`, private)
+### `/career-ops` (page, private)
 
-```tsx
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/career-ops/pipeline` (`api`, public)
+### `/api/career-ops/pipeline` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/career-ops/applications` (`api`, public)
+### `/api/career-ops/applications` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/health-check` (`api`, public)
+### `/api/health-check` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/speech-game-data` (`api`, public)
+### `/api/speech-game-data` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/telemetry-data` (`api`, public)
+### `/api/telemetry-data` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/model-advisor` (`page`, public)
+### `/model-advisor` (page, public)
 
-```tsx
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/buildin/callback` (`api`, public)
+### `/api/buildin/callback` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/trivia/unsubscribe` (`api`, public)
+### `/api/trivia/unsubscribe` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/datasets/viewer` (`api`, public)
+### `/api/datasets/viewer` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/data-explorer` (`page`, private)
+### `/data-explorer` (page, private)
 
-```tsx
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/datasets/list` (`api`, public)
+### `/api/datasets/list` (api, public)
 
-```typescript
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
 
-### `/api/puzzle-callback` (`page`, public)
+### `/api/puzzle-callback` (page, public)
 
-```tsx
 
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/nav-links` (api, public)
+
 
-### `/api/nav-links` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
 
-### `/s/:id` (`page`, public)
 
-```tsx
+### `/s/:id` (page, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/share/:id` (api, public)
+
 
-### `/api/share/:id` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
 
-### `/api/trivia` (`api`, public)
 
-```typescript
+### `/api/trivia` (api, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/trivia/archive` (page, private)
+
 
-### `/trivia/archive` (`page`, private)
+```lang
 
-```tsx
+# Route code not included in this backup format
 
 ```
 
-### `/api/trivia/subscribe` (`api`, public)
 
-```typescript
+### `/api/trivia/subscribe` (api, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/family-log` (api, public)
+
 
-### `/api/family-log` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
 
-### `/trivia/leaderboard` (`page`, private)
 
-```tsx
+### `/trivia/leaderboard` (page, private)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/trivia/user-stats` (api, public)
+
 
-### `/api/trivia/user-stats` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
 
-### `/api/projects-conversations` (`api`, public)
 
-```typescript
+### `/api/projects-conversations` (api, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/receipt-images` (api, public)
+
 
-### `/api/receipt-images` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
 
-### `/api/buildin/status` (`api`, public)
 
-```typescript
+### `/api/buildin/status` (api, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/zos/build-log` (api, public)
+
 
-### `/api/zos/build-log` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
 
-### `/secret` (`page`, public)
 
-```tsx
+### `/secret` (page, public)
 
+
+```lang
+
+# Route code not included in this backup format
+
 ```
+
+
+### `/api/zo-city-data` (api, public)
+
 
-### `/api/zo-city-data` (`api`, public)
+```lang
 
-```typescript
+# Route code not included in this backup format
 
 ```
