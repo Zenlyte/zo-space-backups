@@ -2,768 +2,515 @@
 format: zopack
 version: "1.0"
 name: zo-space-backup
-author: unknown.zo.computer
+author: curtastrophe.zo.computer
 routes: 126
-exported: 2026-04-17
+exported: 2026-04-18
 ---
 
 # zo-space-backup
 
 ## Routes
 
-### `/temporal` (page, private)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/temporal-auth-check` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/temporal/*` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/share/:id/download` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/flowpulse` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/zo-space-theme-gallery/:id` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/blog` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/blog/:slug` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/Zo-Ops` (page, private)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/twinmind-callback` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/blog/:slug` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/career-ops/scan-history` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/skills-gallery` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/skills-gallery` (page, private)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/zo-space-theme-gallery/skill` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/zo-space-theme-gallery` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/zo-space-theme-gallery/:id` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/icon-configurator` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/logs` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/security` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/failures` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/trivia/dates` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/calendar` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/extension-save` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/generate-icon` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/share` (page, private)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/test-write` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/test-exec` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/zo-status` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/benchmarks/refresh` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/billing` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/audit` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/test-env` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
 ### `/` (page, public)
 
-```tsx
-// Error: 404 Not Found
-```
-
-### `/receipts` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/diagnose` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/receipts` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/openclaw-dashboard` (page, private)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/dashboard` (page, private)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/twinmind` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/datasets/start` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/docs` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/sites` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/my-models` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/knowledge-graph` (page, private)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/x-feed` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/updates` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/blog` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/kg-search` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/share` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/profile` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/kg-entity` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/models` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/kg-by-type` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/kg-stats` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/kg-recall` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/kg-browse` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/kg-graph` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/files` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/auth-status` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/services` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/system-stats` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/credits` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/zo-space-theme-gallery` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/zo-control-deck` (page, private)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/job-ops` (page, private)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/telemetry` (page, private)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/trivia/leaderboard` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/zo-city-three-test` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/trivia/random` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/trivia/by-date` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/agents` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/trivia` (page, private)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/repurpose` (page, private)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/datasets/proxy/*` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/contact` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/benchmarks` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/career-ops/scan` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/data/zo-trivia/` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/speech-game` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/speech-game/stickers` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/speech-game-auth` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/career-ops/batch` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/speech-game-manifest.json` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/speech-game-sw.js` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/data/zo-trivia/api/query` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/buildin-auth` (page, private)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/buildin/disconnect` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/projects` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/test-deps` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/speech-game/stats` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/zo-city` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/zos` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/about-the-build` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
+```tsx```
 
 ### `/404` (page, public)
 
-```tsx
-// Error: 404 Not Found
-```
+```tsx```
 
-### `/api/zos/now` (api, public)
+### `/Zo-Ops` (page, private)
 
-```typescript
-// Error: 404 Not Found
-```
+```tsx```
 
-### `/api/zos/signals` (api, public)
+### `/about-the-build` (page, public)
 
-```typescript
-// Error: 404 Not Found
-```
+```tsx```
 
-### `/api/career-ops` (api, public)
+### `/api/agents` (api, public)
 
-```typescript
-// Error: 404 Not Found
-```
+```typescript```
 
-### `/career-ops` (page, private)
+### `/api/audit` (api, public)
 
-```tsx
-// Error: 404 Not Found
-```
+```typescript```
 
-### `/api/career-ops/pipeline` (api, public)
+### `/api/auth-status` (api, public)
 
-```typescript
-// Error: 404 Not Found
-```
+```typescript```
 
-### `/api/career-ops/applications` (api, public)
+### `/api/benchmarks` (api, public)
 
-```typescript
-// Error: 404 Not Found
-```
+```typescript```
 
-### `/api/health-check` (api, public)
+### `/api/benchmarks/refresh` (api, public)
 
-```typescript
-// Error: 404 Not Found
-```
+```typescript```
 
-### `/api/speech-game-data` (api, public)
+### `/api/billing` (api, public)
 
-```typescript
-// Error: 404 Not Found
-```
+```typescript```
 
-### `/api/telemetry-data` (api, public)
+### `/api/blog` (api, public)
 
-```typescript
-// Error: 404 Not Found
-```
+```typescript```
 
-### `/model-advisor` (page, public)
+### `/api/blog/:slug` (api, public)
 
-```tsx
-// Error: 404 Not Found
-```
+```typescript```
 
 ### `/api/buildin/callback` (api, public)
 
-```typescript
-// Error: 404 Not Found
-```
+```typescript```
 
-### `/api/trivia/unsubscribe` (api, public)
+### `/api/buildin/disconnect` (api, public)
 
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/datasets/viewer` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/data-explorer` (page, private)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/datasets/list` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/puzzle-callback` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/nav-links` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/s/:id` (page, public)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/share/:id` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/trivia` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/trivia/archive` (page, private)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/trivia/subscribe` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/family-log` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/trivia/leaderboard` (page, private)
-
-```tsx
-// Error: 404 Not Found
-```
-
-### `/api/trivia/user-stats` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/projects-conversations` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
-
-### `/api/receipt-images` (api, public)
-
-```typescript
-// Error: 404 Not Found
-```
+```typescript```
 
 ### `/api/buildin/status` (api, public)
 
-```typescript
-// Error: 404 Not Found
-```
+```typescript```
 
-### `/api/zos/build-log` (api, public)
+### `/api/calendar` (api, public)
 
-```typescript
-// Error: 404 Not Found
-```
+```typescript```
 
-### `/secret` (page, public)
+### `/api/career-ops` (api, public)
 
-```tsx
-// Error: 404 Not Found
-```
+```typescript```
+
+### `/api/career-ops/applications` (api, public)
+
+```typescript```
+
+### `/api/career-ops/batch` (api, public)
+
+```typescript```
+
+### `/api/career-ops/pipeline` (api, public)
+
+```typescript```
+
+### `/api/career-ops/scan` (api, public)
+
+```typescript```
+
+### `/api/career-ops/scan-history` (api, public)
+
+```typescript```
+
+### `/api/contact` (api, public)
+
+```typescript```
+
+### `/api/credits` (api, public)
+
+```typescript```
+
+### `/api/datasets/list` (api, public)
+
+```typescript```
+
+### `/api/datasets/proxy/*` (api, public)
+
+```typescript```
+
+### `/api/datasets/start` (api, public)
+
+```typescript```
+
+### `/api/datasets/viewer` (api, public)
+
+```typescript```
+
+### `/api/diagnose` (api, public)
+
+```typescript```
+
+### `/api/extension-save` (api, public)
+
+```typescript```
+
+### `/api/failures` (api, public)
+
+```typescript```
+
+### `/api/family-log` (api, public)
+
+```typescript```
+
+### `/api/files` (api, public)
+
+```typescript```
+
+### `/api/flowpulse` (api, public)
+
+```typescript```
+
+### `/api/generate-icon` (api, public)
+
+```typescript```
+
+### `/api/health-check` (api, public)
+
+```typescript```
+
+### `/api/logs` (api, public)
+
+```typescript```
+
+### `/api/models` (api, public)
+
+```typescript```
+
+### `/api/my-models` (api, public)
+
+```typescript```
+
+### `/api/nav-links` (api, public)
+
+```typescript```
+
+### `/api/projects` (api, public)
+
+```typescript```
+
+### `/api/projects-conversations` (api, public)
+
+```typescript```
+
+### `/api/puzzle-callback` (page, public)
+
+```tsx```
+
+### `/api/receipt-images` (api, public)
+
+```typescript```
+
+### `/api/receipts` (api, public)
+
+```typescript```
+
+### `/api/security` (api, public)
+
+```typescript```
+
+### `/api/services` (api, public)
+
+```typescript```
+
+### `/api/share` (api, public)
+
+```typescript```
+
+### `/api/share/:id` (api, public)
+
+```typescript```
+
+### `/api/share/:id/download` (api, public)
+
+```typescript```
+
+### `/api/sites` (api, public)
+
+```typescript```
+
+### `/api/skills-gallery` (api, public)
+
+```typescript```
+
+### `/api/speech-game-auth` (api, public)
+
+```typescript```
+
+### `/api/speech-game-data` (api, public)
+
+```typescript```
+
+### `/api/system-stats` (api, public)
+
+```typescript```
+
+### `/api/telemetry-data` (api, public)
+
+```typescript```
+
+### `/api/temporal-auth-check` (api, public)
+
+```typescript```
+
+### `/api/temporal/*` (api, public)
+
+```typescript```
+
+### `/api/test-deps` (api, public)
+
+```typescript```
+
+### `/api/test-env` (api, public)
+
+```typescript```
+
+### `/api/test-exec` (api, public)
+
+```typescript```
+
+### `/api/test-write` (api, public)
+
+```typescript```
+
+### `/api/trivia` (api, public)
+
+```typescript```
+
+### `/api/trivia/by-date` (api, public)
+
+```typescript```
+
+### `/api/trivia/dates` (api, public)
+
+```typescript```
+
+### `/api/trivia/leaderboard` (api, public)
+
+```typescript```
+
+### `/api/trivia/random` (api, public)
+
+```typescript```
+
+### `/api/trivia/subscribe` (api, public)
+
+```typescript```
+
+### `/api/trivia/unsubscribe` (api, public)
+
+```typescript```
+
+### `/api/trivia/user-stats` (api, public)
+
+```typescript```
+
+### `/api/twinmind` (api, public)
+
+```typescript```
+
+### `/api/twinmind-callback` (api, public)
+
+```typescript```
+
+### `/api/updates` (api, public)
+
+```typescript```
+
+### `/api/x-feed` (api, public)
+
+```typescript```
 
 ### `/api/zo-city-data` (api, public)
 
-```typescript
-// Error: 404 Not Found
-```
+```typescript```
 
+### `/api/zo-space-theme-gallery` (api, public)
+
+```typescript```
+
+### `/api/zo-space-theme-gallery/:id` (api, public)
+
+```typescript```
+
+### `/api/zo-space-theme-gallery/skill` (api, public)
+
+```typescript```
+
+### `/api/zos/build-log` (api, public)
+
+```typescript```
+
+### `/api/zos/now` (api, public)
+
+```typescript```
+
+### `/api/zos/signals` (api, public)
+
+```typescript```
+
+### `/blog` (page, public)
+
+```tsx```
+
+### `/blog/:slug` (page, public)
+
+```tsx```
+
+### `/buildin-auth` (page, private)
+
+```tsx```
+
+### `/career-ops` (page, private)
+
+```tsx```
+
+### `/dashboard` (page, private)
+
+```tsx```
+
+### `/data-explorer` (page, private)
+
+```tsx```
+
+### `/data/zo-trivia/` (page, private)
+
+```tsx```
+
+### `/data/zo-trivia/api/query` (api, public)
+
+```typescript```
+
+### `/docs` (api, public)
+
+```typescript```
+
+### `/icon-configurator` (page, public)
+
+```tsx```
+
+### `/job-ops` (page, private)
+
+```tsx```
+
+### `/kg-browse` (api, public)
+
+```typescript```
+
+### `/kg-by-type` (api, public)
+
+```typescript```
+
+### `/kg-entity` (api, public)
+
+```typescript```
+
+### `/kg-graph` (api, public)
+
+```typescript```
+
+### `/kg-recall` (api, public)
+
+```typescript```
+
+### `/kg-search` (api, public)
+
+```typescript```
+
+### `/kg-stats` (api, public)
+
+```typescript```
+
+### `/knowledge-graph` (page, private)
+
+```tsx```
+
+### `/model-advisor` (page, public)
+
+```tsx```
+
+### `/openclaw-dashboard` (page, private)
+
+```tsx```
+
+### `/profile` (page, public)
+
+```tsx```
+
+### `/receipts` (page, public)
+
+```tsx```
+
+### `/repurpose` (page, private)
+
+```tsx```
+
+### `/s/:id` (page, public)
+
+```tsx```
+
+### `/secret` (page, public)
+
+```tsx```
+
+### `/share` (page, private)
+
+```tsx```
+
+### `/skills-gallery` (page, private)
+
+```tsx```
+
+### `/speech-game` (page, public)
+
+```tsx```
+
+### `/speech-game-manifest.json` (api, public)
+
+```typescript```
+
+### `/speech-game-sw.js` (api, public)
+
+```typescript```
+
+### `/speech-game/stats` (page, public)
+
+```tsx```
+
+### `/speech-game/stickers` (page, public)
+
+```tsx```
+
+### `/telemetry` (page, private)
+
+```tsx```
+
+### `/temporal` (page, private)
+
+```tsx```
+
+### `/trivia` (page, public)
+
+```tsx```
+
+### `/trivia/archive` (page, private)
+
+```tsx```
+
+### `/trivia/leaderboard` (page, private)
+
+```tsx```
+
+### `/zo-city` (page, public)
+
+```tsx```
+
+### `/zo-city-three-test` (page, public)
+
+```tsx```
+
+### `/zo-control-deck` (page, private)
+
+```tsx```
+
+### `/zo-space-theme-gallery` (page, public)
+
+```tsx```
+
+### `/zo-space-theme-gallery/:id` (page, public)
+
+```tsx```
+
+### `/zo-status` (page, public)
+
+```tsx```
+
+### `/zos` (page, public)
+
+```tsx```
