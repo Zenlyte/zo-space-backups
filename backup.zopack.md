@@ -3,8 +3,8 @@ format: zopack
 version: "1.0"
 name: zo-space-backup
 author: unknown.zo.computer
-routes: 19
-exported: 2026-05-12
+routes: 1
+exported: 2026-05-14
 ---
 
 # zo-space-backup
@@ -15,114 +15,18 @@ exported: 2026-05-12
 
 ```tsx
 import { useEffect, useState, useRef } from "react";
-```
 
-### `/api/temporal-auth-check` (api, public)
-
-```typescript
-import type { Context } from "hono";
-```
-
-### `/api/temporal/*` (api, public)
-
-```typescript
-import type { Context } from "hono";
-```
-
-### `/api/share/:id/download` (api, public)
-
-```typescript
-import type { Context } from "hono";
-```
-
-### `/api/flowpulse` (api, public)
-
-```typescript
-import type { Context } from "hono";
-```
-
-### `/zo-space-theme-gallery/:id` (page, public)
-
-```tsx
-import { useEffect, useMemo, useState, useRef } from "react";
-```
-
-### `/blog` (page, public)
-
-```tsx
-import { useState, useEffect, useRef } from "react";
-```
-
-### `/api/blog/:slug` (api, public)
-
-```typescript
-import type { Context } from "hono";
-```
-
-### `/Zo-Ops` (page, private)
-
-```tsx
-import React, { useState, useEffect, useCallback, useRef } from "react";
-```
-
-### `/api/twinmind-callback` (api, public)
-
-```typescript
-import type { Context } from "hono";
-```
-
-### `/blog/:slug` (page, public)
-
-```tsx
-import { useState, useEffect, useRef } from "react";
-```
-
-### `/api/projects` (api, public)
-
-```typescript
-import type { Context } from "hono";
-```
-
-### `/api/projects-conversations` (api, public)
-
-```typescript
-import type { Context } from "hono";
-```
-
-### `/api/share` (api, public)
-
-```typescript
-import type { Context } from "hono";
-```
-
-### `/api/security` (api, public)
-
-```typescript
-import type { Context } from "hono";
-```
-
-### `/api/failures` (api, public)
-
-```typescript
-import type { Context } from "hono";
-```
-
-### `/api/trivia/dates` (api, public)
-
-```typescript
-import type { Context } from "hono";
-```
-
-### `/api/calendar` (api, public)
-
-```typescript
-/**
- * Calendar API...
-```
-
-### `/api/extension-save` (api, public)
-
-```typescript
-import type { Context } from "hono";
+const COLORS = {
+  bg: "#0a0a0f",
+  card: "#0f1117",
+  cyan: "#06b6d4",
+  cyanLight: "#22d3ee",
+  indigo: "#6366f1",
+  indigoLight: "#818cf8",
+  muted: "#94a3b8",
+  dimmed: "#64748b",
+  border: "rgba(255,255,255,0.08)",
+};
+export default function TemporalDashboard() { return <div />; }
 ```
 
