@@ -1,799 +1,137 @@
----
-format: zopack
-version: "1.0"
-name: zo-space-backup
-author: unknown.zo.computer
-routes: 131
-exported: 2026-05-16
----
-
 # zo-space-backup
 
-## Routes
-
-### `/temporal` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/temporal-auth-check` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/temporal/*` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/share/:id/download` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/flowpulse` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/zo-space-theme-gallery/:id` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/blog` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/blog/:slug` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/Zo-Ops` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/twinmind-callback` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/blog/:slug` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/career-ops/scan-history` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/skills-gallery` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/skills-gallery` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/zo-space-theme-gallery/skill` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/zo-space-theme-gallery` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/zo-space-theme-gallery/:id` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/icon-configurator` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/logs` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/security` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/failures` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/trivia/dates` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/calendar` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/extension-save` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/generate-icon` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/share` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/test-write` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/test-exec` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/zo-status` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/benchmarks/refresh` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/billing` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/audit` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/test-env` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/receipts` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/diagnose` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/receipts` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/openclaw-dashboard` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/dashboard` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/twinmind` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/datasets/start` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/docs` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/sites` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/my-models` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/knowledge-graph` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/updates` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/blog` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/kg-search` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/profile` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/kg-entity` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/models` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/kg-by-type` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/kg-stats` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/kg-recall` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/kg-browse` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/kg-graph` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/files` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/services` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/system-stats` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/credits` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/zo-space-theme-gallery` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/zo-control-deck` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/job-ops` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/telemetry` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/trivia/leaderboard` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/zo-city-three-test` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/trivia/random` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/trivia/by-date` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/agents` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/trivia` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/repurpose` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/datasets/proxy/*` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/benchmarks` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/career-ops/scan` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/data/zo-trivia/` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/speech-game` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/speech-game/stickers` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/speech-game-auth` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/career-ops/batch` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/speech-game-manifest.json` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/speech-game-sw.js` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/data/zo-trivia/api/query` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/buildin-auth` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/buildin/disconnect` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/projects` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/test-deps` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/zos/now` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/zos/build-log` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/speech-game/stats` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/auth-status` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/zo-city` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/about-the-build` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/404` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/zos/signals` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/career-ops` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/career-ops` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/career-ops/pipeline` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/career-ops/applications` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/health-check` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/speech-game-data` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/telemetry-data` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/model-advisor` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/buildin/callback` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/trivia/unsubscribe` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/datasets/viewer` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/data-explorer` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/datasets/list` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/puzzle-callback` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/nav-links` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/s/:id` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/share/:id` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/trivia` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/trivia/archive` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/trivia/subscribe` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/family-log` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/trivia/leaderboard` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/trivia/user-stats` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/projects-conversations` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/receipt-images` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/buildin/status` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/secret` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/contact` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/x-feed` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/press` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/zos-lite` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/zo-city-data` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/api/voi-zos` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/zos` (page, public)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/zoboard` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
-### `/api/zoboard/*` (api, public)
-
-```typescript
-export default function() { return null; }
-```
-
-### `/zoboard/:slug` (page, private)
-
-```tsx
-export default function() { return null; }
-```
-
+generated_at: 2026-05-17T02-07-53Z
+route_count: 132
+
+- /temporal | page | private
+- /api/temporal-auth-check | api | public
+- /api/temporal/* | api | public
+- /api/share/:id/download | api | public
+- /api/flowpulse | api | public
+- /zo-space-theme-gallery/:id | page | public
+- /blog | page | public
+- /api/blog/:slug | api | public
+- /Zo-Ops | page | private
+- /api/twinmind-callback | api | public
+- /blog/:slug | page | public
+- /api/career-ops/scan-history | api | public
+- /api/skills-gallery | api | public
+- /skills-gallery | page | private
+- /api/zo-space-theme-gallery/skill | api | public
+- /api/zo-space-theme-gallery | api | public
+- /api/zo-space-theme-gallery/:id | api | public
+- /icon-configurator | page | public
+- /api/logs | api | public
+- /api/security | api | public
+- /api/failures | api | public
+- /api/trivia/dates | api | public
+- /api/calendar | api | public
+- /api/extension-save | api | public
+- /api/generate-icon | api | public
+- /share | page | private
+- /api/test-write | api | public
+- /api/test-exec | api | public
+- /zo-status | page | public
+- /api/benchmarks/refresh | api | public
+- /api/billing | api | public
+- /api/audit | api | public
+- /api/test-env | api | public
+- / | page | public
+- /receipts | page | public
+- /api/diagnose | api | public
+- /api/receipts | api | public
+- /openclaw-dashboard | page | private
+- /dashboard | page | private
+- /api/twinmind | api | public
+- /api/datasets/start | api | public
+- /docs | api | public
+- /api/sites | api | public
+- /api/my-models | api | public
+- /knowledge-graph | page | private
+- /api/updates | api | public
+- /api/blog | api | public
+- /kg-search | api | public
+- /api/share | api | public
+- /profile | page | public
+- /kg-entity | api | public
+- /api/models | api | public
+- /kg-by-type | api | public
+- /kg-stats | api | public
+- /kg-recall | api | public
+- /kg-browse | api | public
+- /kg-graph | api | public
+- /api/files | api | public
+- /api/services | api | public
+- /api/system-stats | api | public
+- /api/credits | api | public
+- /zo-space-theme-gallery | page | public
+- /zo-control-deck | page | private
+- /job-ops | page | private
+- /telemetry | page | private
+- /api/trivia/leaderboard | api | public
+- /zo-city-three-test | page | public
+- /api/trivia/random | api | public
+- /api/trivia/by-date | api | public
+- /api/agents | api | public
+- /trivia | page | public
+- /repurpose | page | private
+- /api/datasets/proxy/* | api | public
+- /api/benchmarks | api | public
+- /api/career-ops/scan | api | public
+- /data/zo-trivia/ | page | private
+- /speech-game | page | public
+- /speech-game/stickers | page | public
+- /api/speech-game-auth | api | public
+- /api/career-ops/batch | api | public
+- /speech-game-manifest.json | api | public
+- /speech-game-sw.js | api | public
+- /data/zo-trivia/api/query | api | public
+- /buildin-auth | page | private
+- /api/buildin/disconnect | api | public
+- /api/projects | api | public
+- /api/test-deps | api | public
+- /api/zos/now | api | public
+- /api/zos/build-log | api | public
+- /speech-game/stats | page | public
+- /api/auth-status | api | public
+- /zo-city | page | public
+- /about-the-build | page | public
+- /404 | page | public
+- /api/zos/signals | api | public
+- /api/career-ops | api | public
+- /career-ops | page | private
+- /api/career-ops/pipeline | api | public
+- /api/career-ops/applications | api | public
+- /api/health-check | api | public
+- /api/speech-game-data | api | public
+- /api/telemetry-data | api | public
+- /model-advisor | page | public
+- /api/buildin/callback | api | public
+- /api/trivia/unsubscribe | api | public
+- /api/datasets/viewer | api | public
+- /data-explorer | page | private
+- /api/datasets/list | api | public
+- /api/puzzle-callback | page | public
+- /api/nav-links | api | public
+- /s/:id | page | public
+- /api/share/:id | api | public
+- /api/trivia | api | public
+- /trivia/archive | page | private
+- /api/trivia/subscribe | api | public
+- /api/family-log | api | public
+- /trivia/leaderboard | page | private
+- /api/trivia/user-stats | api | public
+- /api/projects-conversations | api | public
+- /api/receipt-images | api | public
+- /api/buildin/status | api | public
+- /secret | page | public
+- /api/contact | api | public
+- /api/x-feed | api | public
+- /press | page | public
+- /zos-lite | page | public
+- /api/zo-city-data | api | public
+- /api/voi-zos | api | public
+- /zos | page | public
+- /zoboard | page | private
+- /api/zoboard/* | api | public
+- /zoboard/:slug | page | private
