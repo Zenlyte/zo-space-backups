@@ -1,19 +1,5 @@
----
-format: zopack
-version: "1.0"
-name: zo-space-backup
-author: unknown.zo.computer
-routes: 1
-exported: 2026-05-22
----
-
-# zo-space-backup
-
-## Routes
-
-### `/` (page, public)
-
-```tsx
-...
-```
-
+{
+  "created_at": "2026-05-23T15:06:22.897610Z",
+  "name": "zo-space-backup",
+  "routes": []
+}
