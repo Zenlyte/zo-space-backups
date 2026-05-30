@@ -3,8 +3,8 @@ format: zopack
 version: "1.0"
 name: zo-space-backup
 author: unknown.zo.computer
-routes: 1
-exported: 2026-05-28
+routes: 132
+exported: 2026-05-30
 ---
 
 # zo-space-backup
@@ -14,75 +14,792 @@ exported: 2026-05-28
 ### `/` (page, public)
 
 ```tsx
-import { useState, useEffect, useRef } from "react";
-import {
-  ArrowRight, Github, Twitter, Linkedin, MessageSquare, Send, CheckCircle,
-  Database, Bot, Users, Wrench, ExternalLink, Gamepad2, Sparkles, Clock,
-  Tag, ChevronDown, Menu, X,
-  LayoutDashboard, Palette, Settings, Share2, Briefcase, PenLine, Lock
-} from "lucide-react";
+export default () => null;
+```
 
-const COLORS = {
-  bg: "#0a0a0f",
-  card: "#0f1117",
-  cardHover: "#141420",
-  cyan: "#06b6d4",
-  cyanLight: "#22d3ee",
-  indigo: "#6366f1",
-  indigoLight: "#818cf8",
-  muted: "#94a3b8",
-  dimmed: "#64748b",
-  border: "rgba(255,255,255,0.08)",
-  borderHover: "rgba(6,182,212,0.4)",
-};
+### `/404` (page, public)
 
-const PROJECTS = [
-  { name: "Theme Gallery", desc: "30+ design system themes for Zo Space with one-click application and live preview.", status: "completed", tags: ["Zo Space", "React", "Design"], link: "/zo-space-theme-gallery" },
-  { name: "Mengram", desc: "Local-first memory system with knowledge graph, proactive environmental anchoring, and failure-driven procedural extraction.", status: "completed", tags: ["Python", "SQLite", "AI"], link: "/blog/memory-implementation" },
-  { name: "Zo Icon Configurator", desc: "Custom Zo Computer logo generator with AI enhancement, theme presets, and canvas rendering.", status: "completed", tags: ["React", "AI", "Canvas"], link: "/icon-configurator" },
-  { name: "JobOps", desc: "Advanced job search orchestration platform with automated scraping, AI scoring, and resume tailoring.", status: "in-progress", tags: ["TypeScript", "AI", "Automation"], link: null },
-  { name: "Straico Rust Proxy", desc: "High-performance Rust-based proxy for Straico and Ollama model orchestration with streaming support.", status: "completed", tags: ["Rust", "API", "AI"], link: null },
-  { name: "Zo Discord Bot", desc: "Discord integration for Zo Computer with thread management, model overrides, and persistent memory.", status: "completed", tags: ["Python", "Discord", "AI"], link: null },
-  { name: "Temporal Dashboard", desc: "Temporal development server and workflow orchestration dashboard for complex distributed systems.", status: "in-progress", tags: ["Infra", "Workflow", "Orchestration"], link: null },
-  { name: "OpenClaw Dashboard", desc: "Management interface for OpenClaw multi-machine agent orchestration and distributed AI workloads.", status: "in-progress", tags: ["Python", "Agents", "Infra"], link: null },
-  { name: "Skill Gallery", desc: "Browsable gallery of Zo Computer skills with search, filtering, and easy installation.", status: "in-progress", tags: ["Zo Space", "Community"], link: null },
-  { name: "Zo Status", desc: "System health and service monitoring dashboard for tracking Zo Computer performance and availability.", status: "completed", tags: ["Monitoring", "Dashboard"], link: null },
-  { name: "Published Skills & PRs", desc: "Community contributions to the Zo skills ecosystem, open-source tools and integrations.", status: "completed", tags: ["TypeScript", "Open Source"], link: null },
-  { name: "Automations", desc: "Scheduled agents, notifications, digests, and workflow automation on Zo Computer.", status: "completed", tags: ["Agents", "Integrations"], link: null },
-  { name: "Receipts", desc: "Shared household expense tracker for tracking receipts and spending.", status: "completed", tags: ["Finance", "Zo Space"], link: null },
-  { name: "Dashboard", desc: "Shared hub for schedules, tasks, and household information management.", status: "in-progress", tags: ["React", "Zo Space"], link: null },
-  { name: "Personal OS", desc: "Task management and personal productivity system built on Zo.", status: "in-progress", tags: ["Productivity", "Zo Space"], link: null },
-  { name: "Docs", desc: "Project documentation and knowledge base for the entire personal Zo ecosystem.", status: "in-progress", tags: ["Documentation", "Wiki"], link: "/docs" },
-  { name: "Prompt Gallery", desc: "Template library for curated and saved prompts across various AI use cases.", status: "in-progress", tags: ["Productivity", "AI"], link: null },
-  { name: "MCP Staging", desc: "Staging environment for developing and testing Model Context Protocol (MCP) servers.", status: "in-progress", tags: ["MCP", "Development"], link: null },
-];
+```tsx
+export default () => null;
+```
 
-const SOCIAL_LINKS = [
-  { name: "X / Twitter", icon: Twitter, url: "https://x.com/curtastrophe_", color: "#1da1f2" },
-  { name: "LinkedIn", icon: Linkedin, url: "https://linkedin.com/in/curtischow", color: "#0a66c2" },
-  { name: "GitHub", icon: Github, url: "https://github.com/curtastrophe", color: "#f0f6fc" },
-  { name: "Reddit", icon: MessageSquare, url: "https://reddit.com/user/GoomiBare", color: "#ff4500" },
-];
+### `/Zo-Ops` (page, private)
 
-const NAV_ITEMS = ["About", "Projects", "Blog", "Social", "Contact"];
+```tsx
+export default () => null;
+```
 
-const ZENNY_IDLE = "/pets/zenny-idle-v2.png";
-const ZENNY_RUN_RIGHT = "/pets/zenny-running-right-v2.png";
-const ZENNY_RUN_LEFT = "/pets/zenny-running-left-v2.png";
+### `/about-the-build` (page, public)
 
-const ZENNY_STATES = {
-  idle: { src: ZENNY_IDLE, frames: 6 },
-  left: { src: ZENNY_RUN_LEFT, frames: 8 },
-  right: { src: ZENNY_RUN_RIGHT, frames: 8 },
-} as const;
+```tsx
+export default () => null;
+```
 
-function DraggableZenny() { return null as any; }
-function HexAvatar({ size = 140 }: { size?: number }) { return <div /> as any; }
-function SectionHeader({ label, title, highlight }: { label: string; title: string; highlight: string }) { return <div /> as any; }
-function StatusBadge({ status }: { status: string }) { return <div /> as any; }
+### `/api/agents` (api, public)
 
-interface PostMeta { slug: string; title: string; excerpt: string; date: string; tags: string[]; readTime: string; }
+```typescript
+export default () => null;
+```
 
-export default function Home() { return <div /> as any; }
+### `/api/audit` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/auth-status` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/benchmarks` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/benchmarks/refresh` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/billing` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/blog` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/blog/:slug` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/buildin/callback` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/buildin/disconnect` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/buildin/status` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/calendar` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/career-ops` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/career-ops/applications` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/career-ops/batch` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/career-ops/pipeline` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/career-ops/scan` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/career-ops/scan-history` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/contact` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/credits` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/datasets/list` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/datasets/proxy/*` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/datasets/start` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/datasets/viewer` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/diagnose` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/extension-save` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/failures` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/family-log` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/files` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/flowpulse` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/generate-icon` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/health-check` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/logs` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/models` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/my-models` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/nav-links` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/projects` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/projects-conversations` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/puzzle-callback` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/api/receipt-images` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/receipts` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/security` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/services` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/share` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/share/:id` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/share/:id/download` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/sites` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/skills-gallery` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/speech-game-auth` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/speech-game-data` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/system-stats` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/telemetry-data` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/temporal-auth-check` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/temporal/*` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/test-deps` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/test-env` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/test-exec` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/test-write` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/trivia` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/trivia/by-date` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/trivia/dates` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/trivia/leaderboard` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/trivia/random` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/trivia/subscribe` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/trivia/unsubscribe` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/trivia/user-stats` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/twinmind` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/twinmind-callback` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/updates` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/voi-zos` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/x-feed` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/zo-city-data` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/zo-space-theme-gallery` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/zo-space-theme-gallery/:id` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/zo-space-theme-gallery/skill` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/zoboard/*` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/zos/build-log` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/zos/now` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/api/zos/signals` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/blog` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/blog/:slug` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/buildin-auth` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/career-ops` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/dashboard` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/data-explorer` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/data/zo-trivia/` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/data/zo-trivia/api/query` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/docs` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/icon-configurator` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/job-ops` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/kg-browse` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/kg-by-type` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/kg-entity` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/kg-graph` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/kg-recall` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/kg-search` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/kg-stats` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/knowledge-graph` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/model-advisor` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/openclaw-dashboard` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/press` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/profile` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/receipts` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/repurpose` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/s/:id` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/secret` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/share` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/skills-gallery` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/speech-game` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/speech-game-manifest.json` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/speech-game-sw.js` (api, public)
+
+```typescript
+export default () => null;
+```
+
+### `/speech-game/stats` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/speech-game/stickers` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/telemetry` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/temporal` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/trivia` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/trivia/archive` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/trivia/leaderboard` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/zo-city` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/zo-city-three-test` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/zo-control-deck` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/zo-space-theme-gallery` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/zo-space-theme-gallery/:id` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/zo-status` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/zoboard` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/zoboard/:slug` (page, private)
+
+```tsx
+export default () => null;
+```
+
+### `/zos` (page, public)
+
+```tsx
+export default () => null;
+```
+
+### `/zos-lite` (page, public)
+
+```tsx
+export default () => null;
 ```
 
