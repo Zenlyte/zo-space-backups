@@ -2,807 +2,450 @@
 format: zopack
 version: "1.0"
 name: zo-space-backup
-author: curtastrophe.zo.computer
-timestamp: 2026-06-15T16-21-19
+author: unknown.zo.computer
+routes: 2
+exported: 2026-06-16
 ---
 
-[
-  {
-    "path": "/",
-    "route_type": "page",
-    "code": "{\"path\":\"/\",\"route_type\":\"page\",\"code\":\"import { useState, useEffect, useRef } from \\\"react\\\";\\nimport {\\n  ArrowRight, Github, Twitter, Linkedin, MessageSquare, Send, CheckCircle,\\n  Database, Bot, Users, Wrench, ExternalLink, Gamepad2, Sparkles, Clock,\\n  Tag, ChevronDown, Menu, X,\\n  LayoutDashboard, Palette, Settings, Share2, Briefcase, PenLine, Lock\\n} from \\\"lucide-react\\\";\\n\\nconst COLORS = {\\n  bg: \\\"#0a0a0f\\\",\\n  card: \\\"#0f1117\\\",\\n  cardHover: \\\"#141420\\\",\\n  cyan: \\\"#06b6d4\\\",\\n  cyanLight: \\\"#22d3ee\\\",\\n  indigo: \\\"#6366f1\\\",\\n  indigoLight: \\\"#818cf8\\\",\\n  muted: \\\"#94a3b8\\\",\\n  dimmed: \\\"#64748b\\\",\\n  border: \\\"rgba(255,255,255,0.08)\\\",\\n  borderHover: \\\"rgba(6,182,212,0.4)\\\",\\n};\\n\\nconst PROJECTS = [\\n  { name: \\\"Canadian Daycare Finder\\\", desc: \\\"A web service for Canadian parents to find, filter, and evaluate daycares using provincial data enriched with Google Maps and news.\\\", status: \\\"planned\\\", tags: [\\\"Web\\\", \\\"Data\\\", \\\"Maps\\\"], link: null },\\n  { name: \\\"Theme Gallery\\\", desc: \\\"30+ design system themes for Zo Space with one-click application and live preview.\\\", status: \\\"completed\\\", tags: [\\\"Zo Space\\\", \\\"React\\\", \\\"Design\\\"], link: \\\"/zo-space-theme-gallery\\\" },\\n  { name: \\\"MemWiki\\\", desc: \\\"Git-backed personal knowledge system and cognitive extension with consciousness continuity and multi-agent synthesis.\\\", status: \\\"completed\\\", tags: [\\\"TypeScript\\\", \\\"Git\\\", \\\"AI\\\"], link: \\\"/docs\\\" },\\n  { name: \\\"Zo Icon Configurator\\\", desc: \\\"Custom Zo Computer logo generator with AI enhancement, theme presets, and canvas rendering.\\\", status: \\\"completed\\\", tags: [\\\"React\\\", \\\"AI\\\", \\\"Canvas\\\"], link: \\\"/icon-configurator\\\" },\\n  { name: \\\"JobOps\\\", desc: \\\"Advanced job search orchestration platform with automated scraping, AI scoring, and resume tailoring.\\\", status: \\\"in-progress\\\", tags: [\\\"TypeScript\\\", \\\"AI\\\", \\\"Automation\\\"], link: null },\\n  { name: \\\"Straico Rust Proxy\\\", desc: \\\"High-performance Rust-based proxy for Straico and Ollama model orchestration with streaming support.\\\", status: \\\"completed\\\", tags: [\\\"Rust\\\", \\\"API\\\", \\\"AI\\\"], link: null },\\n  { name: \\\"Zo Discord Bot\\\", desc: \\\"Discord integration for Zo Computer with thread management, model overrides, and persistent memory.\\\", status: \\\"completed\\\", tags: [\\\"Python\\\", \\\"Discord\\\", \\\"AI\\\"], link: null },\\n  { name: \\\"Temporal Dashboard\\\", desc: \\\"Temporal development server and workflow orchestration dashboard for complex distributed systems.\\\", status: \\\"in-progress\\\", tags: [\\\"Infra\\\", \\\"Workflow\\\", \\\"Orchestration\\\"], link: null },\\n  { name: \\\"OpenClaw Dashboard\\\", desc: \\\"Management interface for OpenClaw multi-machine agent orchestration and distributed AI workloads.\\\", status: \\\"in-progress\\\", tags: [\\\"Python\\\", \\\"Agents\\\", \\\"Infra\\\"], link: null },\\n  { name: \\\"Skill Gallery\\\", desc: \\\"Browsable gallery of Zo Computer skills with search, filtering, and easy installation.\\\", status: \\\"in-progress\\\", tags: [\\\"Zo Space\\\", \\\"Community\\\"], link: null },\\n  { name: \\\"Zo Status\\\", desc: \\\"System health and service monitoring dashboard for tracking Zo Computer performance and availability.\\\", status: \\\"completed\\\", tags: [\\\"Monitoring\\\", \\\"Dashboard\\\"], link: null },\\n  { name: \\\"Published Skills & PRs\\\", desc: \\\"Community contributions to the Zo skills ecosystem, open-source tools and integrations.\\\", status: \\\"completed\\\", tags: [\\\"TypeScript\\\", \\\"Open Source\\\"], link: null },\\n  { name: \\\"Automations\\\", desc: \\\"Scheduled agents, notifications, digests, and workflow automation on Zo Computer.\\\", status: \\\"completed\\\", tags: [\\\"Agents\\\", \\\"Integrations\\\"], link: null },\\n  { name: \\\"Receipts\\\", desc: \\\"Shared household expense tracker for tracking receipts and spending.\\\", status: \\\"completed\\\", tags: [\\\"Finance\\\", \\\"Zo Space\\\"], link: null },\\n  { name: \\\"Family Butler Dashboard\\\", desc: \\\"Shared hub for schedules, tasks, and household information management.\\\", status: \\\"completed\\\", tags: [\\\"React\\\", \\\"Zo Space\\\"], link: \\\"/dashboard\\\" },\\n  { name: \\\"Personal OS\\\", desc: \\\"Task management and personal productivity system built on Zo.\\\", status: \\\"in-progress\\\", tags: [\\\"Productivity\\\", \\\"Zo Space\\\"], link: null },\\n  { name: \\\"Docs\\\", desc: \\\"Project documentation and knowledge base for the entire personal Zo ecosystem.\\\", status: \\\"in-progress\\\", tags: [\\\"Documentation\\\", \\\"Wiki\\\"], link: \\\"/docs\\\" },\\n  { name: \\\"Prompt Gallery\\\", desc: \\\"Template library for curated and saved prompts across various AI use cases.\\\", status: \\\"in-progress\\\", tags: [\\\"Productivity\\\", \\\"AI\\\"], link: null },\\n  { name: \\\"MCP Staging\\\", desc: \\\"Staging environment for developing and testing Model Context Protocol (MCP) servers.\\\", status: \\\"in-progress\\\", tags: [\\\"MCP\\\", \\\"Development\\\"], link: null },\\n];\\n\\nconst SOCIAL_LINKS = [\\n  { name: \\\"X / Twitter\\\", icon: Twitter, url: \\\"https://x.com/curtastrophe_\\\", color: \\\"#1da1f2\\\" },\\n  { name: \\\"LinkedIn\\\", icon: Linkedin, url: \\\"https://linkedin.com/in/curtischow\\\", color: \\\"#0a66c2\\\" },\\n  { name: \\\"GitHub\\\", icon: Github, url: \\\"https://github.com/curtastrophe\\\", color: \\\"#f0f6fc\\\" },\\n  { name: \\\"Reddit\\\", icon: MessageSquare, url: \\\"https://reddit.com/user/GoomiBare\\\", color: \\\"#ff4500\\\" },\\n];\\n\\nconst NAV_ITEMS = [\\\"About\\\", \\\"Projects\\\", \\\"Blog\\\", \\\"Social\\\", \\\"Contact\\\"];\\n\\nconst ZENNY_IDLE = \\\"/pets/zenny-idle-v2.png\\\";\\nconst ZENNY_RUN_RIGHT = \\\"/pets/zenny-running-right-v2.png\\\";\\nconst ZENNY_RUN_LEFT = \\\"/pets/zenny-running-left-v2.png\\\";\\n\\nconst ZENNY_STATES = {\\n  idle: { src: ZENNY_IDLE, frames: 6 },\\n  left: { src: ZENNY_RUN_LEFT, frames: 8 },\\n  right: { src: ZENNY_RUN_RIGHT, frames: 8 },\\n} as const;\\n\\nfunction DraggableZenny() {\\n  const [position, setPosition] = useState({ x: 24, y: 120 });\\n  const [mode, setMode] = useState<keyof typeof ZENNY_STATES>(\\\"idle\\\");\\n  const [frame, setFrame] = useState(0);\\n  const dragRef = useRef({ active: false, pointerId: -1, offsetX: 0, offsetY: 0, lastX: 0 });\\n  const width = 96;\\n  const height = 104;\\n  const pet = ZENNY_STATES[mode];\\n\\n  useEffect(() => {\\n    const placeZenny = () => {\\n      setPosition({\\n        x: Math.max(8, window.innerWidth - width - 32),\\n        y: window.innerWidth < 768 ? 96 : 132,\\n      });\\n    };\\n    placeZenny();\\n    window.addEventListener(\\\"resize\\\", placeZenny);\\n    return () => window.removeEventListener(\\\"resize\\\", placeZenny);\\n  }, []);\\n\\n  useEffect(() => {\\n    setFrame(0);\\n    const id = window.setInterval(() => {\\n      setFrame((current) => (current + 1) % ZENNY_STATES[mode].frames);\\n    }, mode === \\\"idle\\\" ? 180 : 95);\\n    return () => window.clearInterval(id);\\n  }, [mode]);\\n\\n  const clamp = (x: number, y: number) => ({\\n    x: Math.max(8, Math.min(window.innerWidth - width - 8, x)),\\n    y: Math.max(84, Math.min(window.innerHeight - height - 8, y)),\\n  });\\n\\n  const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {\\n    event.currentTarget.setPointerCapture(event.pointerId);\\n    dragRef.current = {\\n      active: true,\\n      pointerId: event.pointerId,\\n      offsetX: event.clientX - position.x,\\n      offsetY: event.clientY - position.y,\\n      lastX: event.clientX,\\n    };\\n  };\\n\\n  const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {\\n    const drag = dragRef.current;\\n    if (!drag.active || drag.pointerId !== event.pointerId) return;\\n    const dx = event.clientX - drag.lastX;\\n    if (dx > 1) setMode(\\\"right\\\");\\n    if (dx < -1) setMode(\\\"left\\\");\\n    drag.lastX = event.clientX;\\n    setPosition(clamp(event.clientX - drag.offsetX, event.clientY - drag.offsetY));\\n  };\\n\\n  const stopDragging = (event: React.PointerEvent<HTMLDivElement>) => {\\n    if (!dragRef.current.active || dragRef.current.pointerId !== event.pointerId) return;\\n    dragRef.current.active = false;\\n    setMode(\\\"idle\\\");\\n  };\\n\\n  return (\\n    <div\\n      role=\\\"button\\\"\\n      aria-label=\\\"Drag Zenny\\\"\\n      title=\\\"Drag Zenny\\\"\\n      onPointerDown={onPointerDown}\\n      onPointerMove={onPointerMove}\\n      onPointerUp={stopDragging}\\n      onPointerCancel={stopDragging}\\n      className=\\\"fixed z-[60] cursor-grab active:cursor-grabbing select-none touch-none\\\"\\n      style={{\\n        left: position.x,\\n        top: position.y,\\n        width,\\n        height,\\n        imageRendering: \\\"pixelated\\\",\\n        backgroundImage: `url(${pet.src})`,\\n        backgroundRepeat: \\\"no-repeat\\\",\\n        backgroundSize: `${8 * width}px ${height}px`,\\n        backgroundPosition: `-${frame * width}px 0px`,\\n        filter: \\\"drop-shadow(0 10px 18px rgba(0,0,0,0.35))\\\",\\n      }}\\n    />\\n  );\\n}\\n\\nfunction HexAvatar({ size = 140 }: { size?: number }) {\\n  const r = size / 2;\\n  const points = Array.from({ length: 6 }, (_, i) => {\\n    const angle = (Math.PI / 3) * i - Math.PI / 2;\\n    return `${r + r * 0.92 * Math.cos(angle)},${r + r * 0.92 * Math.sin(angle)}`;\\n  }).join(\\\" \\\");\\n  const outerPoints = Array.from({ length: 6 }, (_, i) => {\\n    const angle = (Math.PI / 3) * i - Math.PI / 2;\\n    return `${r + r * Math.cos(angle)},${r + r * Math.sin(angle)}`;\\n  }).join(\\\" \\\");\\n\\n  return (\\n    <div className=\\\"relative\\\" style={{ width: size, height: size }}>\\n      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>\\n        <defs>\\n          <linearGradient id=\\\"hex-grad\\\" x1=\\\"0%\\\" y1=\\\"0%\\\" x2=\\\"100%\\\" y2=\\\"100%\\\">\\n            <stop offset=\\\"0%\\\" stopColor={COLORS.cyan} />\\n            <stop offset=\\\"100%\\\" stopColor={COLORS.indigo} />\\n          </linearGradient>\\n          <clipPath id=\\\"hex-clip\\\">\\n            <polygon points={points} />\\n          </clipPath>\\n        </defs>\\n        <polygon points={outerPoints} fill=\\\"none\\\" stroke=\\\"url(#hex-grad)\\\" strokeWidth=\\\"2.5\\\" />\\n        <polygon points={points} fill={COLORS.card} />\\n        <image\\n          href=\\\"/images/avatar.png\\\"\\n          x=\\\"0\\\"\\n          y=\\\"0\\\"\\n          width={size}\\n          height={size}\\n          clipPath=\\\"url(#hex-clip)\\\"\\n          preserveAspectRatio=\\\"xMidYMid slice\\\"\\n        />\\n      </svg>\\n      <div className=\\\"absolute inset-0 opacity-30\\\" style={{\\n        background: `radial-gradient(circle at 30% 30%, ${COLORS.cyan}33, transparent 60%)`,\\n        clipPath: \\\"polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)\\\",\\n      }} />\\n    </div>\\n  );\\n}\\n\\nfunction SectionHeader({ label, title, highlight }: { label: string; title: string; highlight: string }) {\\n  return (\\n    <div className=\\\"text-center mb-16\\\">\\n      <span className=\\\"text-xs font-mono tracking-widest uppercase\\\" style={{ color: COLORS.cyan }}>{label}</span>\\n      <h2 className=\\\"font-heading text-3xl md:text-5xl font-bold mt-3\\\">\\n        {title}{\\\" \\\"}\\n        <span style={{\\n          background: `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})`,\\n          WebkitBackgroundClip: \\\"text\\\",\\n          WebkitTextFillColor: \\\"transparent\\\",\\n        }}>{highlight}</span>\\n      </h2>\\n    </div>\\n  );\\n}\\n\\nfunction StatusBadge({ status }: { status: string }) {\\n  const config: Record<string, { bg: string; text: string; label: string }> = {\\n    completed: { bg: \\\"rgba(34,197,94,0.15)\\\", text: \\\"#4ade80\\\", label: \\\"Completed\\\" },\\n    \\\"in-progress\\\": { bg: `${COLORS.cyan}20`, text: COLORS.cyanLight, label: \\\"In Progress\\\" },\\n    planned: { bg: `${COLORS.indigo}20`, text: COLORS.indigoLight, label: \\\"Planned\\\" },\\n  };\\n  const c = config[status] || config.planned;\\n  return (\\n    <span className=\\\"inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono tracking-wider uppercase\\\"\\n      style={{ background: c.bg, color: c.text, border: `1px solid ${c.text}30` }}>\\n      {c.label}\\n    </span>\\n  );\\n}\\n\\ninterface PostMeta { slug: string; title: string; excerpt: string; date: string; tags: string[]; readTime: string; }\\n\\nexport default function Home() {\\n  const [mounted, setMounted] = useState(false);\\n  const [activeFilter, setActiveFilter] = useState(\\\"all\\\");\\n  const [posts, setPosts] = useState<PostMeta[]>([]);\\n  const [formState, setFormState] = useState({ name: \\\"\\\", email: \\\"\\\", message: \\\"\\\" });\\n  const [sending, setSending] = useState(false);\\n  const [sent, setSent] = useState(false);\\n  const [formError, setFormError] = useState(\\\"\\\");\\n  const [mobileNav, setMobileNav] = useState(false);\\n  const [scrolled, setScrolled] = useState(false);\\n  const [navLinks, setNavLinks] = useState<any[]>([]);\\n  const [navAuth, setNavAuth] = useState(false);\\n  const [pagesOpen, setPagesOpen] = useState(false);\\n  const pagesRef = useRef<HTMLDivElement>(null);\\n\\n  useEffect(() => {\\n    setMounted(true);\\n    fetch(\\\"/api/blog\\\", { headers: { Accept: \\\"application/json\\\" } })\\n      .then(r => r.json())\\n      .then(d => setPosts((d.posts || []).slice(0, 3)))\\n      .catch(() => {});\\n    fetch(\\\"/api/nav-links\\\", { headers: { Accept: \\\"application/json\\\" } })\\n      .then(r => r.json())\\n      .then(d => { setNavLinks(d.links || []); setNavAuth(d.authenticated); })\\n      .catch(() => {});\\n    const onScroll = () => setScrolled(window.scrollY > 40);\\n    window.addEventListener(\\\"scroll\\\", onScroll);\\n    const onClickOutside = (e: MouseEvent) => {\\n      if (pagesRef.current && !pagesRef.current.contains(e.target as Node)) {\\n        setPagesOpen(false);\\n      }\\n    };\\n    document.addEventListener(\\\"mousedown\\\", onClickOutside);\\n    return () => {\\n      window.removeEventListener(\\\"scroll\\\", onScroll);\\n      document.removeEventListener(\\\"mousedown\\\", onClickOutside);\\n    };\\n  }, []);\\n\\n  const handleSubmit = async (e: React.FormEvent) => {\\n    e.preventDefault();\\n    setSending(true);\\n    setFormError(\\\"\\\");\\n    try {\\n      const res = await fetch(\\\"/api/contact\\\", {\\n        method: \\\"POST\\\",\\n        headers: { \\\"Content-Type\\\": \\\"application/json\\\", Accept: \\\"application/json\\\" },\\n        body: JSON.stringify(formState),\\n      });\\n      const data = await res.json();\\n      if (!res.ok) throw new Error(data.error || \\\"Something went wrong\\\");\\n      setSent(true);\\n      setFormState({ name: \\\"\\\", email: \\\"\\\", message: \\\"\\\" });\\n    } catch (err: any) {\\n      setFormError(err.message || \\\"Something went wrong\\\");\\n    } finally {\\n      setSending(false);\\n    }\\n  };\\n\\n  const filteredProjects = activeFilter === \\\"all\\\" ? PROJECTS : PROJECTS.filter(p => p.status === activeFilter);\\n\\n  const scrollToSection = (id: string) => {\\n    const el = document.getElementById(id);\\n    if (el) {\\n      const navHeight = 80;\\n      const targetY = el.getBoundingClientRect().top + window.scrollY - navHeight;\\n      window.scrollTo({ top: targetY, behavior: \\\"smooth\\\" });\\n    } else {\\n      window.scrollTo({ top: 0, behavior: \\\"smooth\\\" });\\n    }\\n  };\\n\\n  const ICON_MAP: Record<string, any> = {\\n    \\\"pencil\\\": PenLine,\\n    \\\"palette\\\": Palette,\\n    \\\"settings\\\": Settings,\\n    \\\"layout-dashboard\\\": LayoutDashboard,\\n    \\\"sparkles\\\": Sparkles,\\n    \\\"share-2\\\": Share2,\\n    \\\"clock\\\": Clock,\\n    \\\"briefcase\\\": Briefcase,\\n  };\\n\\n  const filteredNavLinks = navLinks.filter((link: any) => link.path !== \\\"/blog\\\");\\n\\n  return (\\n    <>\\n      <style>{`\\n        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');\\n        * { box-sizing: border-box; }\\n        html { scroll-behavior: smooth; }\\n        .font-heading { font-family: 'Space Grotesk', sans-serif; }\\n        .font-body { font-family: 'Inter', sans-serif; }\\n        .font-mono { font-family: 'JetBrains Mono', monospace; }\\n        .bg-grid {\\n          background-size: 60px 60px;\\n          background-image:\\n            linear-gradient(to right, rgba(99,102,241,0.06) 1px, transparent 1px),\\n            linear-gradient(to bottom, rgba(6,182,212,0.06) 1px, transparent 1px);\\n        }\\n        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }\\n        @keyframes glow-pulse { 0%,100%{opacity:0.4} 50%{opacity:0.8} }\\n        .animate-float { animation: float 6s ease-in-out infinite; }\\n        .animate-glow { animation: glow-pulse 4s ease-in-out infinite; }\\n        .glass { background: rgba(15,17,23,0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); }\\n        .card-hover { transition: all 0.3s ease; }\\n        .card-hover:hover { border-color: rgba(6,182,212,0.4); box-shadow: 0 0 30px -10px rgba(6,182,212,0.15); transform: translateY(-2px); }\\n      `}</style>\\n\\n      <div className=\\\"min-h-screen text-white font-body relative overflow-hidden\\\" style={{ background: COLORS.bg }}>\\n        <DraggableZenny />\\n        {/* Background effects */}\\n        <div className=\\\"absolute inset-0 bg-grid pointer-events-none\\\" />\\n        <div className=\\\"absolute pointer-events-none\\\" style={{ top: -200, left: \\\"30%\\\", width: 500, height: 500, background: COLORS.cyan, borderRadius: \\\"50%\\\", opacity: 0.04, filter: \\\"blur(150px)\\\" }} />\\n        <div className=\\\"absolute pointer-events-none\\\" style={{ bottom: -200, right: \\\"10%\\\", width: 400, height: 400, background: COLORS.indigo, borderRadius: \\\"50%\\\", opacity: 0.05, filter: \\\"blur(120px)\\\" }} />\\n\\n        {/* NAV */}\\n        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? \\\"glass shadow-lg\\\" : \\\"\\\"}`}>\\n          <div className=\\\"max-w-7xl mx-auto px-6 py-4 flex items-center justify-between\\\">\\n            <a href=\\\"/\\\" className=\\\"flex items-center gap-2.5\\\">\\n              <div className=\\\"w-8 h-8 rounded-lg flex items-center justify-center\\\" style={{\\n                background: `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})`,\\n                boxShadow: `0 0 20px -5px ${COLORS.cyan}80`,\\n              }}>\\n                <span className=\\\"text-white font-bold text-sm font-heading\\\">C</span>\\n              </div>\\n              <span className=\\\"font-heading font-semibold text-lg\\\">curtastrophe</span>\\n            </a>\\n            <div className=\\\"hidden md:flex items-center gap-6\\\">\\n              {NAV_ITEMS.map(item => (\\n                item === \\\"Blog\\\" ? (\\n                  <a key={item} href=\\\"/blog\\\"\\n                    className=\\\"text-xs font-mono tracking-widest uppercase transition-colors hover:text-white\\\" style={{ color: COLORS.muted }}>\\n                    {item}\\n                  </a>\\n                ) : (\\n                  <button key={item} onClick={() => scrollToSection(item.toLowerCase())}\\n                    className=\\\"text-xs font-mono tracking-widest uppercase transition-colors hover:text-white bg-transparent border-none cursor-pointer\\\" style={{ color: COLORS.muted }}>\\n                    {item}\\n                  </button>\\n                )\\n              ))}\\n              {filteredNavLinks.length > 0 && (\\n                <div className=\\\"relative\\\" ref={pagesRef}>\\n                  <button\\n                    onClick={() => setPagesOpen(!pagesOpen)}\\n                    className=\\\"flex items-center gap-1.5 text-xs font-mono tracking-widest uppercase transition-colors hover:text-white\\\"\\n                    style={{ color: COLORS.muted }}\\n                  >\\n                    Pages <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${pagesOpen ? \\\"rotate-180\\\" : \\\"\\\"}`} />\\n                  </button>\\n                  {pagesOpen && (\\n                    <div className=\\\"absolute right-0 top-full mt-2 w-64 glass rounded-xl p-3 z-50\\\" style={{ border: `1px solid ${COLORS.border}` }}>\\n                      <div className=\\\"flex flex-col gap-1\\\">\\n                        {filteredNavLinks.map((link: any) => {\\n                          const IconComp = ICON_MAP[link.icon] || ExternalLink;\\n                          return (\\n                            <a key={link.path} href={link.path}\\n                              className=\\\"flex items-start gap-3 p-2.5 rounded-lg transition-colors hover:bg-white/5\\\">\\n                              <IconComp className=\\\"w-4 h-4 mt-0.5\\\" style={{ color: link.category === \\\"private\\\" ? COLORS.indigoLight : COLORS.cyan }} />\\n                              <div className=\\\"flex-1 min-w-0\\\">\\n                                <div className=\\\"flex items-center gap-2\\\">\\n                                  <span className=\\\"text-sm font-medium truncate\\\">{link.name}</span>\\n                                  {link.category === \\\"private\\\" && (\\n                                    <span className=\\\"px-1.5 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider\\\"\\n                                      style={{ background: `${COLORS.indigo}20`, color: COLORS.indigoLight }}>\\n                                      Private\\n                                    </span>\\n                                  )}\\n                                </div>\\n                                <p className=\\\"text-xs mt-0.5 truncate\\\" style={{ color: COLORS.dimmed }}>{link.description}</p>\\n                              </div>\\n                            </a>\\n                          );\\n                        })}\\n                      </div>\\n                    </div>\\n                  )}\\n                </div>\\n              )}\\n            </div>\\n            <button className=\\\"md:hidden\\\" onClick={() => setMobileNav(!mobileNav)}>\\n              {mobileNav ? <X className=\\\"w-5 h-5\\\" /> : <Menu className=\\\"w-5 h-5\\\" />}\\n            </button>\\n          </div>\\n          {mobileNav && (\\n            <div className=\\\"md:hidden glass border-t\\\" style={{ borderColor: COLORS.border }}>\\n              <div className=\\\"px-6 py-4 flex flex-col gap-3\\\">\\n                {NAV_ITEMS.map(item => (\\n                  item === \\\"Blog\\\" ? (\\n                    <a key={item} href=\\\"/blog\\\"\\n                      onClick={() => setMobileNav(false)}\\n                      className=\\\"text-sm font-mono tracking-wider uppercase py-2\\\" style={{ color: COLORS.muted }}>\\n                      {item}\\n                    </a>\\n                  ) : (\\n                    <button key={item} onClick={() => { scrollToSection(item.toLowerCase()); setMobileNav(false); }}\\n                      className=\\\"text-sm font-mono tracking-wider uppercase py-2 text-left bg-transparent border-none cursor-pointer\\\" style={{ color: COLORS.muted }}>\\n                      {item}\\n                    </button>\\n                  )\\n                ))}\\n                {filteredNavLinks.length > 0 && (\\n                  <>\\n                    <div className=\\\"h-px my-1\\\" style={{ background: COLORS.border }} />\\n                    <span className=\\\"text-xs font-mono tracking-widest uppercase pt-1\\\" style={{ color: COLORS.dimmed }}>\\n                      Pages {navAuth && <Lock className=\\\"w-3 h-3 inline ml-1\\\" style={{ color: COLORS.cyan }} />}\\n                    </span>\\n                    {filteredNavLinks.map((link: any) => {\\n                      const IconComp = ICON_MAP[link.icon] || ExternalLink;\\n                      return (\\n                        <a key={link.path} href={link.path}\\n                          onClick={() => setMobileNav(false)}\\n                          className=\\\"flex items-center gap-3 py-2\\\">\\n                          <IconComp className=\\\"w-4 h-4\\\" style={{ color: link.category === \\\"private\\\" ? COLORS.indigoLight : COLORS.cyan }} />\\n                          <span className=\\\"text-sm\\\" style={{ color: COLORS.muted }}>{link.name}</span>\\n                          {link.category === \\\"private\\\" && (\\n                            <span className=\\\"px-1.5 py-0.5 rounded text-[10px] font-mono uppercase\\\" style={{ background: `${COLORS.indigo}20`, color: COLORS.indigoLight }}>\\n                              Private\\n                            </span>\\n                          )}\\n                        </a>\\n                      );\\n                    })}\\n                  </>\\n                )}\\n              </div>\\n            </div>\\n          )}\\n        </nav>\\n\\n        {/* HERO */}\\n        <section className=\\\"relative z-10 max-w-7xl mx-auto px-6 pt-28 pb-20 md:pt-36 md:pb-28\\\">\\n          <div className=\\\"grid md:grid-cols-2 gap-12 items-center\\\">\\n            <div>\\n              <div className=\\\"inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6\\\" style={{ background: \\\"rgba(255,255,255,0.05)\\\", border: `1px solid ${COLORS.border}` }}>\\n                <span className=\\\"w-2 h-2 rounded-full animate-pulse\\\" style={{ background: COLORS.cyan }} />\\n                <span className=\\\"text-xs font-mono tracking-wider uppercase\\\" style={{ color: COLORS.muted }}>Building things on Zo Space</span>\\n              </div>\\n\\n              <h1 className=\\\"font-heading text-4xl sm:text-5xl md:text-6xl font-bold leading-tight mb-4\\\">\\n                Zenlyte\\n              </h1>\\n              <p className=\\\"font-mono text-sm mb-6\\\" style={{ color: COLORS.cyan }}>@curtastrophe</p>\\n              <p className=\\\"text-lg md:text-xl leading-relaxed mb-8 max-w-lg\\\" style={{ color: COLORS.muted }}>\\n                Data & Analytics professional and AI builder. Turning raw data into decisions, and exploring the frontier of AI on Zo Computer.\\n              </p>\\n\\n              <div className=\\\"flex flex-wrap gap-4\\\">\\n                <button onClick={() => scrollToSection(\\\"projects\\\")} className=\\\"inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-semibold text-sm tracking-wider uppercase transition-all duration-300 hover:scale-105\\\" style={{\\n                  background: `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})`,\\n                  boxShadow: `0 0 25px -5px ${COLORS.cyan}60`,\\n                  border: \\\"none\\\", cursor: \\\"pointer\\\",\\n                }}>\\n                  View Projects <ArrowRight className=\\\"w-4 h-4\\\" />\\n                </button>\\n                <a href=\\\"/blog\\\" className=\\\"inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm tracking-wider uppercase transition-all duration-300 hover:bg-white/10\\\" style={{\\n                  border: \\\"2px solid rgba(255,255,255,0.2)\\\",\\n                }}>\\n                  Read Blog\\n                </a>\\n              </div>\\n            </div>\\n\\n            <div className=\\\"flex items-center justify-center\\\">\\n              <div className=\\\"animate-float relative\\\">\\n                <HexAvatar size={180} />\\n                <div className=\\\"absolute -top-2 -right-8 px-3 py-1.5 rounded-lg glass text-xs font-mono animate-bounce\\\" style={{ animationDuration: \\\"3s\\\", color: COLORS.cyanLight }}>\\n                  Data & AI\\n                </div>\\n                <div className=\\\"absolute -bottom-2 -left-8 px-3 py-1.5 rounded-lg glass text-xs font-mono animate-bounce\\\" style={{ animationDuration: \\\"4s\\\", animationDelay: \\\"1s\\\", color: COLORS.indigoLight }}>\\n                  Builder\\n                </div>\\n              </div>\\n            </div>\\n          </div>\\n        </section>\\n\\n        {/* ABOUT */}\\n        <section id=\\\"about\\\" className=\\\"relative z-10 max-w-7xl mx-auto px-6 py-24\\\">\\n          <SectionHeader label=\\\"About\\\" title=\\\"Who I\\\" highlight=\\\"am\\\" />\\n          <div className=\\\"grid md:grid-cols-5 gap-8\\\">\\n            <div className=\\\"md:col-span-2\\\">\\n              <p className=\\\"text-lg leading-relaxed mb-4\\\" style={{ color: COLORS.muted }}>\\n                Data & Analytics professional by day, AI tinkerer by night. Building tools, agents, and dashboards on Zo Computer while exploring what's possible at the intersection of data and artificial intelligence.\\n              </p>\\n              <p className=\\\"text-sm leading-relaxed\\\" style={{ color: COLORS.muted }}>\\n                Somewhere between a beginner software dev and a power user who ships. Interested in the intersection of data, AI, and productivity systems.\\n              </p>\\n            </div>\\n            <div className=\\\"md:col-span-3 grid sm:grid-cols-2 gap-4\\\">\\n              {[\\n                { icon: Database, title: \\\"Data & Analytics\\\", desc: \\\"Turning raw data into decisions and insights that drive impact.\\\" },\\n                { icon: Bot, title: \\\"AI & Automation\\\", desc: \\\"Agents, LLMs, memory systems, and intelligent workflows.\\\" },\\n                { icon: Users, title: \\\"Community\\\", desc: \\\"Leading EDBA and contributing to the Zo Computer community.\\\" },\\n                { icon: Wrench, title: \\\"Building\\\", desc: \\\"Shipping skills, tools, dashboards, and open-source projects.\\\" },\\n              ].map(card => (\\n                <div key={card.title} className=\\\"p-6 rounded-xl card-hover\\\" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>\\n                  <div className=\\\"w-10 h-10 rounded-lg flex items-center justify-center mb-4\\\" style={{ background: `${COLORS.cyan}15`, border: `1px solid ${COLORS.cyan}30` }}>\\n                    <card.icon className=\\\"w-5 h-5\\\" style={{ color: COLORS.cyan }} />\\n                  </div>\\n                  <h3 className=\\\"font-heading font-semibold text-lg mb-2\\\">{card.title}</h3>\\n                  <p className=\\\"text-sm leading-relaxed\\\" style={{ color: COLORS.muted }}>{card.desc}</p>\\n                </div>\\n              ))}\\n            </div>\\n          </div>\\n        </section>\\n\\n        {/* PROJECTS */}\\n        <section id=\\\"projects\\\" className=\\\"relative z-10 py-24\\\" style={{ background: COLORS.card }}>\\n          <div className=\\\"max-w-7xl mx-auto px-6\\\">\\n            <SectionHeader label=\\\"Projects\\\" title=\\\"What I'm\\\" highlight=\\\"building\\\" />\\n            <div className=\\\"flex flex-wrap justify-center gap-3 mb-12\\\">\\n              {[\\n                { key: \\\"all\\\", label: \\\"All\\\" },\\n                { key: \\\"completed\\\", label: \\\"Completed\\\" },\\n                { key: \\\"in-progress\\\", label: \\\"In Progress\\\" },\\n                { key: \\\"planned\\\", label: \\\"Planned\\\" },\\n              ].map(f => (\\n                <button key={f.key} onClick={() => setActiveFilter(f.key)}\\n                  className=\\\"px-4 py-2 rounded-full text-xs font-mono tracking-wider uppercase transition-all duration-200\\\"\\n                  style={{\\n                    background: activeFilter === f.key ? `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})` : \\\"rgba(255,255,255,0.05)\\\",\\n                    color: activeFilter === f.key ? \\\"white\\\" : COLORS.muted,\\n                    border: `1px solid ${activeFilter === f.key ? \\\"transparent\\\" : COLORS.border}`,\\n                  }}>\\n                  {f.label}\\n                </button>\\n              ))}\\n            </div>\\n            <div className=\\\"grid md:grid-cols-2 lg:grid-cols-3 gap-6\\\">\\n              {filteredProjects.map(p => (\\n                <div key={p.name} className=\\\"p-6 rounded-xl card-hover flex flex-col\\\" style={{ background: COLORS.bg, border: `1px solid ${COLORS.border}` }}>\\n                  <div className=\\\"flex items-start justify-between mb-4\\\">\\n                    <StatusBadge status={p.status} />\\n                    {p.link && (\\n                      <a href={p.link} className=\\\"transition-colors hover:opacity-80\\\" style={{ color: COLORS.cyan }}>\\n                        <ExternalLink className=\\\"w-4 h-4\\\" />\\n                      </a>\\n                    )}\\n                  </div>\\n                  <h3 className=\\\"font-heading font-semibold text-lg mb-2\\\">{p.name}</h3>\\n                  <p className=\\\"text-sm leading-relaxed mb-4 flex-grow\\\" style={{ color: COLORS.muted }}>{p.desc}</p>\\n                  <div className=\\\"flex flex-wrap gap-1.5\\\">\\n                    {p.tags.map(t => (\\n                      <span key={t} className=\\\"px-2 py-0.5 rounded text-xs font-mono\\\" style={{ background: `${COLORS.indigo}15`, color: COLORS.indigoLight }}>\\n                        {t}\\n                      </span>\\n                    ))}\\n                  </div>\\n                </div>\\n              ))}\\n            </div>\\n          </div>\\n        </section>\\n\\n        {/* BLOG PREVIEW */}\\n        <section id=\\\"blog\\\" className=\\\"relative z-10 max-w-7xl mx-auto px-6 py-24\\\">\\n          <SectionHeader label=\\\"Blog\\\" title=\\\"Latest\\\" highlight=\\\"posts\\\" />\\n          {posts.length > 0 ? (\\n            <div className=\\\"grid md:grid-cols-3 gap-6 mb-10\\\">\\n              {posts.map(post => {\\n                const d = new Date(post.date + \\\"T00:00:00\\\").toLocaleDateString(\\\"en-CA\\\", { month: \\\"short\\\", day: \\\"numeric\\\", year: \\\"numeric\\\" });\\n                return (\\n                  <a key={post.slug} href={`/blog/${post.slug}`} className=\\\"block p-6 rounded-xl card-hover\\\" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>\\n                    <div className=\\\"h-1 w-12 rounded-full mb-5\\\" style={{ background: `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})` }} />\\n                    <div className=\\\"flex flex-wrap gap-1.5 mb-3\\\">\\n                      {post.tags.slice(0, 2).map(t => (\\n                        <span key={t} className=\\\"flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-mono\\\" style={{ background: `${COLORS.cyan}15`, color: COLORS.cyan, border: `1px solid ${COLORS.cyan}25` }}>\\n                          <Tag className=\\\"w-2.5 h-2.5\\\" />{t}\\n                        </span>\\n                      ))}\\n                    </div>\\n                    <h3 className=\\\"font-heading font-semibold text-lg mb-2 leading-tight\\\">{post.title}</h3>\\n                    <p className=\\\"text-sm leading-relaxed mb-4 line-clamp-2\\\" style={{ color: COLORS.muted }}>{post.excerpt}</p>\\n                    <div className=\\\"flex items-center gap-3 text-xs font-mono\\\" style={{ color: COLORS.dimmed }}>\\n                      <span>{d}</span>\\n                      <span className=\\\"flex items-center gap-1\\\"><Clock className=\\\"w-3 h-3\\\" />{post.readTime}</span>\\n                    </div>\\n                  </a>\\n                );\\n              })}\\n            </div>\\n          ) : (\\n            <div className=\\\"text-center py-12\\\">\\n              <p className=\\\"font-mono text-sm\\\" style={{ color: COLORS.dimmed }}>No posts yet. Check back soon.</p>\\n            </div>\\n          )}\\n          <div className=\\\"text-center\\\">\\n            <a href=\\\"/blog\\\" className=\\\"inline-flex items-center gap-2 text-sm font-mono tracking-wider uppercase transition-colors\\\" style={{ color: COLORS.cyan }}>\\n              View all posts <ArrowRight className=\\\"w-4 h-4\\\" />\\n            </a>\\n          </div>\\n        </section>\\n\\n        {/* SOCIAL */}\\n        <section id=\\\"social\\\" className=\\\"relative z-10 py-24\\\" style={{ background: COLORS.card }}>\\n          <div className=\\\"max-w-7xl mx-auto px-6\\\">\\n            <SectionHeader label=\\\"Social\\\" title=\\\"Find me\\\" highlight=\\\"online\\\" />\\n            <div className=\\\"grid sm:grid-cols-2 md:grid-cols-4 gap-6\\\">\\n              {SOCIAL_LINKS.map(s => (\\n                <a key={s.name} href={s.url} target=\\\"_blank\\\" rel=\\\"noopener noreferrer\\\"\\n                  className=\\\"group p-6 rounded-xl card-hover text-center\\\" style={{ background: COLORS.bg, border: `1px solid ${COLORS.border}` }}>\\n                  <div className=\\\"w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center transition-all duration-300 group-hover:scale-110\\\" style={{ background: `${s.color}15`, border: `1px solid ${s.color}30` }}>\\n                    <s.icon className=\\\"w-5 h-5\\\" style={{ color: s.color }} />\\n                  </div>\\n                  <h3 className=\\\"font-heading font-semibold text-sm mb-1\\\">{s.name}</h3>\\n                  <p className=\\\"text-xs font-mono\\\" style={{ color: COLORS.dimmed }}>\\n                    {s.url.replace(\\\"https://\\\", \\\"\\\").split(\\\"/\\\").slice(0, 2).join(\\\"/\\\")}\\n                  </p>\\n                </a>\\n              ))}\\n            </div>\\n          </div>\\n        </section>\\n\\n        {/* INTERACTIVE */}\\n        <section className=\\\"relative z-10 max-w-7xl mx-auto px-6 py-24\\\">\\n          <SectionHeader label=\\\"Play\\\" title=\\\"Interactive\\\" highlight=\\\"zone\\\" />\\n          <div className=\\\"grid md:grid-cols-2 gap-6\\\">\\n            <a href=\\\"/trivia\\\" className=\\\"block p-8 rounded-xl card-hover relative overflow-hidden group\\\" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>\\n              <div className=\\\"absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity\\\">\\n                <ArrowRight className=\\\"w-5 h-5\\\" style={{ color: COLORS.cyanLight }} />\\n              </div>\\n              <Sparkles className=\\\"w-10 h-10 mb-4\\\" style={{ color: COLORS.cyan }} />\\n              <h3 className=\\\"font-heading font-semibold text-xl mb-2 group-hover:text-cyan-400 transition-colors\\\">Zo Trivia</h3>\\n              <p className=\\\"text-sm leading-relaxed\\\" style={{ color: COLORS.muted }}>\\n                Daily trivia questions about Zo Computer features, tips, and hidden gems. Test your knowledge and learn something new.\\n              </p>\\n            </a>\\n            <a href=\\\"/icon-configurator\\\" className=\\\"block p-8 rounded-xl card-hover relative overflow-hidden group\\\" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>\\n              <div className=\\\"absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity\\\">\\n                <ArrowRight className=\\\"w-5 h-5\\\" style={{ color: COLORS.indigoLight }} />\\n              </div>\\n              <Gamepad2 className=\\\"w-10 h-10 mb-4\\\" style={{ color: COLORS.indigo }} />\\n              <h3 className=\\\"font-heading font-semibold text-xl mb-2 group-hover:text-indigo-400 transition-colors\\\">Zo Icon Configurator</h3>\\n              <p className=\\\"text-sm leading-relaxed\\\" style={{ color: COLORS.muted }}>\\n                Choose a black or white Zo Computer logo, describe your modifications, and generate a custom version to download.\\n              </p>\\n            </a>\\n          </div>\\n        </section>\\n\\n        {/* CONTACT */}\\n        <section id=\\\"contact\\\" className=\\\"relative z-10 py-24\\\" style={{ background: COLORS.card }}>\\n          <div className=\\\"max-w-7xl mx-auto px-6\\\">\\n            <SectionHeader label=\\\"Contact\\\" title=\\\"Get in\\\" highlight=\\\"touch\\\" />\\n            <div className=\\\"max-w-xl mx-auto\\\">\\n              {sent ? (\\n                <div className=\\\"text-center p-12 rounded-xl\\\" style={{ background: COLORS.bg, border: `1px solid ${COLORS.cyan}40` }}>\\n                  <CheckCircle className=\\\"w-12 h-12 mx-auto mb-4\\\" style={{ color: COLORS.cyan }} />\\n                  <h3 className=\\\"font-heading text-xl font-semibold mb-2\\\">Message sent!</h3>\\n                  <p className=\\\"text-sm mb-6\\\" style={{ color: COLORS.muted }}>Thanks for reaching out. I'll get back to you soon.</p>\\n                  <button onClick={() => setSent(false)} className=\\\"text-sm font-mono tracking-wider uppercase transition-colors\\\" style={{ color: COLORS.cyan }}>\\n                    Send another\\n                  </button>\\n                </div>\\n              ) : (\\n                <form onSubmit={handleSubmit} className=\\\"space-y-5\\\">\\n                  {[\\n                    { name: \\\"name\\\", label: \\\"Name\\\", type: \\\"text\\\", placeholder: \\\"Your name\\\" },\\n                    { name: \\\"email\\\", label: \\\"Email\\\", type: \\\"email\\\", placeholder: \\\"you@example.com\\\" },\\n                  ].map(field => (\\n                    <div key={field.name}>\\n                      <label className=\\\"block text-xs font-mono tracking-wider uppercase mb-2\\\" style={{ color: COLORS.muted }}>{field.label}</label>\\n                      <input type={field.type} required\\n                        value={(formState as any)[field.name]}\\n                        onChange={e => setFormState(s => ({ ...s, [field.name]: e.target.value }))}\\n                        className=\\\"w-full px-4 py-3 rounded-xl font-body transition-all outline-none\\\"\\n                        style={{ background: COLORS.bg, border: `1px solid ${COLORS.border}`, color: \\\"white\\\" }}\\n                        onFocus={e => e.target.style.borderColor = `${COLORS.cyan}50`}\\n                        onBlur={e => e.target.style.borderColor = COLORS.border}\\n                        placeholder={field.placeholder} />\\n                    </div>\\n                  ))}\\n                  <div>\\n                    <label className=\\\"block text-xs font-mono tracking-wider uppercase mb-2\\\" style={{ color: COLORS.muted }}>Message</label>\\n                    <textarea required rows={5} maxLength={2000}\\n                      value={formState.message}\\n                      onChange={e => setFormState(s => ({ ...s, message: e.target.value }))}\\n                      className=\\\"w-full px-4 py-3 rounded-xl font-body transition-all outline-none resize-none\\\"\\n                      style={{ background: COLORS.bg, border: `1px solid ${COLORS.border}`, color: \\\"white\\\" }}\\n                      onFocus={e => (e.target as HTMLTextAreaElement).style.borderColor = `${COLORS.cyan}50`}\\n                      onBlur={e => (e.target as HTMLTextAreaElement).style.borderColor = COLORS.border}\\n                      placeholder=\\\"What's on your mind?\\\" />\\n                  </div>\\n                  {formError && <p className=\\\"text-red-400 text-sm font-mono\\\">{formError}</p>}\\n                  <button type=\\\"submit\\\" disabled={sending}\\n                    className=\\\"w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-white font-semibold text-sm tracking-wider uppercase transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed\\\"\\n                    style={{\\n                      background: `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})`,\\n                      boxShadow: `0 0 25px -5px ${COLORS.cyan}50`,\\n                    }}>\\n                    {sending ? \\\"Sending...\\\" : <><span>Send message</span><Send className=\\\"w-4 h-4\\\" /></>}\\n                  </button>\\n                </form>\\n              )}\\n            </div>\\n          </div>\\n        </section>\\n\\n        {/* FOOTER */}\\n        <footer className=\\\"relative z-10 py-8\\\" style={{ borderTop: `1px solid ${COLORS.border}` }}>\\n          <div className=\\\"max-w-7xl mx-auto px-6 flex flex-wrap items-center justify-between gap-4\\\">\\n            <p className=\\\"text-xs font-mono tracking-wider\\\" style={{ color: COLORS.dimmed }}>&copy; 2026 Zenlyte</p>\\n            <div className=\\\"flex items-center gap-4\\\">\\n              {SOCIAL_LINKS.map(s => (\\n                <a key={s.name} href={s.url} target=\\\"_blank\\\" rel=\\\"noopener\\\" className=\\\"transition-colors hover:opacity-80\\\" style={{ color: COLORS.dimmed }}>\\n                  <s.icon className=\\\"w-4 h-4\\\" />\\n                </a>\\n              ))}\\n            </div>\\n            <p className=\\\"text-xs\\\" style={{ color: COLORS.dimmed }}>\\n              Built on{\\\" \\\"}\\n              <a href=\\\"https://zo.computer\\\" target=\\\"_blank\\\" rel=\\\"noopener\\\" className=\\\"transition-colors hover:text-white\\\" style={{ color: COLORS.cyan }}>\\n                Zo Computer\\n              </a>\\n            </p>\\n          </div>\\n        </footer>\\n      </div>\\n    </>\\n  );\\n}\",\"public\":true}\n",
-    "public": true
-  },
-  {
-    "path": "/404",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/Zo-Ops",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/about-the-build",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/api/agents",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/audit",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/auth-status",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/benchmarks",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/benchmarks/refresh",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/billing",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/blog",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/blog/:slug",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/buildin/callback",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/buildin/disconnect",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/buildin/status",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/calendar",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/career-ops",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/career-ops/applications",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/career-ops/batch",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/career-ops/pipeline",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/career-ops/scan",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/career-ops/scan-history",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/contact",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/credits",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/datasets/list",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/datasets/proxy/*",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/datasets/start",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/datasets/viewer",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/diagnose",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/extension-save",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/failures",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/family-log",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/files",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/flowpulse",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/generate-icon",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/health-check",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/logs",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/models",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/my-models",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/nav-links",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/projects",
-    "route_type": "api",
-    "code": "[{\"name\":\"Zo Project Ops\",\"desc\":\"Lightweight project planning and tracking interface for Zo Computer projects and related conversation threads.\",\"status\":\"in-progress\",\"tags\":[\"Productivity\",\"Workspace\",\"Planning\"],\"link\":\"/Zo-Ops\",\"order\":0,\"priority\":\"high\"},{\"name\":\"Zo Trivia\",\"desc\":\"Daily interactive trivia game featuring Zo Computer tips, tricks, and hidden gems with global leaderboards.\",\"status\":\"completed\",\"tags\":[\"Game\",\"React\",\"SQLite\"],\"link\":\"/trivia\",\"order\":1,\"priority\":\"high\"},{",
-    "public": true
-  },
-  {
-    "path": "/api/projects-conversations",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/puzzle-callback",
-    "route_type": "page",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/receipt-images",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/receipts",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/security",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/services",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/share",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/share/:id",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/share/:id/download",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/sites",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/skills-gallery",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/speech-game-auth",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/speech-game-data",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/stripe-webhook",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/system-stats",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/telemetry-data",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/temporal-auth-check",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/temporal/*",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/test-deps",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/test-env",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/test-exec",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/test-write",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/trivia",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/trivia/by-date",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/trivia/dates",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/trivia/leaderboard",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/trivia/random",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/trivia/subscribe",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/trivia/unsubscribe",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/trivia/user-stats",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/twinmind",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/twinmind-callback",
-    "route_type": "api",
-    "code": "<html><body><h1>Error</h1><p>No authorization code received</p></body></html>",
-    "public": true
-  },
-  {
-    "path": "/api/updates",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/voi-zos",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/x-feed",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/zo-city-data",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/zo-space-theme-gallery",
-    "route_type": "api",
-    "code": "[{\"id\":\"academia\",\"name\":\"Academia\",\"mode\":\"light\",\"accent\":\"#7C2D12\",\"fontType\":\"serif\",\"description\":\"Classical scholarly aesthetic with gravitas. Deep browns, parchment tones, ornate serif typography, and structured layouts evoking university libraries and academic journals.\",\"tags\":[\"classical\",\"scholarly\",\"serif\",\"ornate\",\"warm\",\"traditional\",\"literary\",\"vintage\"],\"keywords\":[\"academic design\",\"university style\",\"classical typography\",\"scholarly journal\",\"library aesthetic\"]},{\"id\":\"art-dec",
-    "public": true
-  },
-  {
-    "path": "/api/zo-space-theme-gallery/:id",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/zo-space-theme-gallery/skill",
-    "route_type": "api",
-    "code": "---\nname: zo-space-themer\ndescription: \"Apply pre-designed themes from the Zo Space Theme Gallery to your pages. Supports direct theme selection by name, or describe what you want and Zo will find the best match. Use when the user says 'apply a theme', 'change the look of my page', 'make my site look like X', 'theme my page', or 'browse themes'.\"\ncategory: \"Media & Graphics\"\ncompatibility: Created for Zo Computer\nmetadata:\n  author: curtastrophe.zo.computer\n  emoji: \ud83c\udfa8\n  emojis: [\"\ud83c\udfa8\",\"\ud83d\udd8c\ufe0f\",\"\u2728\"]\n  ",
-    "public": true
-  },
-  {
-    "path": "/api/zoboard/*",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/zos/build-log",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/zos/now",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/api/zos/signals",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/blog",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/blog/:slug",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/buildin-auth",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/career-ops",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/dashboard",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/data-explorer",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/data/zo-trivia/",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/data/zo-trivia/api/query",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/docs",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/icon-configurator",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/job-ops",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/kg-browse",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/kg-by-type",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/kg-entity",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/kg-graph",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/kg-recall",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/kg-search",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/kg-stats",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/knowledge-graph",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/model-advisor",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/openclaw-dashboard",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/press",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/profile",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/receipts",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/repurpose",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/s/:id",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/secret",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/share",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/skills-gallery",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/speech-game",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/speech-game-manifest.json",
-    "route_type": "api",
-    "code": "",
-    "public": true
-  },
-  {
-    "path": "/speech-game-sw.js",
-    "route_type": "api",
-    "code": "const CACHE_NAME = \"sblend-v1\";\nconst PRECACHE = [\n  \"/speech-game\",\n  \"/speech-game/stickers\",\n  \"/icons/speech-game-192.png\",\n  \"/icons/speech-game-512.png\",\n];\n\nself.addEventListener(\"install\", (e) => {\n  e.waitUntil(\n    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE)).then(() => self.skipWaiting())\n  );\n});\n\nself.addEventListener(\"activate\", (e) => {\n  e.waitUntil(\n    caches.keys().then((keys) =>\n      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete",
-    "public": true
-  },
-  {
-    "path": "/speech-game/stats",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/speech-game/stickers",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/telemetry",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/temporal",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/trivia",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/trivia/archive",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/trivia/leaderboard",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/zo-city",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/zo-city-three-test",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/zo-control-deck",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/zo-space-theme-gallery",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/zo-space-theme-gallery/:id",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/zo-status",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/zoboard",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/zoboard/:slug",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/zos",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  },
-  {
-    "path": "/zos-lite",
-    "route_type": "page",
-    "code": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" data-zo-default-seo=\"true\" content=\"ZOS (ZenOS) \u2014 a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs.\" />\n    <meta name=\"author\" content=\"Zo\" />\n    <meta name=\"theme-color\" content=\"#09090b\" />\n    <meta property=\"og:type\" c",
-    "public": true
-  }
-]
+# zo-space-backup
+
+## Routes
+
+### `/` (page, public)
+
+```tsx
+import { useState, useEffect, useRef } from "react";
+import {
+  ArrowRight, Github, Twitter, Linkedin, MessageSquare, Send, CheckCircle,
+  Database, Bot, Users, Wrench, ExternalLink, Gamepad2, Sparkles, LayoutDashboard,
+  ChevronRight, ArrowUpRight, Palette, Layers, Cpu, Code2, Rocket, Globe, Zap,
+  Search, Clock, BookOpen, Terminal, FolderKanban, Menu, X, Shield, Lock,
+  Zap as ZapIcon, Brain, Briefcase, FileText, Activity
+} from "lucide-react";
+
+const COLORS = {
+  bg: "#0a0a0f",
+  card: "#0f1117",
+  cardHover: "#161922",
+  cyan: "#06b6d4",
+  indigo: "#6366f1",
+  slate: "#94a3b8",
+  white: "#f8fafc",
+  dimmed: "#4b5563",
+  border: "rgba(255,255,255,0.06)",
+  accent: "#d8a657"
+};
+
+export default function Home() {
+  const [navOpen, setNavOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const PROJECTS = [
+    {
+      id: "zos",
+      name: "ZOS (ZenOS)",
+      desc: "A personal site reimagined as a living operating system. Features a window manager, command palette, and real app integrations.",
+      tags: ["Zo Computer", "React", "System Design"],
+      icon: <Cpu className="w-5 h-5" />,
+      link: "/zos",
+      status: "active"
+    },
+    {
+      id: "trivia",
+      name: "Zo Trivia",
+      desc: "Daily trivia engine powered by Bun/SQLite. Track stats, climb the leaderboard, and learn about the Zo ecosystem.",
+      tags: ["SQLite", "Game Design", "Automation"],
+      icon: <Brain className="w-5 h-5" />,
+      link: "/trivia",
+      status: "active"
+    },
+    {
+      id: "speech",
+      name: "Speech Game",
+      desc: "Voice-controlled speech therapy game for kids. Track progress, collect stickers, and play offline (PWA).",
+      tags: ["Web Speech API", "PWA", "Education"],
+      icon: <Gamepad2 className="w-5 h-5" />,
+      link: "/speech-game",
+      status: "active"
+    },
+    {
+      id: "career",
+      name: "Career Ops",
+      desc: "AI-powered job application pipeline. Scan postings, track status, and optimize resumes with agentic help.",
+      tags: ["AI Agents", "Career", "Workflow"],
+      icon: <Briefcase className="w-5 h-5" />,
+      link: "/career-ops",
+      status: "active"
+    },
+    {
+      id: "kg",
+      name: "Knowledge Graph",
+      desc: "Visual exploration of personal memory and entity relationships. Map projects, decisions, and patterns.",
+      tags: ["Data Viz", "Graph", "Memory"],
+      icon: <Layers className="w-5 h-5" />,
+      link: "/knowledge-graph",
+      status: "active"
+    },
+    {
+      id: "themes",
+      name: "Theme Gallery",
+      desc: "A community collection of Zo Space visual themes. Browse, preview, and apply styles instantly.",
+      tags: ["Design", "CSS", "Community"],
+      icon: <Palette className="w-5 h-5" />,
+      link: "/zo-space-theme-gallery",
+      status: "active"
+    }
+  ];
+
+  return (
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        :root {
+          --space-primary: ${COLORS.cyan};
+          --space-primary-muted: rgba(6, 182, 212, 0.2);
+        }
+
+        body {
+          background: ${COLORS.bg};
+          color: ${COLORS.white};
+          font-family: 'Inter', sans-serif;
+        }
+
+        .font-heading { font-family: 'Space Grotesk', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        .hero-gradient {
+          background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.1), transparent 40%),
+                      radial-gradient(circle at bottom left, rgba(6, 182, 212, 0.1), transparent 40%);
+        }
+
+        .glass-card {
+          background: ${COLORS.card};
+          border: 1px solid ${COLORS.border};
+          backdrop-filter: blur(12px);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+          border-color: rgba(6, 182, 212, 0.3);
+          background: ${COLORS.cardHover};
+          transform: translateY(-4px);
+          box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-link {
+          color: ${COLORS.slate};
+          transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+          color: ${COLORS.cyan};
+        }
+
+        .btn-primary {
+          background: ${COLORS.cyan};
+          color: #000;
+          font-weight: 600;
+          transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+        }
+
+        .animate-in {
+          animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+
+      <div className="min-h-screen hero-gradient flex flex-col">
+        {/* Navigation */}
+        <nav className="sticky top-0 z-50 border-b border-white/5 bg-[#0a0a0f]/80 backdrop-blur-md">
+          <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center border border-cyan-500/40">
+                <Zap className="w-5 h-5 text-cyan-400" />
+              </div>
+              <span className="font-heading font-bold text-xl tracking-tight">
+                zenlyte<span className="text-cyan-400">.</span>
+              </span>
+            </div>
+
+            {/* Desktop Nav */}
+            <div className="hidden md:flex items-center gap-8">
+              <a href="/zos" className="nav-link text-sm font-medium">ZOS</a>
+              <a href="/projects" className="nav-link text-sm font-medium">Projects</a>
+              <a href="/blog" className="nav-link text-sm font-medium">Blog</a>
+              <a href="/profile" className="nav-link text-sm font-medium">Profile</a>
+              <a 
+                href="/career-ops" 
+                className="btn-primary px-4 py-2 rounded-lg text-sm"
+              >
+                Launch App
+              </a>
+            </div>
+
+            {/* Mobile Nav Toggle */}
+            <button 
+              className="md:hidden p-2 text-slate-400"
+              onClick={() => setNavOpen(!navOpen)}
+            >
+              {navOpen ? <X /> : <Menu />}
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          {navOpen && (
+            <div className="md:hidden border-t border-white/5 bg-[#0a0a0f] p-6 flex flex-col gap-4 animate-in">
+              <a href="/zos" className="text-lg font-medium">ZOS</a>
+              <a href="/projects" className="text-lg font-medium">Projects</a>
+              <a href="/blog" className="text-lg font-medium">Blog</a>
+              <a href="/profile" className="text-lg font-medium">Profile</a>
+              <div className="pt-4">
+                <a href="/career-ops" className="btn-primary block text-center py-3 rounded-xl">
+                  Launch Career Ops
+                </a>
+              </div>
+            </div>
+          )}
+        </nav>
+
+        <main className="flex-1 max-w-7xl mx-auto px-6 py-12 md:py-24">
+          {/* Hero Section */}
+          <header className="max-w-3xl animate-in">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold mb-6">
+              <Sparkles className="w-3 h-3" />
+              <span>Operating on Zo Computer</span>
+            </div>
+            <h1 className="font-heading text-5xl md:text-7xl font-bold leading-tight mb-6">
+              Building the next generation of <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-500">Personal OS</span>
+            </h1>
+            <p className="text-lg md:text-xl text-slate-400 mb-10 leading-relaxed">
+              I explore the frontier of AI agents, automation, and distributed systems 
+              to build software that acts as leverage for the mind.
+            </p>
+            <div className="flex wrap gap-4">
+              <a 
+                href="/zos" 
+                className="btn-primary px-8 py-4 rounded-xl flex items-center gap-2 group"
+              >
+                Boot ZenOS
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </a>
+              <a 
+                href="/profile" 
+                className="px-8 py-4 rounded-xl glass-card font-semibold flex items-center gap-2"
+              >
+                View Profile
+              </a>
+            </div>
+          </header>
+
+          {/* Projects Grid */}
+          <section className="mt-32">
+            <div className="flex items-end justify-between mb-12">
+              <div>
+                <h2 className="font-heading text-3xl font-bold mb-4">Featured Systems</h2>
+                <p className="text-slate-400">A collection of projects built and hosted on Zo.</p>
+              </div>
+              <a href="/projects" className="hidden md:flex items-center gap-1 text-cyan-400 font-medium hover:underline">
+                View all <ChevronRight className="w-4 h-4" />
+              </a>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {PROJECTS.map((project, i) => (
+                <a 
+                  key={project.id} 
+                  href={project.link}
+                  className="glass-card p-6 rounded-2xl flex flex-col animate-in"
+                  style={{ animationDelay: `${i * 0.1}s` }}
+                >
+                  <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-500/20 text-cyan-400 mb-6">
+                    {project.icon}
+                  </div>
+                  <h3 className="font-heading text-xl font-bold mb-3">{project.name}</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed mb-6 flex-1">
+                    {project.desc}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {project.tags.map(tag => (
+                      <span key={tag} className="text-[10px] font-mono px-2 py-1 rounded bg-white/5 text-slate-500 border border-white/5 uppercase">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </a>
+              ))}
+            </div>
+            <div className="mt-8 md:hidden">
+               <a href="/projects" className="flex items-center justify-center gap-1 py-4 glass-card rounded-xl text-cyan-400 font-medium">
+                View all projects <ChevronRight className="w-4 h-4" />
+              </a>
+            </div>
+          </section>
+
+          {/* Stats Bar */}
+          <section className="mt-32 grid grid-cols-2 md:grid-cols-4 gap-4 animate-in" style={{ animationDelay: '0.4s' }}>
+            <div className="glass-card p-6 rounded-2xl text-center">
+              <div className="text-3xl font-bold font-heading text-cyan-400 mb-1">127+</div>
+              <div className="text-xs font-mono text-slate-500 uppercase tracking-wider">Active Routes</div>
+            </div>
+            <div className="glass-card p-6 rounded-2xl text-center">
+              <div className="text-3xl font-bold font-heading text-indigo-400 mb-1">10+</div>
+              <div className="text-xs font-mono text-slate-500 uppercase tracking-wider">AI Agents</div>
+            </div>
+            <div className="glass-card p-6 rounded-2xl text-center">
+              <div className="text-3xl font-bold font-heading text-amber-400 mb-1">24/7</div>
+              <div className="text-xs font-mono text-slate-500 uppercase tracking-wider">Uptime</div>
+            </div>
+            <div className="glass-card p-6 rounded-2xl text-center">
+              <div className="text-3xl font-bold font-heading text-emerald-400 mb-1">100%</div>
+              <div className="text-xs font-mono text-slate-500 uppercase tracking-wider">Zo Native</div>
+            </div>
+          </section>
+        </main>
+
+        <footer className="border-t border-white/5 py-12 bg-black/20">
+          <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div className="flex items-center gap-2 opacity-50">
+              <span className="font-heading font-bold tracking-tight text-slate-400">
+                zenlyte<span className="text-cyan-400">.</span>
+              </span>
+              <span className="text-xs text-slate-600">© 2026</span>
+            </div>
+            
+            <div className="flex items-center gap-6">
+              <a href="https://github.com/Zenlyte" target="_blank" rel="noopener" className="text-slate-500 hover:text-white transition-colors">
+                <Github className="w-5 h-5" />
+              </a>
+              <a href="https://x.com/z3nlyte" target="_blank" rel="noopener" className="text-slate-500 hover:text-white transition-colors">
+                <Twitter className="w-5 h-5" />
+              </a>
+              <a href="https://linkedin.com/in/Cbchow" target="_blank" rel="noopener" className="text-slate-500 hover:text-white transition-colors">
+                <Linkedin className="w-5 h-5" />
+              </a>
+            </div>
+
+            <p className="text-xs text-slate-600 flex items-center gap-2">
+              Designed for 
+              <a href="https://zo.computer" target="_blank" rel="noopener" className="transition-colors hover:text-white" style={{ color: COLORS.cyan }}>
+                Zo Computer
+              </a>
+            </p>
+          </div>
+        </footer>
+      </div>
+    </>
+  );
+}
+```
+
+### `/404` (page, public)
+
+```tsx
+import { useState, useEffect } from "react";
+
+export default function NotFound() {
+  const [glitch, setGlitch] = useState(false);
+  const [cmd, setCmd] = useState("");
+  const [output, setOutput] = useState([]);
+
+  useEffect(() => {
+    const iv = setInterval(() => setGlitch(v => !v), 3000);
+    return () => clearInterval(iv);
+  }, []);
+
+  const handleKey = (e) => {
+    if (e.key === "Enter") {
+      const c = cmd.toLowerCase().trim();
+      let out = `zos: command not found: ${cmd}`;
+      if (c === "help") out = "Available commands: ls, cd, clear, home, reboot";
+      if (c === "ls") out = "about.md  projects/  skills/  secret_key.enc";
+      if (c === "home") window.location.href = "/";
+      if (c === "reboot") window.location.reload();
+      if (c === "clear") {
+        setOutput([]);
+        setCmd("");
+        return;
+      }
+      setOutput(prev => [...prev, `zenlyte@zos:~$ ${cmd}`, out]);
+      setCmd("");
+    }
+  };
+
+  return (
+    <div className="nf-wrap">
+      <style>{CSS}</style>
+      <div className="nf-container">
+        <div className={`nf-code ${glitch ? "glitch" : ""}`} data-text="404">
+          404
+        </div>
+        <div className="nf-title">ROUTE NOT FOUND</div>
+        <p className="nf-desc">
+          The requested module could not be initialized. The path may have moved 
+          to a different memory address or has been purged from the kernel.
+        </p>
+
+        <div className="nf-terminal">
+          <div className="nf-term-body">
+            {output.map((line, i) => (
+              <div key={i} className="nf-term-line">{line}</div>
+            ))}
+            <div className="nf-term-input-row">
+              <span className="nf-prompt">zenlyte@zos:~$</span>
+              <input 
+                className="nf-term-input"
+                value={cmd}
+                onChange={e => setCmd(e.target.value)}
+                onKeyDown={handleKey}
+                autoFocus
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="nf-nav">
+          <a href="/" className="nf-link">[ RETURN HOME ]</a>
+          <a href="/zos" className="nf-link">[ REBOOT ZOS ]</a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const CSS = [
+  "@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@700&display=swap');",
+  ".nf-wrap{min-height:100vh;background:#0a0a0f;color:#e8e0d4;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;padding:24px;overflow:hidden}",
+  ".nf-container{max-width:600px;width:100%;text-align:center}",
+  ".nf-code{font-size:120px;font-weight:900;line-height:1;margin-bottom:8px;color:#c08b5c;position:relative;font-family:'Space Grotesk',sans-serif}",
+  ".nf-code.glitch::before,.nf-code.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.8}",
+  ".nf-code.glitch::before{left:2px;text-shadow:-2px 0 #5daa96;clip:rect(44px,450px,56px,0);animation:glitch-anim 5s infinite linear alternate-reverse}",
+  ".nf-code.glitch::after{left:-2px;text-shadow:-2px 0 #e87171;clip:rect(44px,450px,56px,0);animation:glitch-anim2 5s infinite linear alternate-reverse}",
+  "@keyframes glitch-anim{0%{clip:rect(31px,9999px,94px,0)}5%{clip:rect(70px,9999px,71px,0)}...100%{clip:rect(67px,9999px,62px,0)}}",
+  ".nf-title{font-size:18px;font-weight:700;letter-spacing:4px;margin-bottom:24px;color:#5daa96}",
+  ".nf-desc{font-size:14px;color:#94938e;line-height:1.6;margin-bottom:40px}",
+  ".nf-terminal{background:rgba(21,21,25,0.8);border:1px solid rgba(232,224,212,0.1);border-radius:12px;text-align:left;margin-bottom:40px;box-shadow:0 20px 50px rgba(0,0,0,0.3)}",
+  ".nf-term-body{padding:16px;height:180px;overflow-y:auto;font-size:13px}",
+  ".nf-term-line{color:#94938e;margin-bottom:4px}",
+  ".nf-term-input-row{display:flex;gap:8px;align-items:center}",
+  ".nf-prompt{color:#c08b5c;font-weight:700}",
+  ".nf-term-input{background:transparent;border:none;outline:none;color:#e8e0d4;flex:1;font-family:inherit;font-size:inherit}",
+  ".nf-nav{display:flex;gap:20px;justify-content:center}",
+  ".nf-link{padding:10px 20px;border:1px solid rgba(232,224,212,0.2);border-radius:8px;color:#e8e0d4;text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:13px;transition:all 0.2s}",
+  ".nf-link:hover{border-color:#c08b5c;background:rgba(192,139,92,0.08);color:#c08b5c}",
+].join("\n");
+```
+
