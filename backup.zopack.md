@@ -1,19 +1,13 @@
 ---
-format: zopack
-version: "1.0"
-name: zo-space-backup
-author: curtastrophe.zo.computer
-routes: 132
-exported: 2026-06-22
+backup_type: zospace
+timestamp: 2026-06-22T21:20:17.688Z
+route_count: 132
 ---
 
-# zo-space-backup
+# Zo Space Backup
+## / (page, public=true)
 
-## Routes
-
-### `/` (page, public)
-
-```tsx
+```
 import { useState, useEffect, useRef } from "react";
 import {
   ArrowRight, Github, Twitter, Linkedin, MessageSquare, Send, CheckCircle,
@@ -768,9 +762,9 @@ export default function Home() {
 }
 ```
 
-### `/404` (page, public)
+## /404 (page, public=true)
 
-```tsx
+```
 import { useState, useEffect } from "react";
 
 export default function NotFound() {
@@ -865,11 +859,12 @@ const NF_CSS = [
   ".nf-link:hover{border-color:#c08b5c;background:rgba(192,139,92,0.08);color:#c08b5c}",
 ].join("\
 ");
+
 ```
 
-### `/Zo-Ops` (page, private)
+## /Zo-Ops (page, public=false)
 
-```tsx
+```
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -1700,11 +1695,12 @@ function ProjectModal({ project, onClose, onSave, columns, priorityColumns, colo
     </div>
   );
 }
+
 ```
 
-### `/about-the-build` (page, public)
+## /about-the-build (page, public=true)
 
-```tsx
+```
 import { useState } from "react";
 
 export default function AboutTheBuild() {
@@ -1939,11 +1935,12 @@ const ATB_CSS = [
   "@media(max-width:768px){.atb-nav{width:100%;min-height:auto;position:static;border-right:none;border-bottom:1px solid rgba(232,224,212,0.08)}.atb-tabs{flex-direction:row;flex-wrap:wrap}.atb-content{margin-left:0;padding:24px}}",
 ].join("\
 ");
+
 ```
 
-### `/api/agents` (api, public)
+## /api/agents (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 // Query Zo API for real agent data
@@ -1998,9 +1995,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/audit` (api, public)
+## /api/audit (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { timingSafeEqual } from "node:crypto";
 
@@ -2047,9 +2044,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/auth-status` (api, public)
+## /api/auth-status (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -2065,11 +2062,12 @@ export default (c: Context) => {
 
   return c.json({ authenticated: isAuthenticated });
 };
+
 ```
 
-### `/api/benchmarks` (api, public)
+## /api/benchmarks (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
@@ -2109,7 +2107,7 @@ export default async (c: Context) => {
       // Stale cache — still serve it, but trigger a background refresh
       const { _meta, ...models } = data;
       // Fire-and-forget background refresh
-      fetch(`https://{{HANDLE}}.zo.space/api/benchmarks/refresh`, { method: "POST" }).catch(() => {});
+      fetch(`https://curtastrophe.zo.space/api/benchmarks/refresh`, { method: "POST" }).catch(() => {});
 
       return c.json({
         models,
@@ -2214,11 +2212,12 @@ export default async (c: Context) => {
     }, 500);
   }
 };
+
 ```
 
-### `/api/benchmarks/refresh` (api, public)
+## /api/benchmarks/refresh (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { spawn } from "child_process";
 
@@ -2236,11 +2235,12 @@ export default async (c: Context) => {
 
   return c.json({ status: "refresh started" });
 };
+
 ```
 
-### `/api/billing` (api, public)
+## /api/billing (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { timingSafeEqual } from "node:crypto";
 
@@ -2285,9 +2285,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/blog` (api, public)
+## /api/blog (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
@@ -2398,9 +2398,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/blog/:slug` (api, public)
+## /api/blog/:slug (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
@@ -2491,9 +2491,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/buildin/callback` (api, public)
+## /api/buildin/callback (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { writeFileSync, mkdirSync } from "fs";
 
@@ -2527,7 +2527,7 @@ export default async (c: Context) => {
         client_id,
         client_secret,
         code,
-        redirect_uri: `https://{{HANDLE}}.zo.space/api/buildin/callback`
+        redirect_uri: `https://curtastrophe.zo.space/api/buildin/callback`
       })
     });
 
@@ -2582,11 +2582,12 @@ export default async (c: Context) => {
     return c.json({ error: `Authentication failed: ${err.message}` }, 500);
   }
 };
+
 ```
 
-### `/api/buildin/disconnect` (api, public)
+## /api/buildin/disconnect (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -2601,11 +2602,12 @@ export default async (c: Context) => {
   
   return c.json({ success: true });
 }
+
 ```
 
-### `/api/buildin/status` (api, public)
+## /api/buildin/status (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -2637,11 +2639,12 @@ export default async (c: Context) => {
     return c.json({ connected: false });
   }
 }
+
 ```
 
-### `/api/calendar` (api, public)
+## /api/calendar (api, public=true)
 
-```typescript
+```
 /**
  * Calendar API - Phase 2.1 (Live Integration)
  * Fetches next 48 hours of events from "Jess and Curt's Events" calendar
@@ -2852,9 +2855,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/career-ops` (api, public)
+## /api/career-ops (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -2925,9 +2928,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/career-ops/applications` (api, public)
+## /api/career-ops/applications (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -2947,11 +2950,12 @@ export default (c: Context) => {
   if (minScore > 0) apps = apps.filter((a: any) => a.score >= minScore);
   return c.json({ applications: apps, total: apps.length });
 };
+
 ```
 
-### `/api/career-ops/batch` (api, public)
+## /api/career-ops/batch (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -2983,9 +2987,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/career-ops/pipeline` (api, public)
+## /api/career-ops/pipeline (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -2999,11 +3003,12 @@ function loadJSON<T = any>(path: string): T | null {
 export default (c: Context) => {
   return c.json(loadJSON(`${DATA_DIR}/pipeline.json`) || { pending: [], processed: [] });
 };
+
 ```
 
-### `/api/career-ops/scan` (api, public)
+## /api/career-ops/scan (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { spawn } from "node:child_process";
 
@@ -3033,9 +3038,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/career-ops/scan-history` (api, public)
+## /api/career-ops/scan-history (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -3048,9 +3053,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/contact` (api, public)
+## /api/contact (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import fs from "node:fs";
 
@@ -3108,9 +3113,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/credits` (api, public)
+## /api/credits (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 // Query Zo API for real credits/billing data
@@ -3158,9 +3163,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/datasets/list` (api, public)
+## /api/datasets/list (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -3231,11 +3236,12 @@ export default async (c: Context) => {
     return c.json({ error: error.message }, 500);
   }
 };
+
 ```
 
-### `/api/datasets/proxy/*` (api, public)
+## /api/datasets/proxy/* (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 function isOwnerLike(c: Context): boolean {
@@ -3297,9 +3303,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/datasets/start` (api, public)
+## /api/datasets/start (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { execSync } from "child_process";
 
@@ -3399,9 +3405,9 @@ EOF`
 };
 ```
 
-### `/api/datasets/viewer` (api, public)
+## /api/datasets/viewer (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { execSync, spawn } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, readFileSync } from "node:fs";
@@ -3497,11 +3503,12 @@ export default async (c: Context) => {
     return c.json({ success: false, error: error.message }, 500);
   }
 };
+
 ```
 
-### `/api/diagnose` (api, public)
+## /api/diagnose (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -3536,9 +3543,9 @@ Please diagnose the issue, attempt to repair it, and once you have finished, sen
 };
 ```
 
-### `/api/extension-save` (api, public)
+## /api/extension-save (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -3549,9 +3556,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/failures` (api, public)
+## /api/failures (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { execSync } from "node:child_process";
@@ -3706,9 +3713,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/family-log` (api, public)
+## /api/family-log (api, public=true)
 
-```typescript
+```
 import { readFile, writeFile } from "node:fs/promises";
 import type { Context } from "hono";
 
@@ -3873,9 +3880,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/files` (api, public)
+## /api/files (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readdir, stat } from "fs/promises";
 import { join, extname } from "path";
@@ -3962,9 +3969,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/flowpulse` (api, public)
+## /api/flowpulse (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { existsSync, readFileSync } from "fs";
 
@@ -4099,9 +4106,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/generate-icon` (api, public)
+## /api/generate-icon (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { randomUUID } from "node:crypto";
@@ -4383,11 +4390,12 @@ export default async (c: Context) => {
   const remaining = authed ? null : checkRateLimit(ip).remaining;
   return c.json({ jobId, remaining, authed });
 };
+
 ```
 
-### `/api/health-check` (api, public)
+## /api/health-check (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { execSync } from "node:child_process";
@@ -4610,9 +4618,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/logs` (api, public)
+## /api/logs (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 
@@ -4749,9 +4757,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/models` (api, public)
+## /api/models (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -4781,9 +4789,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/my-models` (api, public)
+## /api/my-models (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -4815,11 +4823,12 @@ export default async (c: Context) => {
     return c.json({ error: String(err) }, 500);
   }
 };
+
 ```
 
-### `/api/nav-links` (api, public)
+## /api/nav-links (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync } from "node:fs";
 
@@ -4886,9 +4895,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/projects` (api, public)
+## /api/projects (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -4990,11 +4999,12 @@ export default async (c: Context) => {
 
   return c.json({ error: "Method not allowed" }, 405);
 };
+
 ```
 
-### `/api/projects-conversations` (api, public)
+## /api/projects-conversations (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "node:fs";
 
@@ -5036,11 +5046,12 @@ export default async (c: Context) => {
     return c.json({ error: "Failed to read conversations", message: err.message }, 500);
   }
 };
+
 ```
 
-### `/api/puzzle-callback` (page, public)
+## /api/puzzle-callback (page, public=true)
 
-```tsx
+```
 export default function PuzzleCallback() {
   return (
     <div className="min-h-screen bg-zinc-900 text-white flex items-center justify-center">
@@ -5086,17 +5097,18 @@ export default function PuzzleCallback() {
     </div>
   );
 }
-```
-
-### `/api/receipt-images` (api, public)
-
-```typescript
 
 ```
 
-### `/api/receipts` (api, public)
+## /api/receipt-images (api, public=true)
 
-```typescript
+```
+
+```
+
+## /api/receipts (api, public=true)
+
+```
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { exec } from 'node:child_process';
@@ -5368,9 +5380,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/security` (api, public)
+## /api/security (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 
@@ -5523,9 +5535,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/services` (api, public)
+## /api/services (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 // Query Zo API for real service data
@@ -5580,9 +5592,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/share` (api, public)
+## /api/share (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFile, writeFile, copyFile, mkdir, stat } from "fs/promises";
 import { join, basename, extname } from "path";
@@ -5738,7 +5750,7 @@ export default async (c: Context) => {
 
       return c.json({
         id: share.id,
-        url: `https://{{HANDLE}}.zo.space/s/${share.id}`,
+        url: `https://curtastrophe.zo.space/s/${share.id}`,
         fileName: share.fileName,
         fileSize: formatSize(share.fileSize),
       });
@@ -5758,7 +5770,7 @@ export default async (c: Context) => {
       downloads: s.downloads,
       leadCount: s.leads.length,
       requireLead: s.requireLead,
-      url: `https://{{HANDLE}}.zo.space/s/${s.id}`,
+      url: `https://curtastrophe.zo.space/s/${s.id}`,
     })));
   }
 
@@ -5766,9 +5778,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/share/:id` (api, public)
+## /api/share/:id (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
@@ -5877,9 +5889,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/share/:id/download` (api, public)
+## /api/share/:id/download (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
@@ -5958,9 +5970,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/sites` (api, public)
+## /api/sites (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 // Query Zo API for real space routes (Sites/Spaces)
@@ -6010,9 +6022,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/skills-gallery` (api, public)
+## /api/skills-gallery (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readdir, readFile, stat } from "fs/promises";
 import { join, relative } from "path";
@@ -6359,9 +6371,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/speech-game-auth` (api, public)
+## /api/speech-game-auth (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -6373,9 +6385,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/speech-game-data` (api, public)
+## /api/speech-game-data (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { timingSafeEqual } from "node:crypto";
 
@@ -6599,11 +6611,12 @@ export default async (c: Context) => {
 
   return c.json({ error: "Method not allowed" }, 405);
 };
+
 ```
 
-### `/api/system-stats` (api, public)
+## /api/system-stats (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
@@ -6641,9 +6654,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/telemetry-data` (api, public)
+## /api/telemetry-data (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -6753,9 +6766,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/temporal-auth-check` (api, public)
+## /api/temporal-auth-check (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 // Check if user is authenticated via Zo session
@@ -6792,11 +6805,12 @@ export default async (c: Context) => {
   
   return c.json({ authenticated: false, error: "Unauthorized" }, 401);
 };
+
 ```
 
-### `/api/temporal/*` (api, public)
+## /api/temporal/* (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 // Proxy to internal Temporal gRPC endpoint
@@ -6848,11 +6862,12 @@ export default async (c: Context) => {
   
   return response;
 };
+
 ```
 
-### `/api/test-deps` (api, public)
+## /api/test-deps (api, public=true)
 
-```typescript
+```
 export default async (c) => {
   const fs = require("fs");
   const path = require("path");
@@ -6864,11 +6879,12 @@ export default async (c) => {
     return c.json({ error: e.message, cwd: process.cwd() });
   }
 };
+
 ```
 
-### `/api/test-env` (api, public)
+## /api/test-env (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -6878,11 +6894,12 @@ export default async (c: Context) => {
   });
   return c.json({ headers, reqHeader: c.req.header() });
 };
+
 ```
 
-### `/api/test-exec` (api, public)
+## /api/test-exec (api, public=true)
 
-```typescript
+```
 import { exec } from "node:child_process";
 import { promisify } from "node:util";
 import type { Context } from "hono";
@@ -6897,11 +6914,12 @@ export default async (c: Context) => {
     return c.json({ success: false, error: String(e) }, 500);
   }
 };
+
 ```
 
-### `/api/test-write` (api, public)
+## /api/test-write (api, public=true)
 
-```typescript
+```
 import { promises as fs } from "node:fs";
 import type { Context } from "hono";
 
@@ -6913,11 +6931,12 @@ export default async (c: Context) => {
     return c.json({ success: false, error: String(e) }, 500);
   }
 };
+
 ```
 
-### `/api/trivia` (api, public)
+## /api/trivia (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -7102,11 +7121,12 @@ export default async (c: Context) => {
     db.close();
   }
 };
+
 ```
 
-### `/api/trivia/by-date` (api, public)
+## /api/trivia/by-date (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -7243,9 +7263,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/trivia/dates` (api, public)
+## /api/trivia/dates (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -7275,9 +7295,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/trivia/leaderboard` (api, public)
+## /api/trivia/leaderboard (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -7358,11 +7378,12 @@ export default async (c: Context) => {
     db.close();
   }
 };
+
 ```
 
-### `/api/trivia/random` (api, public)
+## /api/trivia/random (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -7445,9 +7466,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/trivia/subscribe` (api, public)
+## /api/trivia/subscribe (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 const TEABLE_BASE = "https://app.teable.io/api";
@@ -7537,11 +7558,12 @@ export default async (c: Context) => {
     }, 500);
   }
 };
+
 ```
 
-### `/api/trivia/unsubscribe` (api, public)
+## /api/trivia/unsubscribe (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -7652,9 +7674,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/trivia/user-stats` (api, public)
+## /api/trivia/user-stats (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -7725,11 +7747,12 @@ export default async (c: Context) => {
     db.close();
   }
 };
+
 ```
 
-### `/api/twinmind` (api, public)
+## /api/twinmind (api, public=true)
 
-```typescript
+```
 /**
  * TwinMind Synthesis API - Phase 3.3
  * Provides meeting insights and action items from TwinMind recordings
@@ -7826,9 +7849,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/twinmind-callback` (api, public)
+## /api/twinmind-callback (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 // This route captures the OAuth authorization code from TwinMind
@@ -7861,11 +7884,12 @@ export default async (c: Context) => {
     </html>
   `);
 };
+
 ```
 
-### `/api/updates` (api, public)
+## /api/updates (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, writeFileSync, existsSync, statSync, readdirSync } from "node:fs";
 import { resolve, join } from "node:path";
@@ -8014,9 +8038,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/voi-zos` (api, public)
+## /api/voi-zos (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 const VOI_LOCKDOWN = (process.env.VOI_LOCKDOWN ?? "true") !== "false";
@@ -8380,11 +8404,12 @@ export default async (c: Context) => {
   if (result.allowed) cacheSet(key, result);
   return c.json({ ...result, lockdown: VOI_LOCKDOWN });
 };
+
 ```
 
-### `/api/x-feed` (api, public)
+## /api/x-feed (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, writeFileSync, existsSync, statSync } from "node:fs";
 import { resolve } from "node:path";
@@ -8547,11 +8572,12 @@ export default async (c: Context) => {
   saveCache(posts);
   return c.json({ source: "fresh", cached: false, posts });
 };
+
 ```
 
-### `/api/zo-city-data` (api, public)
+## /api/zo-city-data (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFile, readdir, stat, access } from "node:fs/promises";
 import path from "node:path";
@@ -8638,9 +8664,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/zo-space-theme-gallery` (api, public)
+## /api/zo-space-theme-gallery (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync } from "fs";
 
@@ -8681,9 +8707,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/zo-space-theme-gallery/:id` (api, public)
+## /api/zo-space-theme-gallery/:id (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -8732,9 +8758,9 @@ Skill file not found.", 500);
 };
 ```
 
-### `/api/zo-space-theme-gallery/skill` (api, public)
+## /api/zo-space-theme-gallery/skill (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync } from "fs";
 
@@ -8761,9 +8787,9 @@ The zo-space-themer skill could not be loaded.", 404);
 };
 ```
 
-### `/api/zoboard/*` (api, public)
+## /api/zoboard/* (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import {
   readFileSync,
@@ -9164,11 +9190,12 @@ export default async (c: Context) => {
     return c.json({ error: err.message || "Internal error" }, 500);
   }
 };
+
 ```
 
-### `/api/zos/build-log` (api, public)
+## /api/zos/build-log (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -9189,11 +9216,12 @@ export default (c: Context) => {
     stripe_products: 2
   });
 };
+
 ```
 
-### `/api/zos/now` (api, public)
+## /api/zos/now (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -9211,18 +9239,19 @@ export default (c: Context) => {
     themes: ["oxidized", "signal", "lunar"],
     easter_eggs: 6,
     links: {
-      zos: "https://{{HANDLE}}.zo.space/zos",
+      zos: "https://curtastrophe.zo.space/zos",
       github: "https://github.com/Zenlyte",
       x: "https://x.com/z3nlyte",
-      about_the_build: "https://{{HANDLE}}.zo.space/about-the-build"
+      about_the_build: "https://curtastrophe.zo.space/about-the-build"
     }
   });
 };
+
 ```
 
-### `/api/zos/signals` (api, public)
+## /api/zos/signals (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -9238,11 +9267,12 @@ export default (c: Context) => {
     ]
   });
 };
+
 ```
 
-### `/blog` (page, public)
+## /blog (page, public=true)
 
-```tsx
+```
 import { useState, useEffect, useRef } from "react";
 import { ArrowRight, ArrowLeft, Clock, Tag, Search, Filter, X, Menu, Lock } from "lucide-react";
 
@@ -9637,9 +9667,9 @@ export default function Blog() {
 }
 ```
 
-### `/blog/:slug` (page, public)
+## /blog/:slug (page, public=true)
 
-```tsx
+```
 import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Clock, Tag, Share2, ChevronUp } from "lucide-react";
 
@@ -9974,7 +10004,7 @@ export default function BlogPost() {
             <span className="text-sm font-mono tracking-wider uppercase group-hover:text-white transition-colors" style={{ color: COLORS.muted }}>Blog</span>
           </a>
           <button onClick={() => {
-            const cleanUrl = `https://{{HANDLE}}.zo.space/blog/${window.location.pathname.split("/").pop()}`;
+            const cleanUrl = `https://curtastrophe.zo.space/blog/${window.location.pathname.split("/").pop()}`;
             navigator.clipboard?.writeText(cleanUrl);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
@@ -10045,9 +10075,9 @@ export default function BlogPost() {
 }
 ```
 
-### `/buildin-auth` (page, private)
+## /buildin-auth (page, public=false)
 
-```tsx
+```
 import { useState, useEffect } from "react";
 
 export default function BuildinAuth() {
@@ -10076,7 +10106,7 @@ export default function BuildinAuth() {
 
   const handleAuthorize = () => {
     const clientId = process.env.BUILDIN_CLIENT_ID || "";
-    const redirectUri = encodeURIComponent("https://{{HANDLE}}.zo.space/api/buildin/callback");
+    const redirectUri = encodeURIComponent("https://curtastrophe.zo.space/api/buildin/callback");
     const state = Math.random().toString(36).substring(7);
     const authUrl = `https://api.buildin.ai/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=all&state=${state}`;
     window.open(authUrl, "_blank");
@@ -10182,11 +10212,12 @@ export default function BuildinAuth() {
     </div>
   );
 }
+
 ```
 
-### `/career-ops` (page, private)
+## /career-ops (page, public=false)
 
-```tsx
+```
 import { useState, useEffect, useCallback } from "react";
 import {
   Briefcase, FileText, TrendingUp, BarChart3, Plus,
@@ -10531,11 +10562,12 @@ export default function CareerOpsDashboard() {
     </div>
   );
 }
+
 ```
 
-### `/dashboard` (page, private)
+## /dashboard (page, public=false)
 
-```tsx
+```
 /**
  * Family Butler Dashboard - Phase 3.3, 4.1 & 4.2
  * Updates: TwinMind Synthesis (3.3), Mobile PWA (4.1), Interactive Actions (4.2)
@@ -11045,9 +11077,9 @@ export default function FamilyDashboard() {
 }
 ```
 
-### `/data-explorer` (page, private)
+## /data-explorer (page, public=false)
 
-```tsx
+```
 import { useEffect } from "react";
 
 export default function DataExplorerRedirect() {
@@ -11060,9 +11092,9 @@ export default function DataExplorerRedirect() {
 }
 ```
 
-### `/data/zo-trivia/` (page, private)
+## /data/zo-trivia/ (page, public=false)
 
-```tsx
+```
 import React, { useEffect, useState } from "react";
 import { 
   Bar, 
@@ -11373,11 +11405,12 @@ function StatCard({ title, value, icon, color }: { title: string, value: any, ic
     </Card>
   );
 }
+
 ```
 
-### `/data/zo-trivia/api/query` (api, public)
+## /data/zo-trivia/api/query (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -11462,21 +11495,23 @@ export default async (c: Context) => {
     return c.json({ error: "Database error" }, 500);
   }
 };
+
 ```
 
-### `/docs` (api, public)
+## /docs (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default (c: Context) => {
   return c.redirect("https://docs-curtastrophe.zocomputer.io");
 };
+
 ```
 
-### `/icon-configurator` (page, public)
+## /icon-configurator (page, public=true)
 
-```tsx
+```
 import { useState, useCallback, useEffect, useRef } from "react";
 import { 
   Download, Loader2, Wand2, ArrowLeft, Zap, Sparkles, Info, Menu, X, Lock,
@@ -12219,11 +12254,12 @@ Detail: ${result.detail}` : "";
     </div>
   );
 }
+
 ```
 
-### `/job-ops` (page, private)
+## /job-ops (page, public=false)
 
-```tsx
+```
 import React, { useState, useEffect, useRef } from "react";
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -12406,11 +12442,12 @@ export default function JobOps() {
     </>
   );
 }
+
 ```
 
-### `/kg-browse` (api, public)
+## /kg-browse (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, readdirSync } from "fs";
 import { join } from "path";
@@ -12469,11 +12506,12 @@ export default async (c: Context) => {
     return c.json({ error: "Failed to read vault" }, 500);
   }
 };
+
 ```
 
-### `/kg-by-type` (api, public)
+## /kg-by-type (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -12501,11 +12539,12 @@ export default async (c: Context) => {
     return c.json({ error: "Failed to fetch" }, 500);
   }
 };
+
 ```
 
-### `/kg-entity` (api, public)
+## /kg-entity (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -12533,11 +12572,12 @@ export default async (c: Context) => {
     return c.json({ error: `Connection failed: ${error.message}` }, 500);
   }
 };
+
 ```
 
-### `/kg-graph` (api, public)
+## /kg-graph (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -12562,11 +12602,12 @@ export default async (c: Context) => {
     return c.json({ error: `Connection failed: ${error.message}` }, 500);
   }
 };
+
 ```
 
-### `/kg-recall` (api, public)
+## /kg-recall (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -12590,9 +12631,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg-search` (api, public)
+## /kg-search (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -12616,9 +12657,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg-stats` (api, public)
+## /kg-stats (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -12636,9 +12677,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/knowledge-graph` (page, private)
+## /knowledge-graph (page, public=false)
 
-```tsx
+```
 import React, { useState, useEffect, useRef } from "react";
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -13483,11 +13524,12 @@ export default function KnowledgeGraph() {
     </>
   );
 }
+
 ```
 
-### `/model-advisor` (page, public)
+## /model-advisor (page, public=true)
 
-```tsx
+```
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { Brain, Zap, DollarSign, Download, ChevronDown, ChevronUp, Sparkles, ArrowUpDown, Check, Info, Calculator, Trophy, Star, Target, MessageSquare, Code, BookOpen, Scale, Cpu, Sun, Moon, Bot, X, Filter, Search } from "lucide-react";
 
@@ -14038,9 +14080,9 @@ export default function ModelAdvisor() {
 }
 ```
 
-### `/openclaw-dashboard` (page, private)
+## /openclaw-dashboard (page, public=false)
 
-```tsx
+```
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -14249,11 +14291,12 @@ export default function OpenClawDashboard() {
     </div>
   );
 }
+
 ```
 
-### `/press` (page, public)
+## /press (page, public=true)
 
-```tsx
+```
 import { useState, useEffect } from "react";
 
 export default function PressPage() {
@@ -14447,11 +14490,12 @@ const PR_CSS = [
   "@media (max-width:640px){.pr{padding:32px 16px}.pr-hero{padding:24px 0 40px;margin-bottom:40px}.pr-section{margin-bottom:40px}.pr-route{padding:14px}}",
 ].join("\
 ");
+
 ```
 
-### `/profile` (page, public)
+## /profile (page, public=true)
 
-```tsx
+```
 import React, { useState, useEffect, useRef } from "react";
 import { MapPin, ExternalLink, Github, ChevronUp, ArrowUpRight, Layers, Cpu, Bot, Puzzle, Zap, Rss, BookOpen, FolderKanban, LayoutGrid, Clock, Tag, Heart, MessageCircle, Menu, X, Lock, PenLine, Palette, Settings, Share2, Briefcase, LayoutDashboard, Sparkles } from "lucide-react";
 
@@ -15021,11 +15065,12 @@ function GlobalNav({ links = [] }: { links?: any[] }) {
     </>
   );
 }
+
 ```
 
-### `/receipts` (page, public)
+## /receipts (page, public=true)
 
-```tsx
+```
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   Upload, Search, Image as ImageIcon, Loader2, Lock, ArrowUpDown, ArrowUp, ArrowDown, CheckCircle2, RefreshCw, AlertCircle, X, ZoomIn, ZoomOut, RotateCw, Maximize2, Minimize2, Receipt, ArrowLeft, Menu,
@@ -15669,9 +15714,9 @@ export default function RetailReceiptTracker() {
 }
 ```
 
-### `/repurpose` (page, private)
+## /repurpose (page, public=false)
 
-```tsx
+```
 import { useMemo, useState } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Copy, Check, Lock, Sparkles, Globe, Clock3, Shield } from "lucide-react";
@@ -15979,11 +16024,12 @@ export default function ContentRepurposer() {
     </div>
   );
 }
+
 ```
 
-### `/s/:id` (page, public)
+## /s/:id (page, public=true)
 
-```tsx
+```
 // @zo-theme: web3 | applied: 2026-03-02T07:00:00Z
 import { useState, useEffect, useRef } from "react";
 import { Download, Check, Zap, Menu, X, Lock } from "lucide-react";
@@ -16342,9 +16388,9 @@ function GlobalNav() {
 }
 ```
 
-### `/secret` (page, public)
+## /secret (page, public=true)
 
-```tsx
+```
 import { useState, useEffect } from "react";
 
 export default function SecretPage() {
@@ -16459,11 +16505,12 @@ const SEC_CSS = [
   ".sec-link:hover{border-color:#c08b5c;background:rgba(192,139,92,0.08);color:#c08b5c}",
 ].join("\
 ");
+
 ```
 
-### `/share` (page, private)
+## /share (page, public=false)
 
-```tsx
+```
 import { useState, useEffect, useRef } from "react";
 import { FolderIcon, FileIcon, ChevronLeft, ChevronRight, Copy, Check, Trash2, Link, Download, Users, ExternalLink, Menu, X, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -17005,9 +17052,9 @@ export default function SharePage() {
 }
 ```
 
-### `/skills-gallery` (page, private)
+## /skills-gallery (page, public=false)
 
-```tsx
+```
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Search, Loader2, X, Tag, FolderOpen, ChevronRight, Menu, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -17422,9 +17469,9 @@ export default function SkillsGallery() {
 }
 ```
 
-### `/speech-game` (page, public)
+## /speech-game (page, public=true)
 
-```tsx
+```
 import { useState, useEffect, useCallback } from "react";
 import { Lock, Loader2 } from "lucide-react";
 
@@ -18042,11 +18089,12 @@ export default function SpeechGame() {
     </div>
   );
 }
+
 ```
 
-### `/speech-game-manifest.json` (api, public)
+## /speech-game-manifest.json (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -18073,11 +18121,12 @@ export default (c: Context) => {
     },
   });
 };
+
 ```
 
-### `/speech-game-sw.js` (api, public)
+## /speech-game-sw.js (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 const SW_CODE = `
@@ -18130,11 +18179,12 @@ export default (c: Context) => {
     },
   });
 };
+
 ```
 
-### `/speech-game/stats` (page, public)
+## /speech-game/stats (page, public=true)
 
-```tsx
+```
 import { useState, useEffect } from "react";
 import { Lock, Loader2 } from "lucide-react";
 
@@ -18600,11 +18650,12 @@ export default function StatsPage() {
     </div>
   );
 }
+
 ```
 
-### `/speech-game/stickers` (page, public)
+## /speech-game/stickers (page, public=true)
 
-```tsx
+```
 import { useState, useEffect } from "react";
 import { Lock, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -18912,11 +18963,12 @@ export default function Stickers() {
     </div>
   );
 }
+
 ```
 
-### `/telemetry` (page, private)
+## /telemetry (page, public=false)
 
-```tsx
+```
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, ArrowLeft, Activity, RefreshCw, Terminal, Users, Zap, TrendingUp, Lock, ExternalLink, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -19227,9 +19279,9 @@ export default function TelemetryDashboard() {
 }
 ```
 
-### `/temporal` (page, private)
+## /temporal (page, public=false)
 
-```tsx
+```
 import { useEffect, useState, useRef } from "react";
 
 const COLORS = {
@@ -19497,11 +19549,12 @@ export default function TemporalDashboard() {
     </>
   );
 }
+
 ```
 
-### `/trivia` (page, public)
+## /trivia (page, public=true)
 
-```tsx
+```
 import React, { useState, useEffect, useRef } from "react";
 import { 
   Trophy, Calendar, Shuffle, ChevronLeft, CheckCircle, XCircle, 
@@ -20383,9 +20436,9 @@ export default function TriviaQuiz() {
 }
 ```
 
-### `/trivia/archive` (page, private)
+## /trivia/archive (page, public=false)
 
-```tsx
+```
 import React, { useState, useEffect, useRef } from "react";
 import { 
   Calendar, ChevronLeft, ChevronRight, Clock, 
@@ -20715,11 +20768,12 @@ export default function TriviaArchive() {
     </>
   );
 }
+
 ```
 
-### `/trivia/leaderboard` (page, private)
+## /trivia/leaderboard (page, public=false)
 
-```tsx
+```
 import React, { useState, useEffect, useRef } from "react";
 import { 
   Trophy, Medal, Users, ArrowLeft, ArrowRight, 
@@ -21091,11 +21145,12 @@ export default function TriviaLeaderboard() {
     </>
   );
 }
+
 ```
 
-### `/zo-city` (page, public)
+## /zo-city (page, public=true)
 
-```tsx
+```
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 
 const TW = 16, TH = 8;
@@ -21728,11 +21783,12 @@ export default function ZoCity() {
     </div>
   );
 }
+
 ```
 
-### `/zo-city-three-test` (page, public)
+## /zo-city-three-test (page, public=true)
 
-```tsx
+```
 import { useEffect, useRef, useState } from "react";
 
 export default function Page() {
@@ -21803,11 +21859,12 @@ export default function Page() {
 
   return <div className="min-h-screen bg-slate-950 text-white p-6"><h1 className="text-2xl font-bold mb-2">ZoCity Three.js Test</h1><p className="text-cyan-300 mb-4">{status}</p><div ref={ref} className="w-[800px] max-w-full min-h-[420px] border border-cyan-500/20 rounded-xl overflow-hidden bg-black/40" /></div>;
 }
+
 ```
 
-### `/zo-control-deck` (page, private)
+## /zo-control-deck (page, public=false)
 
-```tsx
+```
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Activity, Server, Bot, CreditCard, Shield, AlertTriangle, FileText, Globe, Menu, X, ChevronDown, ChevronRight, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -22730,9 +22787,9 @@ function StatCard({ label, value, sub, onClick, accent }: { label: string; value
 }
 ```
 
-### `/zo-space-theme-gallery` (page, public)
+## /zo-space-theme-gallery (page, public=true)
 
-```tsx
+```
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { 
   Search, SunMedium, Moon, Filter, ChevronRight, Palette, Copy, Check, Eye, X, Menu, Lock,
@@ -23112,7 +23169,7 @@ function ThemeDetailModal({
                 <h3 className="text-sm font-semibold mb-2">Apply this theme</h3>
                 <div className="space-y-1.5 text-xs text-zinc-300">
                   <p className="text-zinc-500 italic">Already have the skill? Skip to step 2.</p>
-                  <p>1. Install the skill (one time): Tell your Zo: <code className="bg-zinc-800 px-1.5 py-0.5 rounded">Install the Zo Space theming skill from https://{{HANDLE}}.zo.space/api/zo-space-theme-gallery/skill</code></p>
+                  <p>1. Install the skill (one time): Tell your Zo: <code className="bg-zinc-800 px-1.5 py-0.5 rounded">Install the Zo Space theming skill from https://curtastrophe.zo.space/api/zo-space-theme-gallery/skill</code></p>
                   <p>2. Apply: <code className="bg-zinc-800 px-1.5 py-0.5 rounded">Apply the {theme.id} theme to my /about page</code></p>
                   <p>3. Or globally: <code className="bg-zinc-800 px-1.5 py-0.5 rounded">Apply the {theme.id} theme to all my pages</code></p>
                   <p>4. Zo fetches the design prompt from this gallery and creates backups automatically.</p>
@@ -23167,7 +23224,7 @@ function ThemeDetailModal({
 
 function SkillInstallBanner() {
   const [copied, setCopied] = useState(false);
-  const installPrompt = `Install the Zo Space theming skill from https://{{HANDLE}}.zo.space/api/zo-space-theme-gallery/skill`;
+  const installPrompt = `Install the Zo Space theming skill from https://curtastrophe.zo.space/api/zo-space-theme-gallery/skill`;
 
   function copy() {
     navigator.clipboard.writeText(installPrompt);
@@ -23354,9 +23411,9 @@ export default function ThemeGallery() {
 }
 ```
 
-### `/zo-space-theme-gallery/:id` (page, public)
+## /zo-space-theme-gallery/:id (page, public=true)
 
-```tsx
+```
 import { useEffect, useMemo, useState, useRef } from "react";
 import { ArrowLeft, Copy, Palette, Check, SunMedium, Moon, Eye, X } from "lucide-react";
 import { marked } from "marked";
@@ -23591,7 +23648,7 @@ export default function ThemeDetail() {
           <h2 className="text-lg font-semibold mb-3">Apply this theme</h2>
           <div className="space-y-2 text-sm text-zinc-300">
             <p className="text-zinc-500 italic">Already have the skill? Skip to step 2.</p>
-            <p>1. Install the skill (one time): Tell your Zo: <code className="bg-zinc-800 px-1.5 py-0.5 rounded">Install the Zo Space theming skill from https://{{HANDLE}}.zo.space/api/zo-space-theme-gallery/skill</code></p>
+            <p>1. Install the skill (one time): Tell your Zo: <code className="bg-zinc-800 px-1.5 py-0.5 rounded">Install the Zo Space theming skill from https://curtastrophe.zo.space/api/zo-space-theme-gallery/skill</code></p>
             <p>2. Apply: <code className="bg-zinc-800 px-1.5 py-0.5 rounded">Apply the {theme.id} theme to my /about page</code></p>
             <p>3. Or globally: <code className="bg-zinc-800 px-1.5 py-0.5 rounded">Apply the {theme.id} theme to all my pages</code></p>
             <p>4. Zo fetches the design prompt from this gallery and creates backups automatically.</p>
@@ -23638,11 +23695,12 @@ export default function ThemeDetail() {
     </div>
   );
 }
+
 ```
 
-### `/zo-status` (page, public)
+## /zo-status (page, public=true)
 
-```tsx
+```
 import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { 
@@ -24338,11 +24396,12 @@ function GlobalNav() {
     </>
   );
 }
+
 ```
 
-### `/zoboard` (page, private)
+## /zoboard (page, public=false)
 
-```tsx
+```
 import { useState, useEffect } from "react";
 import { Layout, AlertCircle, Loader2 } from "lucide-react";
 
@@ -24442,11 +24501,12 @@ export default function ZoBoard() {
     </main>
   );
 }
+
 ```
 
-### `/zoboard/:slug` (page, private)
+## /zoboard/:slug (page, public=false)
 
-```tsx
+```
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
@@ -25075,11 +25135,12 @@ function CardDrawer({
     </div>
   );
 }
+
 ```
 
-### `/zos` (page, public)
+## /zos (page, public=true)
 
-```tsx
+```
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
 const BOOT_LINES: [string, number][] = [
@@ -25302,7 +25363,7 @@ function AboutApp(p:{role:string}){
   const fileContent=()=>{
     if(activeFile==="skills")return(<><div className="za-cmd">$ ls skills/</div><div className="za-skill-grid">{[["Languages",["Python","SQL","TypeScript","React","JavaScript"]],["Data & Analytics",["Data Modeling","Visualization","ETL/ELT","dbt","Power BI"]],["AI & ML",["LLM Agents","RAG","Prompt Engineering","Automation","NLP"]],["Platforms",["Zo Computer","AWS","GCP","Vercel","Docker"]],["Tools",["Git","Notion","Figma","Jira","VS Code"]]].map(([cat,items])=>(<div key={cat as string} className="za-skill-cat"><div className="za-skill-cat-name">{cat}</div><div className="za-skill-tags">{(items as string[]).map(s=><span key={s} className="za-skill-tag">{s}</span>)}</div></div>))}</div></>);
     if(activeFile==="principles")return(<><div className="za-cmd">$ cat principles.txt</div><ul className="za-principles"><li>Build systems, not just features</li><li>Automate the boring, humanize the interesting</li><li>Ship fast, iterate faster</li><li>Every tool should feel like leverage</li><li>Documentation is a love letter to your future self</li><li>The best code is the code you don't have to write</li></ul></>);
-    if(activeFile==="contact")return(<><div className="za-cmd">$ cat contact.json</div><div className="za-json"><div className="za-json-line">{'{'}</div><div className="za-json-line">{'  '}<span className="za-json-key">"github"</span>: <a href="https://github.com/Zenlyte" target="_blank" rel="noopener" className="za-json-val">"github.com/Zenlyte"</a>,</div><div className="za-json-line">{'  '}<span className="za-json-key">"x"</span>: <a href="https://x.com/z3nlyte" target="_blank" rel="noopener" className="za-json-val">"x.com/z3nlyte"</a>,</div><div className="za-json-line">{'  '}<span className="za-json-key">"email"</span>: <a href="mailto:info@zenlytics.net" className="za-json-val">"info@zenlytics.net"</a>,</div><div className="za-json-line">{'  '}<span className="za-json-key">"site"</span>: <a href="https://{{HANDLE}}.zo.space" target="_blank" rel="noopener" className="za-json-val">"curtastrophe.zo.space"</a></div><div className="za-json-line">{'}'}</div></div></>);
+    if(activeFile==="contact")return(<><div className="za-cmd">$ cat contact.json</div><div className="za-json"><div className="za-json-line">{'{'}</div><div className="za-json-line">{'  '}<span className="za-json-key">"github"</span>: <a href="https://github.com/Zenlyte" target="_blank" rel="noopener" className="za-json-val">"github.com/Zenlyte"</a>,</div><div className="za-json-line">{'  '}<span className="za-json-key">"x"</span>: <a href="https://x.com/z3nlyte" target="_blank" rel="noopener" className="za-json-val">"x.com/z3nlyte"</a>,</div><div className="za-json-line">{'  '}<span className="za-json-key">"email"</span>: <a href="mailto:info@zenlytics.net" className="za-json-val">"info@zenlytics.net"</a>,</div><div className="za-json-line">{'  '}<span className="za-json-key">"site"</span>: <a href="https://curtastrophe.zo.space" target="_blank" rel="noopener" className="za-json-val">"curtastrophe.zo.space"</a></div><div className="za-json-line">{'}'}</div></div></>);
     if(activeFile==="experience")return(<><div className="za-cmd">$ ls experience/</div><div className="za-timeline">{[["Data & Analytics Professional","Building data pipelines, dashboards, and analytics solutions"],["AI Builder","Developing LLM agents, automation workflows, and AI-powered tools"],["Zo Computer Creator","Building interactive experiences and personal projects on Zo"],["Open Source Contributor","Contributing to tools that make developers more productive"]].map(([title,desc],i)=>(<div key={i} className="za-timeline-item"><div className="za-timeline-dot"/><div className="za-timeline-content"><div className="za-timeline-title">{title}</div><div className="za-timeline-desc">{desc}</div></div></div>))}</div></>);
     if(activeFile==="secret")return(<><div className="za-cmd">$ ls secret/</div><div className="za-secret">🔒 ACCESS DENIED</div><div className="za-secret-sub">Try the Konami code on the desktop to unlock...</div><div className="za-secret-hint">(↑↑↓↓←→←→BA)</div></>);
     return(<><div className="za-cmd">$ cat README.md</div><p className="za-hi">Hey, I’m <span className="za-name">Zenlyte</span> (Zenlyte).</p><p className="za-desc">Data & Analytics professional by trade. AI builder, automation tinkerer, and systems thinker by obsession.</p><p className="za-desc">I turn raw data into decisions and explore the frontier of AI agents, automation, and tool-building on Zo Computer.</p></>);
@@ -25976,11 +26037,12 @@ const CSS_STYLES = [
   ".zbrf-error{color:#e87171;font-size:12px;margin-top:6px;padding:8px;border-radius:4px;background:rgba(232,113,113,0.08)}",
 ].join("\
 ");
+
 ```
 
-### `/zos-lite` (page, public)
+## /zos-lite (page, public=true)
 
-```tsx
+```
 import { useState, useEffect, useMemo } from "react";
 
 const CALENDLY_URL = "https://calendly.com/zenlytics/discovery-session";
@@ -26276,81 +26338,4 @@ const STYLES = `
   }
 `;
 ```
-
-## Dependencies
-
-**npm packages** (not in default zo.space):
-- ` + new Date(_meta.fetched_at).toLocaleString() : `
-- `Jess and Curt`
-- `bun:sqlite`
-
-**Components** (install via shadcn CLI):
-- `shadcn:card`
-- `shadcn:chart`
-
-## Setup
-
-**Directories to create:**
-- `Data`
-- `Documents/blog`
-- `Data/buildin`
-- `Data/career-ops`
-- `Data/zo-trivia`
-- `Data/skill-execution-logs`
-- `Projects/zo-icon-generations`
-- `Projects`
-- `memory`
-- `Data/flowpulse`
-- `zo-icon-generations/images`
-- `zo-icon-generations/source`
-- `.zo`
-- `ZoSpace`
-- `Data/zo-project-ops`
-- `Data/ReceiptTracker/Images`
-- `Data/shared-files`
-- `Skills`
-- `Skills/`
-- `Data/breadcrumb-telemetry`
-- `.zo/.temp`
-- `Documents/blog/notes`
-- `Skills/zo-theme-gallery/assets`
-- `Skills/zo-theme-gallery/assets/themes`
-- `memory/zoboard`
-- `config/zoboard`
-- `Projects/mengram-self-hosted/vault`
-
-**Files to initialize:**
-- `Data/aa_benchmarks.json` with content: `[]`
-- `Data/buildin/token.json` with content: `[]`
-- `Data/career-ops/scan-history.json` with content: `[]`
-- `memory/heartbeat-state.json` with content: `[]`
-- `.zo/status-check-cache.json` with content: `[]`
-- `ZoSpace/nav-config.json` with content: `[]`
-- `Data/zo-project-ops/projects.json` with content: `[]`
-- `Data/zo-project-ops/conversations.json` with content: `[]`
-- `Data/shares.json` with content: `[]`
-- `Data/breadcrumb-telemetry/agent-metadata.json` with content: `[]`
-- `.zo/.temp/x_feed_cache.json` with content: `[]`
-- `Skills/zo-theme-gallery/assets/theme-registry.json` with content: `[]`
-- `config/zoboard/theme.json` with content: `[]`
-
-**Secrets required** (configure in [Settings > Advanced](/?t=settings&s=advanced)):
-- `ZO_API_KEY`
-- `AI_ANALYSIS_API_KEY`
-- `BEARER_SECRET`
-- `BUILDIN_CLIENT_ID`
-- `BUILDIN_CLIENT_SECRET`
-- `TEABLE_API_KEY`
-- `RECEIPT_TRACKER_PASSCODE`
-- `COSTCO_APP_PASSCODE`
-- `SPEECH_GAME_PASSCODE`
-- `VOI_LOCKDOWN`
-- `MENGRAM_URL`
-- `MENGRAM_API_KEY`
-
-## Variables
-
-| Placeholder | Description |
-|---|---|
-| `{{HANDLE}}` | Your zo.space handle (replaces `curtastrophe`) |
 
