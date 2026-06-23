@@ -1,6 +1,6 @@
 ---
 backup_type: zospace
-timestamp: 2026-06-23T03:11:36.971Z
+timestamp: 2026-06-23T03:13:16.320Z
 route_count: 132
 ---
 
@@ -1701,240 +1701,6 @@ function ProjectModal({ project, onClose, onSave, columns, priorityColumns, colo
 ## /about-the-build (page, public=true)
 
 ```
-import { useState } from "react";
-
-export default function AboutTheBuild() {
-  const [activeSection, setActiveSection] = useState("overview");
-  const sections = [
-    ["overview", "Overview"],
-    ["zo", "Powered by Zo"],
-    ["stack", "Tech Stack"],
-    ["timeline", "Build Timeline"],
-    ["decisions", "Design Decisions"],
-    ["challenges", "Challenges"],
-    ["credits", "Credits"],
-  ];
-
-  const zoFeatures: Array<[string, string, string]> = [
-    ["🌐", "zo.space hosting", "Entire ZOS experience hosted on zo.space with instant deploys and rollbacks."],
-    ["🗂️", "Space routes", "Every page and API endpoint is a Zo space route. /zos, /trivia, /zo-city, /secret, /about-the-build, /404, plus ~15 API routes."],
-    ["⚡", "Live API endpoints", "/api/zos/now, /api/zos/build-log, /api/zos/signals, /api/x-feed, /api/calendar, /api/projects, /api/blog, /api/contact, /api/trivia/*. All Zo-backed."],
-    ["🤖", "ask/zo voice agent", "Voi-ZOS uses the Zo ask endpoint as a guarded, homepage-only voice-first assistant."],
-    ["💳", "Stripe via Zo", "App Store and Zo Consultation payment links created through Zo's Stripe integration."],
-    ["🔄", "Route history + undo", "Leveraged Zo's built-in route versioning to recover and iterate without fear."],
-    ["🎨", "Space assets", "ZOS logo and wallpaper served directly from Zo space assets."],
-    ["🛠️", "Space settings", "Custom site title, description, favicon, and custom 404 route all configured through Zo."],
-    ["📡", "MCP tooling", "Built using Zo's MCP tools for route creation, code edits, diagnostics, and deployment."],
-  ];
-
-  const content: Record<string, JSX.Element> = {
-    overview: (
-      <div className="atb-text">
-        <div className="atb-hero">ZOS. A personal site rebuilt as an operating system.</div>
-        <h2 className="atb-h2">What is ZOS?</h2>
-        <p>ZOS (ZenOS) is a fully interactive desktop experience built entirely on <a href="https://zo.computer" target="_blank" rel="noopener" className="atb-link">Zo Computer</a> for the Zo Computer Challenge.</p>
-        <p>The name is a play on my handle (<strong>Zenlyte</strong>) and Zo Computer. Pronounced "Zoh-Ess".</p>
-        <p>It's a personal website disguised as an OS. Complete with a boot sequence, role-based access modes, a draggable/resizable window manager, command palette (⌘K), context menus, theme switching, toast notifications, a matrix rain screensaver, multiple easter eggs, mobile responsive design, Stripe payments, live Zo-backed APIs, a voice-first assistant, and 11 fully functional apps.</p>
-        <h2 className="atb-h2">Why an OS?</h2>
-        <p>Most personal websites are pages. I wanted mine to be an <em>experience</em>. Something you explore, not just scroll through. An OS metaphor gives visitors agency: they choose what to open, how to arrange things, what to discover.</p>
-        <p>Every interaction was designed to make you think: \u201cWait, this is a website?\u201d</p>
-        <h2 className="atb-h2">Signature moments</h2>
-        <ul className="atb-list">
-          <li>Press-and-hold anywhere to open a black hole that sucks in floating particles. Release for a big bang.</li>
-          <li>Role-based entry modes change the starter prompts and framing across the OS.</li>
-          <li>Voi-ZOS. A voice-first assistant grounded to the public homepage.</li>
-          <li>Hidden signals, terminal commands, and a secret route for the curious.</li>
-        </ul>
-      </div>
-    ),
-    zo: (
-      <div className="atb-text">
-        <h2 className="atb-h2">Powered by Zo Computer</h2>
-        <p>ZOS isn't just <em>hosted</em> on Zo. It's built end-to-end on Zo's primitives. Here's exactly what was used:</p>
-        <div className="atb-stack-grid">
-          {zoFeatures.map(([icon, name, desc], i) => (
-            <div key={i} className="atb-stack-item">
-              <span className="atb-stack-icon">{icon}</span>
-              <div><div className="atb-stack-name">{name}</div><div className="atb-stack-desc">{desc}</div></div>
-            </div>
-          ))}
-        </div>
-        <h2 className="atb-h2">Why this matters</h2>
-        <p>Zo collapses the usual web stack. Hosting, routing, serverless APIs, static assets, payments, and an AI endpoint. Into a single coherent surface. ZOS leans on that: every feature you interact with, from the window manager down to the voice agent, runs through a Zo primitive.</p>
-      </div>
-    ),
-    stack: (
-      <div className="atb-text">
-        <h2 className="atb-h2">Technology</h2>
-        <div className="atb-stack-grid">
-          {[["\u26A1", "Zo Computer", "Hosting, space routes, APIs, Stripe, ask endpoint, MCP tooling"],
-            ["\u269B\uFE0F", "React + TypeScript", "Component architecture, type safety, hooks-based state"],
-            ["\uD83C\uDFA8", "Custom CSS-in-JS", "Hand-crafted styles with CSS custom properties for theming"],
-            ["\uD83E\uDDE0", "AI-assisted workflow", "AI-driven planning, code generation, and rapid iteration"],
-            ["\uD83D\uDCB3", "Stripe", "Payment links for Zo Consultation and App Store goods"],
-            ["\uD83D\uDD0D", "Custom APIs", "Projects, blog, calendar, contact, trivia, X feed, signals"],
-          ].map(([icon, name, desc], i) => (
-            <div key={i} className="atb-stack-item">
-              <span className="atb-stack-icon">{icon}</span>
-              <div><div className="atb-stack-name">{name}</div><div className="atb-stack-desc">{desc}</div></div>
-            </div>
-          ))}
-        </div>
-        <h2 className="atb-h2">Architecture</h2>
-        <p>ZOS is a single-page React application rendered as a Zo space route. The entire OS. Boot sequence, window manager, all 11 apps, theming, particle system, cursor effects. Lives in one route file.</p>
-        <p>State management uses React hooks only. No external state libraries. The window manager tracks position, size, z-index, and minimized/maximized state per window.</p>
-      </div>
-    ),
-    timeline: (
-      <div className="atb-text">
-        <h2 className="atb-h2">Build Timeline</h2>
-        <div className="atb-timeline">
-          {[["Phase 1", "Foundation", "Boot sequence, role selection, window manager, taskbar, desktop, particles, cursor halo"],
-            ["Phase 2", "Core Apps", "About, Terminal, Projects, Settings (themes + roles)"],
-            ["Phase 3", "Advanced Apps", "Command Centre, Lab (Recruiter Decoder + Signal Hunt), Games"],
-            ["Phase 4", "Polish", "Context menu, command palette, Konami code, window animations, desktop widgets"],
-            ["Phase 5", "Full Suite", "X Feed (Briefings), Book Time, App Store with Stripe"],
-            ["Phase 6", "Screensaver & APIs", "Matrix rain screensaver with idle timer, 3 ZOS API routes"],
-            ["Phase 7", "Easter Eggs", "Hidden /secret route, watermark easter egg, expanded terminal"],
-            ["Phase 8", "Polish", "Toast system, mobile responsive CSS, /about-the-build, custom /404"],
-            ["Phase 9", "Interaction Deepening", "Click-hold black hole + big bang particle physics, larger default windows, doubled particle count"],
-            ["Phase 10", "Voice-First", "Voi-ZOS becomes a real voice agent via ask/zo, strictly scoped to public homepage content"],
-            ["Phase 11", "Presentation", "Powered-by-Zo credits, refreshed branding, favicon/title, submission polish"],
-          ].map(([phase, title, desc], i) => (
-            <div key={i} className="atb-tl-item">
-              <div className="atb-tl-marker"><div className="atb-tl-dot" /><div className="atb-tl-phase">{phase}</div></div>
-              <div className="atb-tl-content"><div className="atb-tl-title">{title}</div><div className="atb-tl-desc">{desc}</div></div>
-            </div>
-          ))}
-        </div>
-      </div>
-    ),
-    decisions: (
-      <div className="atb-text">
-        <h2 className="atb-h2">Design Decisions</h2>
-        <div className="atb-decision">
-          <h3 className="atb-h3">🎨 "Oxidized Future" palette</h3>
-          <p>Warm copper and bone on deep midnight. Inspired by aged metal, weathered leather, and machines that have stories to tell. Avoids the typical "dark mode equals blue" trap.</p>
-        </div>
-        <div className="atb-decision">
-          <h3 className="atb-h3">🖥️ OS metaphor</h3>
-          <p>An OS provides natural affordances. Windows, menus, files. Visitors already understand them. The boot sequence sets expectations. The role selector personalizes the experience.</p>
-        </div>
-        <div className="atb-decision">
-          <h3 className="atb-h3">🎯 Role-based modes</h3>
-          <p>Visitor, Recruiter, Collaborator, Curious Human. Each tailors Voi-ZOS starter prompts and framing without fragmenting the product.</p>
-        </div>
-        <div className="atb-decision">
-          <h3 className="atb-h3">🥚 Easter eggs everywhere</h3>
-          <p>Konami code, secret terminal commands, hidden routes, watermark clicks. Discovery mechanics reward curiosity and make people want to come back.</p>
-        </div>
-        <div className="atb-decision">
-          <h3 className="atb-h3">🔒 Guardrailed voice agent</h3>
-          <p>Voi-ZOS is voice-first, but strictly scoped to public homepage content with server-side rate limits, refusal paths, and structured outputs. Low-cost and safe by default.</p>
-        </div>
-      </div>
-    ),
-    challenges: (
-      <div className="atb-text">
-        <h2 className="atb-h2">Challenges & lessons</h2>
-        <div className="atb-challenge">
-          <h3 className="atb-h3">Dynamic inline styles</h3>
-          <p>Double curly braces were interpreted as template variables in certain contexts. All dynamic positioning moved to refs + effects or CSS classes with data attributes.</p>
-        </div>
-        <div className="atb-challenge">
-          <h3 className="atb-h3">Single-file architecture</h3>
-          <p>The entire OS lives in one route file. Managing 11+ app components, a window manager, and hundreds of CSS rules required disciplined naming and section markers.</p>
-        </div>
-        <div className="atb-challenge">
-          <h3 className="atb-h3">Incremental edits vs. CSS arrays</h3>
-          <p>Incremental code edits tended to corrupt the CSS array. The fix: prefer focused full rewrites for routes with large stylesheet arrays.</p>
-        </div>
-        <div className="atb-challenge">
-          <h3 className="atb-h3">Voice on a budget</h3>
-          <p>Real voice interaction is expensive fast. ZOS uses browser STT + TTS, a tiny curated homepage corpus, a single guarded ask/zo call per finalized question, and cached common answers to stay cheap and safe.</p>
-        </div>
-      </div>
-    ),
-    credits: (
-      <div className="atb-text">
-        <h2 className="atb-h2">Credits</h2>
-        <p><strong>Built by:</strong> Zenlyte (<a href="https://github.com/Zenlyte" target="_blank" rel="noopener" className="atb-link">@Zenlyte</a>)</p>
-        <p><strong>Contact:</strong> <a href="mailto:info@zenlytics.net" className="atb-link">info@zenlytics.net</a></p>
-        <p><strong>Platform:</strong> <a href="https://zo.computer" target="_blank" rel="noopener" className="atb-link">Zo Computer</a></p>
-        <p><strong>Fonts:</strong> Inter, JetBrains Mono, Playfair Display, Space Grotesk</p>
-        <p><strong>Contest:</strong> <a href="https://contra.com/community/topic/zocomputerchallenge/guidelines" target="_blank" rel="noopener" className="atb-link">Zo Computer Challenge</a></p>
-        <div className="atb-thanks">Thanks for exploring ZOS. \u2764\uFE0F</div>
-      </div>
-    ),
-  };
-
-  return (
-    <div className="atb">
-      <style>{ATB_CSS}</style>
-      <div className="atb-nav">
-        <a href="/zos" className="atb-back">\u2190 Back to ZOS</a>
-        <a href="/press" className="atb-back">\ud83d\udcf0 Press Kit</a>
-        <div className="atb-logo">\u26A1 About the Build</div>
-        <div className="atb-tabs">
-          {sections.map(([id, label]) => (
-            <button key={id} className={"atb-tab" + (activeSection === id ? " active" : "")} onClick={() => setActiveSection(id)}>{label}</button>
-          ))}
-        </div>
-      </div>
-      <div className="atb-content">
-        <div className="atb-inner">{content[activeSection]}</div>
-      </div>
-    </div>
-  );
-}
-
-const ATB_CSS = [
-  "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap');",
-  "*{box-sizing:border-box;margin:0;padding:0}",
-  "body{background:#0e0e11;font-family:'Inter',sans-serif;color:#e8e0d4;overflow-x:hidden}",
-  ".atb{min-height:100vh;display:flex}",
-  ".atb-nav{width:260px;min-height:100vh;background:#151519;border-right:1px solid rgba(232,224,212,0.08);padding:24px 16px;display:flex;flex-direction:column;gap:16px;position:fixed;top:0;left:0}",
-  ".atb-back{font-family:'JetBrains Mono',monospace;font-size:12px;color:#c08b5c;text-decoration:none;transition:opacity 0.15s}",
-  ".atb-back:hover{opacity:0.7}",
-  ".atb-logo{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:#e8e0d4;padding-bottom:16px;border-bottom:1px solid rgba(232,224,212,0.08)}",
-  ".atb-tabs{display:flex;flex-direction:column;gap:4px}",
-  ".atb-tab{padding:10px 14px;border-radius:6px;border:none;background:transparent;color:#6b6b78;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;text-align:left;transition:all 0.15s}",
-  ".atb-tab:hover{color:#e8e0d4;background:rgba(232,224,212,0.04)}",
-  ".atb-tab.active{color:#c08b5c;background:rgba(192,139,92,0.1)}",
-  ".atb-content{margin-left:260px;flex:1;padding:48px;max-width:860px}",
-  ".atb-inner{animation:atbFade 0.3s ease}",
-  "@keyframes atbFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}",
-  ".atb-hero{font-family:'Playfair Display',serif;font-style:italic;font-size:22px;color:#c08b5c;margin-bottom:24px;padding:16px 18px;border-left:3px solid #c08b5c;background:rgba(192,139,92,0.06);border-radius:0 8px 8px 0}",
-  ".atb-text p{font-size:15px;line-height:1.8;color:#94938e;margin-bottom:14px}",
-  ".atb-text strong{color:#e8e0d4}",
-  ".atb-text em{color:#c08b5c;font-style:italic}",
-  ".atb-list{list-style:none;padding:0;margin:8px 0 18px}",
-  ".atb-list li{padding:8px 0 8px 22px;position:relative;color:#94938e;font-size:14px;line-height:1.7}",
-  ".atb-list li::before{content:'\u25B8';position:absolute;left:0;color:#c08b5c}",
-  ".atb-link{color:#c08b5c;text-decoration:none;border-bottom:1px solid rgba(192,139,92,0.3);transition:border-color 0.15s}",
-  ".atb-link:hover{border-color:#c08b5c}",
-  ".atb-h2{font-family:'Playfair Display',serif;font-size:24px;color:#e8e0d4;margin:32px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(232,224,212,0.08)}",
-  ".atb-h2:first-child{margin-top:0}",
-  ".atb-h3{font-family:'Space Grotesk',sans-serif;font-size:16px;color:#e8e0d4;margin-bottom:8px}",
-  ".atb-stack-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}",
-  ".atb-stack-item{display:flex;align-items:flex-start;gap:14px;padding:14px;border-radius:8px;border:1px solid rgba(232,224,212,0.08);background:rgba(232,224,212,0.02);transition:all 0.2s}",
-  ".atb-stack-item:hover{border-color:rgba(192,139,92,0.3);background:rgba(192,139,92,0.04)}",
-  ".atb-stack-icon{font-size:22px;width:32px;text-align:center;flex-shrink:0;padding-top:2px}",
-  ".atb-stack-name{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:#e8e0d4;margin-bottom:3px}",
-  ".atb-stack-desc{font-size:12px;color:#6b6b78;line-height:1.5}",
-  ".atb-timeline{display:flex;flex-direction:column;gap:0;padding-left:20px;border-left:2px solid rgba(232,224,212,0.08)}",
-  ".atb-tl-item{display:flex;gap:16px;padding:16px 0}",
-  ".atb-tl-marker{display:flex;flex-direction:column;align-items:center;min-width:60px;position:relative}",
-  ".atb-tl-dot{width:12px;height:12px;border-radius:50%;background:#c08b5c;border:2px solid #151519;position:absolute;left:-27px;top:4px;box-shadow:0 0 8px rgba(192,139,92,0.4)}",
-  ".atb-tl-phase{font-family:'JetBrains Mono',monospace;font-size:10px;color:#6b6b78;text-transform:uppercase;letter-spacing:1px}",
-  ".atb-tl-content{flex:1}",
-  ".atb-tl-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:#e8e0d4;margin-bottom:4px}",
-  ".atb-tl-desc{font-size:13px;color:#94938e;line-height:1.6}",
-  ".atb-decision,.atb-challenge{padding:16px;border-radius:8px;border:1px solid rgba(232,224,212,0.08);background:rgba(232,224,212,0.02);margin-bottom:14px}",
-  ".atb-thanks{margin-top:32px;padding:20px;border-radius:10px;background:rgba(192,139,92,0.08);border:1px solid rgba(192,139,92,0.2);text-align:center;font-family:'Playfair Display',serif;font-size:18px;color:#c08b5c}",
-  "@media(max-width:768px){.atb-nav{width:100%;min-height:auto;position:static;border-right:none;border-bottom:1px solid rgba(232,224,212,0.08)}.atb-tabs{flex-direction:row;flex-wrap:wrap}.atb-content{margin-left:0;padding:24px}}",
-].join("\
-");
 
 ```
 
@@ -2215,23 +1981,6 @@ export default async (c: Context) => {
 ## /api/benchmarks/refresh (api, public=true)
 
 ```
-import type { Context } from "hono";
-import { spawn } from "child_process";
-
-export default async (c: Context) => {
-  const secret = c.req.header("Authorization")?.replace("Bearer ", "");
-  if (secret !== process.env.BEARER_SECRET) {
-    return c.json({ error: "Unauthorized" }, 401);
-  }
-
-  // Spawn refresh script non-blocking
-  spawn("python3", ["/home/workspace/Scripts/fetch_aa_benchmarks.py"], {
-    detached: true,
-    stdio: "ignore",
-  }).unref();
-
-  return c.json({ status: "refresh started" });
-};
 
 ```
 
@@ -2398,94 +2147,7 @@ export default async (c: Context) => {
 ## /api/blog/:slug (api, public=true)
 
 ```
-import type { Context } from "hono";
-import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
-import { join } from "node:path";
 
-// Share the same parsing logic
-function parseMarkdown(filePath: string): { data: any; content: string } {
-  const fileContent = readFileSync(filePath, "utf-8");
-  const frontmatterRegex = /^---\
-([\s\S]*?)\
----\
-([\s\S]*)$/;
-  const match = fileContent.match(frontmatterRegex);
-  
-  if (!match) {
-    return { data: {}, content: fileContent };
-  }
-  
-  const frontmatterString = match[1];
-  const content = match[2];
-  
-  const data: any = {};
-  frontmatterString.split("\
-").forEach((line) => {
-    const colonIndex = line.indexOf(":");
-    if (colonIndex === -1) return;
-    const key = line.slice(0, colonIndex).trim();
-    let value = line.slice(colonIndex + 1).trim();
-    
-    // Parse arrays
-    if (value.startsWith("[") && value.endsWith("]")) {
-      try {
-        value = JSON.parse(value.replace(/'/g, '"'));
-      } catch (e) {
-        value = value.slice(1, -1).split(",").map((s) => s.trim().replace(/^["']|["']$/g, ""));
-      }
-    } else {
-      // Remove quotes from string
-      value = value.replace(/^["']|["']$/g, "");
-    }
-    data[key] = value;
-  });
-  
-  return { data, content: content.trim() };
-}
-
-function findPostBySlug(slug: string) {
-  const baseDir = "/home/workspace/Documents/blog";
-  const searchDirs = [
-    { path: join(baseDir, "articles"), type: "article" },
-    { path: join(baseDir, "notes"), type: "note" }
-  ];
-
-  for (const dir of searchDirs) {
-    if (!existsSync(dir.path)) continue;
-    const files = readdirSync(dir.path);
-    for (const file of files) {
-      if (!file.endsWith(".md")) continue;
-      const fileSlug = file.replace(/\.md$/, "");
-      if (fileSlug === slug) {
-        const fullPath = join(dir.path, file);
-        const { data, content } = parseMarkdown(fullPath);
-        return {
-          slug,
-          title: data.title || slug,
-          excerpt: data.excerpt || "",
-          date: data.date || new Date().toISOString().split("T")[0],
-          tags: Array.isArray(data.tags) ? data.tags : [],
-          readTime: data.readTime || "5 min read",
-          coverGradient: data.coverGradient || "from-[#06b6d4] via-[#6366f1] to-[#818cf8]",
-          type: dir.type,
-          content
-        };
-      }
-    }
-  }
-  return null;
-}
-
-export default async (c: Context) => {
-  const slug = c.req.param("slug");
-  const post = findPostBySlug(slug);
-
-  if (!post) {
-    return c.json({ error: "Post not found" }, 404);
-  }
-
-  return c.json({ post });
-};
 ```
 
 ## /api/buildin/callback (api, public=true)
@@ -2605,6 +2267,37 @@ export default async (c: Context) => {
 ## /api/buildin/status (api, public=true)
 
 ```
+import type { Context } from "hono";
+
+export default async (c: Context) => {
+  const tokenFile = "/home/workspace/Data/buildin/token.json";
+  const { readFileSync, existsSync } = await import("fs");
+  
+  if (!existsSync(tokenFile)) {
+    return c.json({ connected: false });
+  }
+  
+  try {
+    const tokenData = JSON.parse(readFileSync(tokenFile, "utf-8"));
+    const now = Date.now();
+    
+    // Check if token is expired (with 5 min buffer)
+    if (tokenData.expires_at && tokenData.expires_at < now - 300000) {
+      return c.json({ connected: false, reason: "expired" });
+    }
+    
+    // Get accessible spaces
+    const res = await fetch("https://api.buildin.ai/api/v1/spaces", {
+      headers: { Authorization: `Bearer ${tokenData.access_token}` }
+    });
+    
+    const spaces = res.ok ? (await res.json()).data || [] : [];
+    
+    return c.json({ connected: true, spaces });
+  } catch {
+    return c.json({ connected: false });
+  }
+}
 
 ```
 
@@ -2975,7 +2668,33 @@ export default (c: Context) => {
 ## /api/career-ops/scan (api, public=true)
 
 ```
+import type { Context } from "hono";
+import { spawn } from "node:child_process";
 
+export default async (c: Context) => {
+  if (c.req.method !== "POST") return c.json({ error: "Method not allowed" }, 405);
+
+  const args = await c.req.json().catch(() => ({} as any));
+  const mode = args?.mode === "dry-run" ? "dry-run" : "apply";
+
+  const child = spawn("bun", ["/home/workspace/Skills/career-ops/scripts/scan.ts", mode], {
+    cwd: "/home/workspace",
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+
+  let stdout = "";
+  let stderr = "";
+  child.stdout.on("data", d => stdout += d.toString());
+  child.stderr.on("data", d => stderr += d.toString());
+
+  const code = await new Promise<number>(resolve => child.on("close", resolve));
+  if (code !== 0) return c.json({ error: "Scan failed", stderr }, 500);
+  try {
+    return c.json(JSON.parse(stdout));
+  } catch {
+    return c.json({ ok: true, raw: stdout, stderr });
+  }
+};
 ```
 
 ## /api/career-ops/scan-history (api, public=true)
@@ -5832,408 +5551,94 @@ export default async (c: Context) => {
 ## /api/share/:id/download (api, public=true)
 
 ```
+import type { Context } from "hono";
+import { readFile, writeFile } from "fs/promises";
+import { join } from "path";
 
+const SHARES_FILE = "/home/workspace/Data/shares.json";
+const SHARED_DIR = "/home/workspace/Data/shared-files";
+
+interface Lead {
+  name: string;
+  email: string;
+  timestamp: string;
+  ip?: string;
+}
+
+interface Share {
+  id: string;
+  fileName: string;
+  originalPath: string;
+  storedPath: string;
+  mimeType: string;
+  fileSize: number;
+  createdAt: string;
+  requireLead: boolean;
+  allowPreview: boolean;
+  downloads: number;
+  leads: Lead[];
+}
+
+async function loadShares(): Promise<Share[]> {
+  try {
+    const data = await readFile(SHARES_FILE, "utf-8");
+    return JSON.parse(data);
+  } catch {
+    return [];
+  }
+}
+
+async function saveShares(shares: Share[]) {
+  await writeFile(SHARES_FILE, JSON.stringify(shares, null, 2));
+}
+
+export default async (c: Context) => {
+  if (c.req.method !== "POST") return c.json({ error: "Method not allowed" }, 405);
+
+  const id = c.req.param("id");
+  const shares = await loadShares();
+  const share = shares.find(s => s.id === id);
+  if (!share) return c.json({ error: "Share not found" }, 404);
+
+  if (share.requireLead) {
+    const body = await c.req.json();
+    const { name, email } = body;
+    if (!name || !email) return c.json({ error: "Name and email are required" }, 400);
+
+    share.leads.push({
+      name,
+      email,
+      timestamp: new Date().toISOString(),
+      ip: c.req.header("x-forwarded-for") || c.req.header("x-real-ip") || "unknown",
+    });
+  }
+
+  share.downloads++;
+  await saveShares(shares);
+
+  const filePath = join(SHARED_DIR, share.storedPath);
+  const fileData = await readFile(filePath);
+
+  return new Response(fileData, {
+    headers: {
+      "Content-Type": share.mimeType,
+      "Content-Disposition": `attachment; filename="${share.fileName}"`,
+      "Content-Length": String(share.fileSize),
+    },
+  });
+};
 ```
 
 ## /api/sites (api, public=true)
 
 ```
-import type { Context } from "hono";
 
-// Query Zo API for real space routes (Sites/Spaces)
-export default async (c: Context) => {
-  try {
-    const token = process.env.ZO_CLIENT_IDENTITY_TOKEN;
-    if (!token) {
-      return c.json({ error: "Missing Zo API token" }, 500);
-    }
-    
-    // Call Zo's internal spaces/routes API
-    const response = await fetch("https://api.zo.computer/v1/spaces/curtastrophe/routes", {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
-      }
-    });
-    
-    if (!response.ok) {
-      return c.json({ 
-        routes: [], 
-        total: 0,
-        error: "Zo API unavailable"
-      });
-    }
-    
-    const data = await response.json();
-    const routes = data.routes?.map((route: any) => ({
-      path: route.path,
-      route_type: route.route_type,
-      public: route.public
-    })) || [];
-    
-    return c.json({
-      routes,
-      total: routes.length,
-      pages: routes.filter((r: any) => r.route_type === "page").length,
-      apis: routes.filter((r: any) => r.route_type === "api").length
-    });
-  } catch (err) {
-    return c.json({ 
-      routes: [], 
-      total: 0,
-      error: "Failed to fetch sites"
-    }, 500);
-  }
-};
 ```
 
 ## /api/skills-gallery (api, public=true)
 
 ```
-import type { Context } from "hono";
-import { readdir, readFile, stat } from "fs/promises";
-import { join, relative } from "path";
 
-const SKILLS_DIR = "/home/workspace/Skills";
-
-function requireAuth(c: Context): boolean {
-  const zoUser = c.req.header("x-zo-user");
-  if (zoUser) return true;
-  const cookie = c.req.header("cookie") || "";
-  if (cookie.includes("zo_session") || cookie.includes("auth_token")) return true;
-  const referer = c.req.header("referer") || "";
-  if (referer.includes("zo.space") || referer.includes("zo.computer") || referer.includes("localhost")) return true;
-  const auth = c.req.header("authorization");
-  if (auth?.startsWith("Bearer ") && process.env.ZO_API_KEY && auth.slice(7) === process.env.ZO_API_KEY) return true;
-  return false;
-}
-
-// Simple frontmatter parser (no external deps)
-function parseFrontmatter(raw: string): { data: Record<string, any>; content: string } {
-  const s = raw.replace(/\r\
-/g, "\
-");
-  if (!s.startsWith("---\
-")) return { data: {}, content: raw };
-  const end = s.indexOf("\
----\
-", 4);
-  if (end === -1) return { data: {}, content: raw };
-  const fmBlock = s.slice(4, end);
-  const content = s.slice(end + 5);
-  const data: Record<string, any> = {};
-
-  let currentKey = "";
-  let inArray = false;
-  let inNestedObj = "";
-  const nestedData: Record<string, Record<string, any>> = {};
-
-  for (const line of fmBlock.split("\
-")) {
-    // Nested object key (e.g. "metadata:")
-    const nestedMatch = line.match(/^([a-zA-Z_][a-zA-Z0-9_-]*):\s*$/);
-    if (nestedMatch && !inArray) {
-      inNestedObj = nestedMatch[1];
-      nestedData[inNestedObj] = nestedData[inNestedObj] || {};
-      currentKey = "";
-      continue;
-    }
-
-    // Nested key-value (e.g. "  author: foo")
-    if (inNestedObj && line.match(/^\s{2,}/)) {
-      const kvMatch = line.match(/^\s+([a-zA-Z_][a-zA-Z0-9_-]*):\s*(.+)$/);
-      if (kvMatch) {
-        nestedData[inNestedObj][kvMatch[1]] = parseYamlValue(kvMatch[2].trim());
-        continue;
-      }
-      // Nested array items
-      const arrMatch = line.match(/^\s+-\s*(.+)$/);
-      if (arrMatch && currentKey) {
-        const arr = nestedData[inNestedObj][currentKey];
-        if (Array.isArray(arr)) arr.push(stripQuotes(arrMatch[1].trim()));
-        continue;
-      }
-      // Nested array start
-      const nestedArrStart = line.match(/^\s+([a-zA-Z_][a-zA-Z0-9_-]*):\s*$/);
-      if (nestedArrStart) {
-        currentKey = nestedArrStart[1];
-        nestedData[inNestedObj][currentKey] = [];
-        continue;
-      }
-      continue;
-    }
-
-    inNestedObj = "";
-
-    // Top-level array item
-    if (inArray && line.match(/^\s*-\s/)) {
-      const val = line.replace(/^\s*-\s*/, "").trim();
-      if (Array.isArray(data[currentKey])) {
-        data[currentKey].push(stripQuotes(val));
-      }
-      continue;
-    }
-
-    if (inArray && !line.match(/^\s*-\s/) && line.trim() !== "") {
-      inArray = false;
-    }
-
-    // Top-level key-value
-    const kvMatch = line.match(/^([a-zA-Z_][a-zA-Z0-9_-]*):\s*(.*)$/);
-    if (kvMatch) {
-      const key = kvMatch[1];
-      const rawVal = kvMatch[2].trim();
-      currentKey = key;
-
-      if (rawVal === "") {
-        // Could be start of array or nested object
-        data[key] = [];
-        inArray = true;
-      } else {
-        data[key] = parseYamlValue(rawVal);
-        inArray = false;
-      }
-    }
-  }
-
-  // Merge nested objects
-  for (const [k, v] of Object.entries(nestedData)) {
-    data[k] = v;
-  }
-
-  return { data, content };
-}
-
-function parseYamlValue(raw: string): any {
-  // Inline array: ["a", "b", "c"]
-  if (raw.startsWith("[") && raw.endsWith("]")) {
-    const inner = raw.slice(1, -1);
-    return inner.split(",").map((s) => stripQuotes(s.trim())).filter(Boolean);
-  }
-  if (raw === "true") return true;
-  if (raw === "false") return false;
-  if (/^\d+$/.test(raw)) return parseInt(raw, 10);
-  return stripQuotes(raw);
-}
-
-function stripQuotes(s: string): string {
-  const t = s.trim();
-  if ((t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'"))) {
-    return t.slice(1, -1);
-  }
-  return t;
-}
-
-function stringifyFrontmatter(data: Record<string, any>, content: string): string {
-  const lines: string[] = ["---"];
-  for (const [key, val] of Object.entries(data)) {
-    if (val === undefined || val === null) continue;
-    if (Array.isArray(val)) {
-      lines.push(`${key}:`);
-      for (const item of val) lines.push(`  - ${JSON.stringify(item)}`);
-    } else if (typeof val === "object") {
-      lines.push(`${key}:`);
-      for (const [k, v] of Object.entries(val)) {
-        if (Array.isArray(v)) {
-          lines.push(`  ${k}:`);
-          for (const item of v as any[]) lines.push(`    - ${JSON.stringify(item)}`);
-        } else {
-          lines.push(`  ${k}: ${JSON.stringify(v)}`);
-        }
-      }
-    } else {
-      lines.push(`${key}: ${typeof val === "string" ? JSON.stringify(val) : val}`);
-    }
-  }
-  lines.push("---");
-  return lines.join("\
-") + "\
-" + content;
-}
-
-async function findSkillFiles(dir: string): Promise<string[]> {
-  const results: string[] = [];
-  try {
-    const entries = await readdir(dir, { withFileTypes: true });
-    for (const entry of entries) {
-      if (entry.name === "node_modules" || entry.name === ".git" || entry.name === "Trash") continue;
-      const full = join(dir, entry.name);
-      if (entry.isDirectory()) {
-        const skillFile = join(full, "SKILL.md");
-        try {
-          const s = await stat(skillFile);
-          if (s.isFile()) results.push(skillFile);
-        } catch {}
-        const nested = await findSkillFiles(full);
-        results.push(...nested);
-      }
-    }
-  } catch {}
-  return results;
-}
-
-function normalizeStringArray(value: unknown): string[] {
-  if (!Array.isArray(value)) return [];
-  return value.map((x) => (typeof x === "string" ? x.trim() : "")).filter((x) => x.length > 0);
-}
-
-function asNonEmptyString(value: unknown): string | null {
-  if (typeof value !== "string") return null;
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : null;
-}
-
-function fallbackEmojis(name: string, description: string, tags: string[]): string[] {
-  const t = [name.toLowerCase(), description.toLowerCase(), ...tags.map((x) => x.toLowerCase())];
-  const emojis: string[] = [];
-  const add = (e: string) => { if (emojis.length < 3 && !emojis.includes(e)) emojis.push(e); };
-  if (t.some((x) => ["write","edit","text","blog"].some((k) => x.includes(k)))) add("\ud83d\udcdd");
-  if (t.some((x) => ["code","dev","script","function"].some((k) => x.includes(k)))) add("\ud83d\udcbb");
-  if (t.some((x) => ["image","photo","picture","draw"].some((k) => x.includes(k)))) add("\ud83c\udfa8");
-  if (t.some((x) => ["email","message","contact"].some((k) => x.includes(k)))) add("\ud83d\udce7");
-  if (t.some((x) => ["data","csv","json","analyze"].some((k) => x.includes(k)))) add("\ud83d\udcca");
-  if (t.some((x) => ["web","site","html","css"].some((k) => x.includes(k)))) add("\ud83c\udf10");
-  if (t.some((x) => ["audio","video","media"].some((k) => x.includes(k)))) add("\ud83c\udfac");
-  if (t.some((x) => ["chat","conversation","ai","bot"].some((k) => x.includes(k)))) add("\ud83e\udd16");
-  if (t.some((x) => ["research","news"].some((k) => x.includes(k)))) add("\ud83d\udd0e");
-  if (t.some((x) => ["setup","install","config"].some((k) => x.includes(k)))) add("\ud83d\udee0\ufe0f");
-  if (t.some((x) => ["productivity","planning"].some((k) => x.includes(k)))) add("\ud83e\udde0");
-  return emojis;
-}
-
-export default async (c: Context) => {
-  if (!requireAuth(c)) return c.json({ error: "Unauthorized" }, 401);
-
-  const url = new URL(c.req.url);
-  const pathParam = url.searchParams.get("path");
-  const action = url.searchParams.get("action");
-
-  // GET ?path=<encoded> - single skill content
-  if (pathParam && c.req.method === "GET") {
-    const decodedPath = decodeURIComponent(pathParam);
-    if (!decodedPath.startsWith("/home/workspace/Skills/") || !decodedPath.endsWith("/SKILL.md")) {
-      return c.json({ error: "Invalid path" }, 400);
-    }
-    try {
-      const raw = await readFile(decodedPath, "utf-8");
-      const parsed = parseFrontmatter(raw);
-      return c.json({ content: parsed.content, raw: parsed.content });
-    } catch (e: any) {
-      return c.json({ error: e.message || "Failed to read file" }, 500);
-    }
-  }
-
-  // POST ?action=update - update single skill frontmatter
-  if (c.req.method === "POST" && action === "update") {
-    try {
-      const { path, tags, category, description, emojis } = await c.req.json();
-      if (!path) return c.json({ error: "path is required" }, 400);
-      try { await stat(path); } catch { return c.json({ error: "File not found" }, 404); }
-      const raw = await readFile(path, "utf-8");
-      const parsed = parseFrontmatter(raw);
-      if (tags) parsed.data.tags = tags;
-      if (category) parsed.data.category = category;
-      if (description) parsed.data.description = description;
-      if (emojis) parsed.data.emojis = emojis;
-      const newContent = stringifyFrontmatter(parsed.data, parsed.content);
-      await Bun.write(path, newContent);
-      return c.json({ success: true });
-    } catch (err: any) {
-      return c.json({ error: err.message || "Failed to update" }, 500);
-    }
-  }
-
-  // POST ?action=batch-preview or batch-apply
-  if (c.req.method === "POST" && (action === "batch-preview" || action === "batch-apply")) {
-    const body = await c.req.json();
-    const { op, from, to, value } = body;
-    const validOps = ["category_rename", "category_delete", "tag_rename", "tag_delete"];
-    if (!op || !validOps.includes(op)) return c.json({ error: "Invalid operation" }, 400);
-    const norm = (s: string) => s.trim().toLowerCase();
-
-    try {
-      const files = await findSkillFiles(SKILLS_DIR);
-      const changes: any[] = [];
-      let updated = 0, skipped = 0;
-      const errors: string[] = [];
-
-      for (const abs of files) {
-        try {
-          const raw = await readFile(abs, "utf-8");
-          const parsed = parseFrontmatter(raw);
-          const before = { category: parsed.data.category, tags: parsed.data.tags ? [...parsed.data.tags] : [] };
-          const newData = { ...parsed.data };
-          let willChange = false;
-
-          switch (op) {
-            case "category_rename":
-              if (norm(parsed.data.category || "") === norm(from)) { newData.category = to; willChange = true; }
-              break;
-            case "category_delete":
-              if (norm(parsed.data.category || "") === norm(value)) { newData.category = "Uncategorized"; willChange = true; }
-              break;
-            case "tag_rename":
-              if (Array.isArray(parsed.data.tags)) {
-                newData.tags = parsed.data.tags.map((t: string) => norm(t) === norm(from) ? to : t);
-                if (JSON.stringify(parsed.data.tags) !== JSON.stringify(newData.tags)) willChange = true;
-              }
-              break;
-            case "tag_delete":
-              if (Array.isArray(parsed.data.tags)) {
-                newData.tags = parsed.data.tags.filter((t: string) => norm(t) !== norm(value));
-                if (JSON.stringify(parsed.data.tags) !== JSON.stringify(newData.tags)) willChange = true;
-              }
-              break;
-          }
-
-          if (willChange) {
-            if (action === "batch-apply") {
-              const nc = stringifyFrontmatter(newData, parsed.content);
-              await Bun.write(abs, nc);
-              updated++;
-            } else {
-              changes.push({ path: abs, filename: relative(SKILLS_DIR, abs), before, after: { category: newData.category, tags: newData.tags } });
-            }
-          } else {
-            skipped++;
-          }
-        } catch (err: any) {
-          errors.push(`${relative(SKILLS_DIR, abs)}: ${err.message}`);
-        }
-      }
-
-      if (action === "batch-apply") return c.json({ updated, skipped, errors: errors.length ? errors : undefined });
-      return c.json({ op, totalFiles: files.length, matchedFiles: changes.length, changes });
-    } catch (err: any) {
-      return c.json({ error: err.message || "Batch operation failed" }, 500);
-    }
-  }
-
-  // Default: GET - list all skills
-  try {
-    const files = await findSkillFiles(SKILLS_DIR);
-    const skills = await Promise.all(files.map(async (abs) => {
-      const raw = await readFile(abs, "utf-8");
-      const { data } = parseFrontmatter(raw);
-      const filename = relative(SKILLS_DIR, abs);
-      const name = asNonEmptyString(data.name) || asNonEmptyString(data.title) || filename.replace(/\/SKILL\.md$/i, "");
-      const description = asNonEmptyString(data.description) || "";
-      const tags = normalizeStringArray(data.tags);
-      const category = asNonEmptyString(data.category) || "Uncategorized";
-      const tool = Boolean(data.tool);
-      const explicitEmojis = normalizeStringArray(data.emojis).length > 0
-        ? normalizeStringArray(data.emojis)
-        : normalizeStringArray(data?.metadata?.emojis);
-      const emojis = explicitEmojis.length > 0 ? explicitEmojis.slice(0, 3) : fallbackEmojis(name, description, tags);
-      return { path: abs, filename, name, description, tags, category, emojis, tool };
-    }));
-    const categories = [...new Set(skills.map((s) => s.category))].sort();
-    const allTags = [...new Set(skills.flatMap((s) => s.tags))].sort();
-    return c.json({ skills, categories, tags: allTags });
-  } catch (err: any) {
-    return c.json({ error: err.message || "Failed to read skills" }, 500);
-  }
-};
 ```
 
 ## /api/speech-game-auth (api, public=true)
@@ -7131,33 +6536,7 @@ export default async (c: Context) => {
 ## /api/trivia/dates (api, public=true)
 
 ```
-import type { Context } from "hono";
-import { Database } from "bun:sqlite";
 
-const DB_PATH = "/home/workspace/Projects/zo-trivia/trivia.db";
-
-export default async (c: Context) => {
-  try {
-    const db = new Database(DB_PATH);
-    
-    const query = db.query(`
-      SELECT play_date FROM questions ORDER BY play_date ASC
-    `);
-    
-    const rows = query.all() as any[];
-    const dates = rows.map(r => r.play_date);
-    
-    return c.json({ 
-      dates,
-      count: dates.length,
-      first_date: dates[0] || null,
-      last_date: dates[dates.length - 1] || null
-    });
-  } catch (error) {
-    console.error("Trivia dates API error:", error);
-    return c.json({ error: "Internal server error" }, 500);
-  }
-};
 ```
 
 ## /api/trivia/leaderboard (api, public=true)
@@ -7529,100 +6908,7 @@ export default async (c: Context) => {
 ## /api/twinmind (api, public=true)
 
 ```
-/**
- * TwinMind Synthesis API - Phase 3.3
- * Provides meeting insights and action items from TwinMind recordings
- * Secured with X-Zo-User header check
- */
 
-import type { Context } from "hono";
-
-// Security check - require X-Zo-User header or Bearer token
-function isAuthenticated(c: Context): boolean {
-  const zoUser = c.req.header("X-Zo-User");
-  if (zoUser) return true;
-  const auth = c.req.header("Authorization") || "";
-  if (auth.startsWith("Bearer ")) {
-    const token = auth.slice(7);
-    const validToken = process.env.ZO_API_KEY;
-    if (validToken && token === validToken) return true;
-  }
-  return false;
-}
-
-// Mock TwinMind data based on family-log.md action items
-// In production, this would connect to TwinMind MCP or API
-const mockTwinMindData = {
-  recentMeetings: [
-    {
-      id: "tm-2026-03-11",
-      title: "Insurance Comparison Session",
-      date: "2026-03-11",
-      actionItems: [
-        "Contact insurance providers (Cornerstone, Drayden, Western Financial, ACI)",
-        "Verify at-fault status of 2019 repair",
-        "Confirm license dates (GDL/Class 5)",
-        "Correct address on application"
-      ]
-    },
-    {
-      id: "tm-2026-03-11-outing",
-      title: "Mar 11 Outing Recap",
-      date: "2026-03-11",
-      actionItems: [
-        "Return items from outing",
-        "Ask Nespresso for pod recycling bag",
-        "Follow up on Shoppers $20 points redemption"
-      ]
-    },
-    {
-      id: "tm-2026-03-10",
-      title: "Benefits & Scheduling",
-      date: "2026-03-10",
-      actionItems: [
-        "Submit 'other coverage' details for insurance claim",
-        "Book Jessica's eye exam (due March 31)",
-        "Check closet for dad's laser level"
-      ]
-    }
-  ],
-  stats: {
-    totalMeetings: 3,
-    totalActionItems: 10,
-    completedItems: 1,
-    pendingItems: 9
-  }
-};
-
-export default async (c: Context) => {
-  if (!isAuthenticated(c)) {
-    return c.json({ error: "Unauthorized - Authentication required" }, 401);
-  }
-  
-  try {
-    // In a full implementation, this would:
-    // 1. Query TwinMind MCP for recent meetings
-    // 2. Parse transcripts for action items
-    // 3. Sync with family-log.md
-    
-    // For now, return structured mock data that mirrors TwinMind format
-    return c.json({
-      success: true,
-      timestamp: new Date().toISOString(),
-      recentMeetings: mockTwinMindData.recentMeetings,
-      stats: mockTwinMindData.stats,
-      source: "twinmind-synthesis",
-      note: "Connected to TwinMind MCP - displaying recent meeting insights"
-    });
-    
-  } catch (error) {
-    console.error("TwinMind API error:", error);
-    return c.json({ 
-      error: "Failed to fetch TwinMind data",
-      details: error instanceof Error ? error.message : String(error)
-    }, 500);
-  }
-};
 ```
 
 ## /api/twinmind-callback (api, public=true)
@@ -8537,30 +7823,7 @@ Skill file not found.", 500);
 ## /api/zo-space-theme-gallery/skill (api, public=true)
 
 ```
-import type { Context } from "hono";
-import { readFileSync } from "fs";
 
-const SKILL_PATH = "/home/workspace/Skills/zo-space-themer/SKILL.md";
-
-export default (c: Context) => {
-  c.header("Access-Control-Allow-Origin", "*");
-  c.header("Access-Control-Allow-Methods", "GET, OPTIONS");
-  c.header("Access-Control-Allow-Headers", "Accept, Content-Type");
-  c.header("Content-Type", "text/markdown; charset=utf-8");
-
-  if (c.req.method === "OPTIONS") {
-    return c.text("", 204);
-  }
-
-  try {
-    const skillContent = readFileSync(SKILL_PATH, "utf-8");
-    return c.text(skillContent);
-  } catch {
-    return c.text("# Skill not found\
-\
-The zo-space-themer skill could not be loaded.", 404);
-  }
-};
 ```
 
 ## /api/zoboard/* (api, public=true)
@@ -8972,6 +8235,26 @@ export default async (c: Context) => {
 ## /api/zos/build-log (api, public=true)
 
 ```
+import type { Context } from "hono";
+
+export default (c: Context) => {
+  return c.json({
+    project: "ZOS (ZenOS)",
+    version: "1.0.0",
+    build_phases: [
+      { phase: 1, name: "Foundation", features: ["Boot sequence", "Role selection", "Window manager", "Taskbar", "Desktop icons", "Particles", "Cursor halo"], status: "complete" },
+      { phase: 2, name: "Core Apps", features: ["About (interactive file nav)", "Terminal", "Projects (API-powered)", "Settings (themes + roles)"], status: "complete" },
+      { phase: 3, name: "Advanced Apps", features: ["Command Centre", "Lab (Recruiter Decoder + Signal Hunt)", "Snake Game"], status: "complete" },
+      { phase: 4, name: "Polish", features: ["Context menu", "Command palette", "Konami code", "Window animations", "Desktop widgets"], status: "complete" },
+      { phase: 5, name: "Full Suite", features: ["Briefings (calendar feed)", "Book Time (booking widget)", "App Store (Stripe integration)"], status: "complete" },
+      { phase: 6, name: "Meta", features: ["About the Build page", "Custom 404", "Live API routes", "Screensaver", "Toast notifications"], status: "complete" }
+    ],
+    tech_stack: ["Zo Computer", "React", "TypeScript", "Stripe", "Custom CSS-in-JS"],
+    total_apps: 10,
+    total_routes: 6,
+    stripe_products: 2
+  });
+};
 
 ```
 
@@ -11167,6 +10450,90 @@ function StatCard({ title, value, icon, color }: { title: string, value: any, ic
 ## /data/zo-trivia/api/query (api, public=true)
 
 ```
+import type { Context } from "hono";
+import { Database } from "bun:sqlite";
+
+const DB_PATH = "/home/workspace/Data/zo-trivia/source/trivia.db";
+
+export default async (c: Context) => {
+  const query = c.req.query("q");
+  
+  try {
+    const db = new Database(DB_PATH, { readonly: true });
+    
+    switch (query) {
+      case "stats": {
+        const totalQuestions = db.query("SELECT COUNT(*) as count FROM questions").get() as { count: number };
+        const totalPlays = db.query("SELECT COUNT(*) as count FROM leaderboard").get() as { count: number };
+        const uniquePlayers = db.query("SELECT COUNT(DISTINCT user_handle) as count FROM leaderboard").get() as { count: number };
+        const accuracy = db.query("SELECT ROUND(100.0 * SUM(is_correct) / COUNT(*), 1) as pct FROM leaderboard").get() as { pct: number };
+        const maxStreak = db.query("SELECT MAX(streak) as max FROM leaderboard").get() as { max: number };
+        const dateRange = db.query("SELECT MIN(play_date) as start, MAX(play_date) as end FROM questions").get() as { start: string; end: string };
+        
+        db.close();
+        return c.json({
+          totalQuestions: totalQuestions.count,
+          totalPlays: totalPlays.count,
+          uniquePlayers: uniquePlayers.count,
+          accuracy: accuracy.pct || 0,
+          maxStreak: maxStreak.max || 0,
+          dateRange
+        });
+      }
+      
+      case "plays-by-date": {
+        const rows = db.query(`
+          SELECT strftime("%Y-%m-%d", played_at) as date, COUNT(*) as plays, SUM(is_correct) as correct
+          FROM leaderboard
+          GROUP BY strftime("%Y-%m-%d", played_at)
+          ORDER BY date
+        `).all() as Array<{ date: string; plays: number; correct: number }>;
+        db.close();
+        return c.json(rows);
+      }
+      
+      case "questions-by-date": {
+        const rows = db.query(`
+          SELECT play_date as date, COUNT(*) as count
+          FROM questions
+          GROUP BY play_date
+          ORDER BY date
+        `).all() as Array<{ date: string; count: number }>;
+        db.close();
+        return c.json(rows);
+      }
+      
+      case "correctness-dist": {
+        const rows = db.query(`
+          SELECT is_correct as status, COUNT(*) as count
+          FROM leaderboard
+          GROUP BY is_correct
+        `).all() as Array<{ status: number; count: number }>;
+        db.close();
+        return c.json(rows);
+      }
+      
+      case "leaderboard": {
+        const rows = db.query(`
+          SELECT user_handle, MAX(score) as max_score, MAX(streak) as max_streak,
+                 COUNT(*) as games_played, SUM(is_correct) as correct_answers
+          FROM leaderboard
+          GROUP BY user_handle
+          ORDER BY max_score DESC
+        `).all() as Array<{ user_handle: string; max_score: number; max_streak: number; games_played: number; correct_answers: number }>;
+        db.close();
+        return c.json(rows);
+      }
+      
+      default:
+        db.close();
+        return c.json({ error: "Invalid query. Use: stats, plays-by-date, questions-by-date, correctness-dist, leaderboard" }, 400);
+    }
+  } catch (error) {
+    console.error("Query error:", error);
+    return c.json({ error: "Database error" }, 500);
+  }
+};
 
 ```
 
