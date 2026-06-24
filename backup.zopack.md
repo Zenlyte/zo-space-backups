@@ -3,8 +3,8 @@ format: zopack
 version: "1.0"
 name: zo-space-backup
 author: curtastrophe.zo.computer
-routes: 132
-exported: 2026-06-23
+routes: 131
+exported: 2026-06-24
 ---
 
 # zo-space-backup
@@ -12572,32 +12572,6 @@ export default async (c: Context) => {
   const { query, top_k = 5 } = await c.req.json();
   try {
     const res = await fetch("http://localhost:8420/api/recall/gated", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${secret}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ query, top_k })
-    });
-    const data = await res.json();
-    return c.json(data);
-  } catch {
-    return c.json({ error: "Mengram unreachable" }, 502);
-  }
-};
-```
-
-### `/kg-search` (api, public)
-
-```typescript
-import type { Context } from "hono";
-
-export default async (c: Context) => {
-  const secret = process.env.MENGRAM_API_KEY || "";
-  if (!secret) return c.json({ error: "Server misconfigured" }, 500);
-  const { query, top_k = 10 } = await c.req.json();
-  try {
-    const res = await fetch("http://localhost:8420/api/search", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${secret}`,
