@@ -26079,7 +26079,249 @@ function CmdPalette(p:{onClose:()=>void;onAction:(a:string)=>void}){
   const actions=[["about","Open About Me"],["terminal","Open Terminal"],["projects","Open Projects"],["voi","Open Voi-ZOS"],["command","Open Command Centre"],["lab","Open Lab"],["games","Open Games"],["settings","Open Settings"],["mail","Open Briefings"],["calendar","Open Book Time"],["store","Open App Store"],["theme-oxidized","Theme: Oxidized Future"],["theme-signal","Theme: Signal Lab"],["theme-lunar","Theme: Lunar Archive"],["easter-egg","🥚 Secret Easter Egg"]];
   const filtered=q?actions.filter(a=>a[1].toLowerCase().includes(q.toLowerCase())):actions;
   useEffect(()=>{const esc=(e:KeyboardEvent)=>{if(e.key==="Escape")p.onClose();};addEventListener("keydown",esc);return()=>removeEventListener("keydown",esc);},[p.onClose]);
-  return(<><div className="zov" onClick={p.onClose}/><div className="zcp"><input className="zcp-input" placeholder="Type a command..." value={q} onChange={e=>setQ(e.target.value)} autoFocus/><div className="zcp-list">{filtered.map(([id,label])=>(<button key={id} className="zcp-item" onClick={()=>{p.onAction(id);p.onClose();}}>{label}</button>))}
+  return(<><div className="zov" onClick={p.onClose}/><div className="zcp"><input className="zcp-input" placeholder="Type a command..." value={q} onChange={e=>setQ(e.target.value)} autoFocus/><div className="zcp-list">{filtered.map(([id,label])=>(<button key={id} className="zcp-item" onClick={()=>{p.onAction(id);p.onClose();}}>{label}</button>))}</div></div></>);
+}
+
+function Screensaver(p:{onDismiss:()=>void}){
+  const ref=useRef<HTMLCanvasElement>(null);
+  useEffect(()=>{const c=ref.current;if(!c)return;const ctx=c.getContext("2d");if(!ctx)return;
+    c.width=innerWidth;c.height=innerHeight;
+    const cols=Math.floor(c.width/14);const drops=Array(cols).fill(1);
+    const chars="ZOSZENLYTE0123456789";
+    let anim=0,lastStep=0;
+    const draw=(ts=0)=>{
+      if(ts-lastStep<32){anim=requestAnimationFrame(draw);return;}
+      lastStep=ts;
+      ctx.fillStyle="rgba(0,0,0,0.05)";ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle="#c08b5c";ctx.font="14px monospace";
+      for(let i=0;i<drops.length;i++){const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*14,drops[i]*14);if(drops[i]*14>c.height&&Math.random()>0.975)drops[i]=0;drops[i]++;}
+      anim=requestAnimationFrame(draw);
+    };
+    draw();
+    const dismiss=()=>p.onDismiss();
+    addEventListener("click",dismiss);addEventListener("mousemove",dismiss);addEventListener("keydown",dismiss);
+    return()=>{cancelAnimationFrame(anim);removeEventListener("click",dismiss);removeEventListener("mousemove",dismiss);removeEventListener("keydown",dismiss);};
+  },[p.onDismiss]);
+  return <canvas ref={ref} className="zss-canvas"/>;
+}
+
+function ToastContainer(p:{toasts:{id:number;msg:string;type:string}[];onRemove:(id:number)=>void}){
+  return(<div className="ztoast-container">{p.toasts.map(t=>(<div key={t.id} className={"ztoast ztoast-"+t.type}><span className="ztoast-msg">{t.msg}</span><button className="ztoast-close" onClick={()=>p.onRemove(t.id)}>✕</button></div>))}</div>);
+}
+
+function DesktopWatermark(p:{onEasterEgg?:()=>void}){
+  const clickRef=useRef(0);const timerRef=useRef<ReturnType<typeof setTimeout>|null>(null);
+  const handleClick=()=>{clickRef.current++;if(timerRef.current)clearTimeout(timerRef.current);timerRef.current=setTimeout(()=>{clickRef.current=0;},2000);if(clickRef.current>=5){clickRef.current=0;p.onEasterEgg?.();}};
+  return <div className="zos-watermark zos-wm-clickable" onClick={handleClick}><img src={ZOS_WATERMARK_LOGO_SRC} alt="ZOS" className="zos-wm-logo"/><div className="zos-wm-sub">ZenOS v1.0.0</div></div>;
+}
+function DesktopClock(){const [now,setNow]=useState(new Date());useEffect(()=>{const iv=setInterval(()=>setNow(new Date()),1000);return()=>clearInterval(iv);},[]);return <div className="zos-dclock"><div className="zos-dclock-time">{now.getHours().toString().padStart(2,"0")}:{now.getMinutes().toString().padStart(2,"0")}<span className="zos-dclock-sec">:{now.getSeconds().toString().padStart(2,"0")}</span></div><div className="zos-dclock-date">{now.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"})}</div></div>;}
+function DesktopStatus(p:{role:string;windowCount:number;foundCount:number;totalPoints:number}){return(<div className="zos-dstatus"><div className="zos-dstatus-row"><span className="zos-dstatus-dot green"/>System Online</div><div className="zos-dstatus-row"><span className="zos-dstatus-dot copper"/>Mode: {p.role}</div><div className="zos-dstatus-row"><span className="zos-dstatus-dot amber"/>{p.windowCount} window{p.windowCount!==1?"s":""} open</div><div className="zos-dstatus-row"><span className="zos-dstatus-dot verd"/>{p.totalPoints} signal points</div><div className="zos-dstatus-row"><span className="zos-dstatus-dot copper"/>{p.foundCount}/{SIGNALS.length} signals logged</div><div className="zos-dstatus-hint">Press ⌘K for command palette</div></div>);}
+
+export default function ZOS(){
+  const [phase,setPhase]=useState<"boot"|"desktop">("boot");
+  const [role,setRole]=useState("visitor");const [theme,setTheme]=useState("oxidized");
+  const [wins,setWins]=useState<WS[]>([]);const [active,setActive]=useState<string|null>(null);
+  const [startOpen,setStartOpen]=useState(false);const [cmdOpen,setCmdOpen]=useState(false);
+  const [helpOpen,setHelpOpen]=useState(false);
+  const [zC,setZC]=useState(100);const [ctxMenu,setCtxMenu]=useState<{x:number;y:number}|null>(null);
+  const [konamiIdx,setKonamiIdx]=useState(0);const [konamiActive,setKonamiActive]=useState(false);
+  const [foundSignals,setFoundSignals]=useState<string[]>([]);
+  const [screenSaver,setScreenSaver]=useState(false);const idleRef=useRef<ReturnType<typeof setTimeout>|null>(null);
+  const [toasts,setToasts]=useState<{id:number;msg:string;type:string}[]>([]);const toastId=useRef(0);
+  const addToast=useCallback((msg:string,type="info")=>{const id=++toastId.current;setToasts(t=>[...t,{id,msg,type}]);setTimeout(()=>setToasts(t=>t.filter(x=>x.id!==id)),4000);},[]);
+  const removeToast=useCallback((id:number)=>{setToasts(t=>t.filter(x=>x.id!==id));},[]);
+
+  useEffect(()=>{try{const st=localStorage.getItem("zos-theme");const sr=localStorage.getItem("zos-role");const ss=localStorage.getItem("zos-found-signals");if(st&&["oxidized","signal","lunar"].includes(st))setTheme(st);if(sr)setRole(sr);if(ss){const parsed=JSON.parse(ss);if(Array.isArray(parsed))setFoundSignals(parsed);}}catch(e){}},[]);
+  useEffect(()=>{try{localStorage.setItem("zos-theme",theme);}catch(e){}},[theme]);
+  useEffect(()=>{try{localStorage.setItem("zos-role",role);}catch(e){}},[role]);
+  useEffect(()=>{try{localStorage.setItem("zos-found-signals",JSON.stringify(foundSignals));}catch(e){}},[foundSignals]);
+
+  useEffect(()=>{if(phase!=="desktop")return;const resetIdle=()=>{if(idleRef.current)clearTimeout(idleRef.current);setScreenSaver(false);idleRef.current=setTimeout(()=>setScreenSaver(true),30000);};resetIdle();addEventListener("mousemove",resetIdle);addEventListener("keydown",resetIdle);addEventListener("click",resetIdle);return()=>{if(idleRef.current)clearTimeout(idleRef.current);removeEventListener("mousemove",resetIdle);removeEventListener("keydown",resetIdle);removeEventListener("click",resetIdle);};},[phase]);
+
+  const nz=useCallback(()=>{setZC(c=>c+1);return zC+1;},[zC]);
+  const triggerSignal=useCallback((id:string)=>{const match=SIGNALS.find(s=>s[0]===id);if(!match)return;const name=match[2];const points=match[4];setFoundSignals(prev=>{if(prev.includes(id))return prev;setTimeout(()=>addToast(name+" unlocked! +"+points+" signal points","egg"),0);return [...prev,id];});},[addToast]);
+  const totalPoints=useMemo(()=>foundSignals.reduce((sum,id)=>{const match=SIGNALS.find(s=>s[0]===id);return sum+(match?match[4]:0);},0),[foundSignals]);
+  const bootDone=useCallback((r:string)=>{setRole(r);setPhase("desktop");try{localStorage.setItem("zos-role",r);}catch(e){}setTimeout(()=>addToast("Welcome to ZOS. Press ⌘K for command palette.","success"),500);setTimeout(()=>addToast("Tip: press ? or F1 for shortcuts.","info"),1400);},[addToast]);
+  const handleContextMenu=useCallback((e:React.MouseEvent)=>{e.preventDefault();setCtxMenu({x:e.clientX,y:e.clientY});},[]);
+
+  useEffect(()=>{if(phase!=="desktop")return;const h=(e:KeyboardEvent)=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();setCmdOpen(v=>!v);setHelpOpen(false);}if(e.key==="/"&&!cmdOpen&&document.activeElement?.tagName!=="INPUT"&&document.activeElement?.tagName!=="TEXTAREA"){e.preventDefault();setCmdOpen(true);setHelpOpen(false);}if((e.key==="?"||e.key==="F1")&&document.activeElement?.tagName!=="INPUT"&&document.activeElement?.tagName!=="TEXTAREA"){e.preventDefault();setHelpOpen(v=>!v);setCmdOpen(false);}if(e.key==="Escape"){if(helpOpen){setHelpOpen(false);return;}if(cmdOpen){setCmdOpen(false);return;}const ordered=[...wins].filter(w=>!w.min).sort((a,b)=>b.z-a.z);if(ordered[0])close(ordered[0].id);}};addEventListener("keydown",h);return()=>removeEventListener("keydown",h);},[phase,cmdOpen,helpOpen,wins]);
+  useEffect(()=>{const h=(e:any)=>{if(e?.detail)open(e.detail);};window.addEventListener("zos-open-app",h);return()=>window.removeEventListener("zos-open-app",h);},[]);
+
+  useEffect(()=>{if(phase!=="desktop")return;const h=(e:KeyboardEvent)=>{if(e.key===konamiSeq[konamiIdx]){const next=konamiIdx+1;setKonamiIdx(next);if(next===konamiSeq.length){setKonamiActive(true);setKonamiIdx(0);setTimeout(()=>setKonamiActive(false),5000);triggerSignal("konami");}}else{setKonamiIdx(0);}};addEventListener("keydown",h);return()=>removeEventListener("keydown",h);},[phase,konamiIdx,triggerSignal]);
+
+  useEffect(()=>{const r=document.documentElement;const themes:Record<string,Record<string,string>>={oxidized:{"--bg":"#0e0e11","--card":"#151519","--hdr":"#1a1a20","--bone":"#e8e0d4","--copper":"#c08b5c","--verd":"#5daa96","--amber":"#d4a847","--dim":"#6b6b78","--muted":"#94938e"},signal:{"--bg":"#080c08","--card":"#0d120d","--hdr":"#111811","--bone":"#d4e8d4","--copper":"#00ff88","--verd":"#00cc6a","--amber":"#88ff00","--dim":"#5a7a5a","--muted":"#8aaa8a"},lunar:{"--bg":"#0e1117","--card":"#131820","--hdr":"#181d28","--bone":"#d4dce8","--copper":"#8eaadc","--verd":"#6b9fd4","--amber":"#a8c4e0","--dim":"#5a6a7a","--muted":"#8a9aaa"}};const t=themes[theme]||themes.oxidized;Object.entries(t).forEach(([k,v])=>r.style.setProperty(k,v));},[theme]);
+
+  const open=(appId:string)=>{const ex=wins.find(w=>w.id===appId);if(ex){setWins(ws=>ws.map(w=>w.id===appId?{...w,min:false,z:nz()}:w));setActive(appId);return;}const app=APPS.find(a=>a[0]===appId);if(!app)return;const wW=Math.min(innerWidth-80,Math.max(960,Math.floor(innerWidth*0.72)));const wH=Math.min(innerHeight-120,Math.max(680,Math.floor((innerHeight-48)*0.74)));const cx=Math.max(0,Math.floor((innerWidth-wW)/2));const cy=Math.max(0,Math.floor((innerHeight-48-wH)/2));const cascade=(wins.length%8)*30;setWins(ws=>[...ws,{id:appId,title:app[1],icon:app[2],x:cx+cascade,y:cy+cascade,w:wW,h:wH,z:nz(),min:false,max:false}]);setActive(appId);};
+  const close=(id:string)=>{setWins(ws=>ws.filter(w=>w.id!==id));if(active===id)setActive(null);};
+  const focus=(id:string)=>{setWins(ws=>ws.map(w=>w.id===id?{...w,z:nz()}:w));setActive(id);};
+  const togMin=(id:string)=>{const w=wins.find(w=>w.id===id);if(w&&!w.min&&active===id){setWins(ws=>ws.map(w=>w.id===id?{...w,min:true}:w));setActive(null);}else{setWins(ws=>ws.map(w=>w.id===id?{...w,min:false,z:nz()}:w));setActive(id);}};
+  const togMax=(id:string)=>{setWins(ws=>ws.map(w=>w.id===id?{...w,max:!w.max}:w));};
+  const mv=(id:string,x:number,y:number)=>{setWins(ws=>ws.map(w=>w.id===id?{...w,x,y}:w));};
+  const rsz=(id:string,nw:number,nh:number)=>{setWins(ws=>ws.map(w=>w.id===id?{...w,w:nw,h:nh}:w));};
+
+  const content=(id:string)=>{if(id==="about")return <AboutApp role={role}/>;if(id==="terminal")return <TerminalApp onSignal={triggerSignal} onNavigate={open}/>;if(id==="projects")return <ProjectsApp/>;if(id==="voi")return <VoiZosApp role={role} onNavigate={open}/>;if(id==="games")return <GamesHub/>;if(id==="settings")return <SettingsApp theme={theme} onTheme={setTheme} role={role} onRole={setRole}/>;if(id==="command")return <CommandCentre role={role} windowCount={wins.length}/>;if(id==="lab")return <LabApp foundSignals={foundSignals} totalPoints={totalPoints} onSignal={triggerSignal}/>;if(id==="mail")return <XFeedApp/>;if(id==="calendar")return <BookTimeApp/>;if(id==="store")return <AppStoreApp/>;return <div className="zph"><span className="zph-ico">{"🚧"}</span><span className="zph-name">{id}</span></div>;};
+  const tbClick=(id:string)=>{const w=wins.find(w=>w.id===id);if(!w)return;if(w.min){setWins(ws=>ws.map(w=>w.id===id?{...w,min:false,z:nz()}:w));setActive(id);}else if(active===id){setWins(ws=>ws.map(w=>w.id===id?{...w,min:true}:w));setActive(null);}else focus(id);};
+  const cmdAction=(a:string)=>{if(["about","terminal","projects","voi","command","lab","games","settings","mail","calendar","store"].includes(a))open(a);if(a==="theme-oxidized"){setTheme("oxidized");addToast("Theme: Oxidized Future","success");}if(a==="theme-signal"){setTheme("signal");addToast("Theme: Signal Lab","success");}if(a==="theme-lunar"){setTheme("lunar");addToast("Theme: Lunar Archive","success");}if(a==="easter-egg"){setKonamiActive(true);setTimeout(()=>setKonamiActive(false),5000);triggerSignal("palette");}if(a==="about-zos"){open("about");}};
+  const ctxAction=(a:string)=>{setCtxMenu(null);if(["about","terminal","projects"].includes(a))open(a);else if(a==="refresh")window.location.reload();else if(a==="source")window.open("https://github.com/Zenlyte","_blank");else if(a==="about-zos")open("about");};
+
+  return(<><style>{CSS_STYLES}</style>{phase==="boot"&&<BootScreen onDone={bootDone}/>}{phase==="desktop"&&(<div className="zos-desk" onContextMenu={handleContextMenu}><img src="/images/ZOS/zos-wallpaper.png" alt="" className="zos-wp"/><CursorHalo/><Particles/><DesktopWatermark onEasterEgg={()=>{setKonamiActive(true);setTimeout(()=>setKonamiActive(false),5000);triggerSignal("watermark");}}/><DesktopClock/><DesktopStatus role={role} windowCount={wins.length} foundCount={foundSignals.length} totalPoints={totalPoints}/>
+    <div className="zi">{APPS.map(([id,name,icon])=><DIcon key={id} icon={icon} name={name} onOpen={()=>open(id)}/>)}</div>
+    {wins.map(w=><Win key={w.id} s={w} active={active===w.id} onFocus={()=>focus(w.id)} onClose={()=>close(w.id)} onMin={()=>togMin(w.id)} onMax={()=>togMax(w.id)} onMove={(x,y)=>mv(w.id,x,y)} onResize={(nw,nh)=>rsz(w.id,nw,nh)}>{content(w.id)}</Win>)}
+    {startOpen&&<StartMenu onLaunch={open} onClose={()=>setStartOpen(false)}/>}
+    {cmdOpen&&<CmdPalette onClose={()=>setCmdOpen(false)} onAction={cmdAction}/>}
+    {helpOpen&&<HelpOverlay onClose={()=>setHelpOpen(false)} />}
+    {ctxMenu&&<ContextMenu x={ctxMenu.x} y={ctxMenu.y} onClose={()=>setCtxMenu(null)} onAction={ctxAction}/>}
+    {konamiActive&&<div className="zk-overlay"><div className="zk-text">{"🎉"} EASTER EGG FOUND! {"🎉"}</div><div className="zk-sub">Signal logged to the hunt. Keep exploring.</div></div>}
+    {screenSaver&&<Screensaver onDismiss={()=>setScreenSaver(false)}/>}
+    <ToastContainer toasts={toasts} onRemove={removeToast}/>
+    <Taskbar wins={wins} active={active} onWinClick={tbClick} onStart={()=>setStartOpen(s=>!s)} startOpen={startOpen} role={role} onLogoSecret={()=>{triggerSignal("palette");addToast("Persistent signal unlocked via taskbar logo.","egg");}}/>
+  </div>)}</>);
+}
+
+const CSS_STYLES = [
+  "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap');",
+  "*{box-sizing:border-box;margin:0;padding:0}",
+  ":root{--bg:#0e0e11;--card:#151519;--hdr:#1a1a20;--bone:#e8e0d4;--copper:#c08b5c;--verd:#5daa96;--amber:#d4a847;--dim:#6b6b78;--muted:#94938e;--bord:rgba(232,224,212,0.08);--bord2:rgba(232,224,212,0.15)}",
+  "body{overflow:hidden;background:var(--bg);font-family:'Inter',sans-serif;color:var(--bone);cursor:none}",
+  "::-webkit-scrollbar{width:6px},::-webkit-scrollbar-track{background:transparent},::-webkit-scrollbar-thumb{background:rgba(192,139,92,0.3);border-radius:3px},::-webkit-scrollbar-thumb:hover{background:rgba(192,139,92,0.4)}",
+  "::selection{background:rgba(192,139,92,0.3);color:white}",
+  ".zc-halo{position:fixed;width:24px;height:24px;border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);border:1.5px solid var(--copper);opacity:0.6;mix-blend-mode:screen;box-shadow:0 0 15px rgba(192,139,92,0.15)}",
+  ".zb{position:fixed;inset:0;background:#000;z-index:9999;display:flex;align-items:center;justify-content:center}",
+  ".zb-scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.15) 2px,rgba(0,0,0,0.15) 4px);pointer-events:none;z-index:2}",
+  ".zb-vig{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,0.7));pointer-events:none;z-index:2}",
+  ".zb-body{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--bone);width:70%;max-width:700px;max-height:80vh;overflow-y:auto;z-index:3;text-shadow:0 0 8px rgba(192,139,92,0.4);cursor:default}",
+  ".zb-logo-wrap{text-align:center;margin-bottom:24px}",
+  ".zb-logo{width:180px;height:auto;opacity:0;animation:zfade 0.8s 0.1s forwards;filter:drop-shadow(0 0 30px rgba(192,139,92,0.4))}",
+  ".zb-line{min-height:1.6em;opacity:0;animation:zfade 0.15s forwards}",".zb-cursor{color:var(--copper)}","@keyframes zfade{to{opacity:1;transform:translateX(0)}}",
+  ".zb-roles{margin-top:24px;display:flex;flex-direction:column;gap:8px}",
+  ".zb-prompt{color:var(--bone);font-size:13px;margin-bottom:8px;opacity:0;animation:zfade 0.3s 0.2s forwards}",
+  ".zb-role{display:flex;align-items:center;gap:16px;padding:10px 16px;border-radius:6px;border:1px solid var(--bord);background:transparent;color:var(--bone);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:13px;text-align:left;transition:all 0.2s;opacity:0;animation:zfade 0.3s forwards}",
+  ".zb-role:nth-child(2){animation-delay:0.3s}.zb-role:nth-child(3){animation-delay:0.4s}.zb-role:nth-child(4){animation-delay:0.5s}.zb-role:nth-child(5){animation-delay:0.6s}",
+  ".zb-role:hover{border-color:var(--copper);background:rgba(192,139,92,0.12);transform:translateX(4px)}",
+  ".zb-role-label{color:var(--copper);font-weight:700;min-width:160px}",".zb-role-desc{color:var(--muted);font-size:11px}",
+  ".zos-desk{position:fixed;inset:0;background:var(--bg)}",
+  ".zos-wp{position:fixed;inset:0;width:100vw;height:100vh;object-fit:cover;z-index:0;opacity:0.5;pointer-events:none}",
+  ".zp-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}",
+  ".zi{position:fixed;top:16px;left:16px;z-index:1;display:grid;grid-template-columns:80px 80px;gap:4px;padding:8px}",
+  ".zd{width:80px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;border-radius:8px;cursor:pointer;transition:background 0.15s;user-select:none}",
+  ".zd:hover{background:rgba(232,224,212,0.06)}",".zd-ico{font-size:32px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))}",
+  ".zd-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;text-align:center;color:var(--bone);text-shadow:0 1px 3px rgba(0,0,0,0.8);white-space:nowrap}",
+  ".zt{position:fixed;bottom:0;left:0;right:0;height:48px;background:rgba(14,14,17,0.92);backdrop-filter:blur(20px);border-top:1px solid var(--bord);z-index:1000;display:flex;align-items:center;padding:0 8px;font-family:'JetBrains Mono',monospace;font-size:12px}",
+  ".zt-start{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;border:none;background:transparent;color:var(--copper);cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:1px;transition:all 0.15s}",
+  ".zt-logo{width:18px;height:18px;object-fit:contain}",
+  ".zt-start.open,.zt-start:hover{background:rgba(192,139,92,0.15)}",".zt-div{width:1px;height:24px;background:var(--bord);margin:0 8px}",
+  ".zt-tabs{flex:1;display:flex;gap:2px;overflow-x:auto;align-items:center}",
+  ".zt-tab{padding:4px 12px;border-radius:4px;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--dim);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;white-space:nowrap;transition:all 0.15s}",
+  ".zt-tab.active{background:rgba(192,139,92,0.12);color:var(--bone);border-bottom-color:var(--copper)}",".zt-tab.dim{opacity:0.5}",
+  ".zt-tray{margin-left:auto;display:flex;align-items:center;gap:12px;padding:0 8px}",".zt-role{color:var(--verd);font-size:10px;text-transform:uppercase;letter-spacing:1px}",".zt-time{color:var(--muted);font-size:11px}",
+  ".zw{background:var(--card);border:1px solid var(--bord);display:flex;flex-direction:column;overflow:hidden;transition:box-shadow 0.2s,border-color 0.2s;animation:zwOpen 0.25s cubic-bezier(0.16,1,0.3,1)}",
+  "@keyframes zwOpen{from{opacity:0;transform:scale(0.92) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}",
+  ".zw.active{border-color:rgba(192,139,92,0.3);box-shadow:0 0 40px -10px rgba(192,139,92,0.15)}",
+  ".zw-hdr{height:38px;min-height:38px;background:var(--hdr);display:flex;align-items:center;padding:0 12px;cursor:grab;user-select:none;border-bottom:1px solid var(--bord)}",
+  ".zw-icon{margin-right:8px;font-size:14px}",".zw-title{flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".zw-btns{display:flex;gap:8px}",".zw-b{width:12px;height:12px;border-radius:50%;border:none;cursor:pointer;opacity:0.8;transition:opacity 0.15s}",".zw-b:hover{opacity:1}",
+  ".zw-b.min{background:var(--amber)}",".zw-b.max{background:var(--verd)}",".zw-b.cls{background:#e87171}",
+  ".zw-body{flex:1;overflow:auto;position:relative}",".zw-rsz{position:absolute;bottom:0;right:0;width:16px;height:16px;cursor:nwse-resize}",
+  ".zov{position:fixed;inset:0;z-index:998}",
+  ".zsm{position:fixed;bottom:56px;left:8px;width:260px;background:rgba(21,21,25,0.95);backdrop-filter:blur(20px);border:1px solid var(--bord);border-radius:12px;padding:8px 0;z-index:999;box-shadow:0 20px 60px rgba(0,0,0,0.6)}",
+  ".zsm-hdr{padding:8px 16px 12px;border-bottom:1px solid var(--bord);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--copper)}",
+  ".zsm-item{display:flex;align-items:center;gap:12px;width:100%;padding:10px 16px;border:none;background:transparent;color:var(--bone);cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;transition:background 0.15s;text-align:left}",
+  ".zsm-item:hover{background:rgba(192,139,92,0.08)}",".zsm-ico{font-size:18px;width:24px;text-align:center}",
+  ".zsm-foot{padding:8px 16px;border-top:1px solid var(--bord);font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);margin-top:4px}",
+  ".zcp{position:fixed;top:20%;left:50%;transform:translateX(-50%);width:480px;max-width:90vw;background:rgba(21,21,25,0.98);backdrop-filter:blur(20px);border:1px solid var(--bord2);border-radius:12px;z-index:9999;box-shadow:0 20px 60px rgba(0,0,0,0.6)}",
+  ".zcp-input{width:100%;padding:16px 20px;background:transparent;border:none;border-bottom:1px solid var(--bord);outline:none;color:var(--bone);font-family:'JetBrains Mono',monospace;font-size:14px;caret-color:var(--copper)}",
+  ".zcp-input::placeholder{color:var(--dim)}",".zcp-list{max-height:300px;overflow-y:auto;padding:8px 0}",
+  ".zcp-item{display:block;width:100%;padding:10px 20px;border:none;background:transparent;color:var(--bone);cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;text-align:left;transition:background 0.15s}",
+  ".zcp-item:hover{background:rgba(192,139,92,0.1)}",
+  ".zhelp{position:fixed;top:16%;left:50%;transform:translateX(-50%);width:min(620px,92vw);background:rgba(21,21,25,0.98);backdrop-filter:blur(20px);border:1px solid var(--bord2);border-radius:14px;z-index:10000;box-shadow:0 24px 80px rgba(0,0,0,0.65);padding:20px}",
+  ".zhelp-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}",
+  ".zhelp-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--bone)}",
+  ".zhelp-sub{font-family:'Inter',sans-serif;font-size:13px;color:var(--muted);margin-top:4px}",
+  ".zhelp-close{background:transparent;border:1px solid var(--bord);color:var(--bone);border-radius:8px;width:34px;height:34px;cursor:pointer}",
+  ".zhelp-grid{display:grid;grid-template-columns:1fr;gap:10px}",
+  ".zhelp-row{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:center;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.025);border:1px solid rgba(232,224,212,0.08)}",
+  ".zhelp-row kbd{display:inline-flex;align-items:center;justify-content:center;min-width:fit-content;width:max-content;padding:6px 10px;border-radius:8px;border:1px solid rgba(192,139,92,0.25);background:rgba(192,139,92,0.08);color:var(--bone);font-family:'JetBrains Mono',monospace;font-size:12px;box-shadow:inset 0 -2px 0 rgba(0,0,0,0.2)}",
+  ".zph{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px}",
+  ".zph-ico{font-size:48px;opacity:0.4}",".zph-name{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;color:var(--bone)}",
+  ".zos-watermark{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:0;pointer-events:none;text-align:center;user-select:none}",
+  ".zos-wm-clickable{pointer-events:auto;cursor:default}",
+  ".zos-wm-logo{width:clamp(200px,30vw,420px);height:auto;opacity:0.12;pointer-events:none;filter:drop-shadow(0 0 60px rgba(192,139,92,0.1))}",
+  ".zos-wm-sub{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--verd);margin-top:8px;letter-spacing:6px;text-transform:uppercase;opacity:0.6}",
+  ".zos-dclock{position:fixed;top:20px;right:20px;z-index:1;text-align:right;pointer-events:none;user-select:none;}",
+  ".zos-dclock-time{font-family:'Space Grotesk',sans-serif;font-size:48px;font-weight:700;color:rgba(232,224,212,0.12);line-height:1;letter-spacing:-1px}",
+  ".zos-dclock-sec{font-size:24px;opacity:0.5}",
+  ".zos-dclock-date{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--verd);margin-top:4px;letter-spacing:1px}",
+  ".zos-dstatus{position:fixed;bottom:60px;right:20px;z-index:1;text-align:right;pointer-events:none;user-select:none;display:flex;flex-direction:column;gap:6px}",
+  ".zos-dstatus-dot{width:6px;height:6px;border-radius:50%;display:inline-block}",
+  ".zos-dstatus-dot.green{background:var(--verd);box-shadow:0 0 6px var(--verd)}",".zos-dstatus-dot.copper{background:var(--copper);box-shadow:0 0 6px var(--copper)}",".zos-dstatus-dot.amber{background:var(--amber);box-shadow:0 0 6px var(--amber)}",
+  ".zos-dstatus-hint{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);margin-top:4px}",
+  ".za{padding:16px;font-family:'JetBrains Mono',monospace;font-size:13px}",
+  ".za-path{font-size:12px;color:var(--dim);margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--bord)}",
+  ".za-role-msg{font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--copper);margin-bottom:16px;padding:12px;border-left:2px solid var(--copper);border-radius:0 6px 6px 0}",
+  ".za-files{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}",
+  ".za-file{padding:8px 12px;border-radius:6px;display:flex;align-items:center;gap:10px;background:rgba(232,224,212,0.03);border:1px solid var(--bord);cursor:pointer;transition:all 0.15s;font-size:12px}",
+  ".za-file:hover{border-color:rgba(192,139,92,0.3);background:rgba(192,139,92,0.04)}",".za-file.active{border-color:var(--copper);background:rgba(192,139,92,0.08)}",
+  ".za-readme{padding:16px;border-radius:8px;background:rgba(192,139,92,0.04);border:1px solid rgba(192,139,92,0.15);line-height:1.7}",
+  ".za-cmd{color:var(--copper);font-size:11px;opacity:0.6;margin-bottom:8px}",
+  ".za-hi{color:var(--muted);margin-bottom:4px}",
+  ".za-name{color:var(--copper);font-weight:600}",
+  ".za-desc{color:var(--muted);margin-bottom:4px}",
+  ".za-principles{list-style:none;padding:0}",
+  ".za-principles li{padding:4px 0;color:var(--muted);font-size:12px}",
+  ".za-principles li::before{content:'▸ ';color:var(--copper)}",
+  ".za-skill-grid{display:flex;flex-direction:column;gap:12px;margin-top:8px}",
+  ".za-skill-cat{padding:10px;border-radius:6px;border:1px solid var(--bord);background:rgba(232,224,212,0.02)}",
+  ".za-skill-cat-name{font-size:11px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}",
+  ".za-skill-tags{display:flex;flex-wrap:wrap;gap:6px}",
+  ".za-skill-tag{font-size:11px;padding:3px 10px;border-radius:4px;background:rgba(192,139,92,0.08);border:1px solid rgba(192,139,92,0.15);color:var(--bone)}",
+  ".za-json{font-family:'JetBrains Mono',monospace;font-size:12px;margin-top:8px}",
+  ".za-json-line{padding:2px 0;color:var(--muted)}",
+  ".za-json-key{color:var(--copper)}",
+  ".za-json-val{color:var(--verd);text-decoration:none}",
+  ".za-json-val:hover{text-decoration:underline}",
+  ".za-timeline{display:flex;flex-direction:column;gap:0;margin-top:8px;padding-left:16px;border-left:2px solid var(--bord)}",
+  ".za-timeline-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;position:relative}",
+  ".za-timeline-dot{width:10px;height:10px;border-radius:50%;background:var(--copper);border:2px solid var(--card);position:absolute;left:-22px;top:14px;box-shadow:0 0 6px var(--copper)}",
+  ".za-timeline-content{padding-left:4px}",
+  ".za-timeline-title{font-size:13px;font-weight:600;color:var(--bone);margin-bottom:2px}",
+  ".za-timeline-desc{font-size:11px;color:var(--muted)}",
+  ".za-secret{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:#e87171;text-align:center;margin:24px 0 8px}",
+  ".za-secret-sub{text-align:center;font-size:12px;color:var(--muted);margin-bottom:4px}",
+  ".za-secret-hint{text-align:center;font-size:14px;color:var(--dim);letter-spacing:2px}",
+  ".zterm{display:flex;flex-direction:column;height:100%;background:#080808;font-family:'JetBrains Mono',monospace;font-size:13px}",
+  ".zterm-scroll{flex:1;overflow-y:auto;padding:12px}",
+  ".zterm-line{min-height:1.4em;color:var(--copper);opacity:0.9}",
+  ".zterm-in{display:flex;align-items:center;gap:8px;padding:8px 12px;border-top:1px solid var(--bord)}",
+  ".zterm-prompt{color:var(--copper);font-weight:600}",
+  ".zterm-inp{flex:1;background:transparent;border:none;outline:none;color:var(--bone);font-family:inherit;font-size:inherit;caret-color:var(--copper)}",
+  ".zproj{padding:16px;font-family:'JetBrains Mono',monospace;font-size:13px;height:100%;overflow-y:auto}",
+  ".zproj-path{font-size:12px;color:var(--dim);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bord)}",
+  ".zproj-filters{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}",
+  ".zproj-fbtn{padding:4px 12px;border-radius:4px;border:1px solid var(--bord);background:transparent;color:var(--dim);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;transition:all 0.15s}",
+  ".zproj-fbtn:hover{border-color:var(--copper);color:var(--bone)}",
+  ".zproj-fbtn.active{background:rgba(192,139,92,0.15);border-color:var(--copper);color:var(--copper)}",
+  ".zproj-loading{color:var(--dim);text-align:center;padding:40px}",
+  ".zproj-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}",
+  ".zproj-card{padding:16px;border-radius:8px;border:1px solid var(--bord);background:rgba(232,224,212,0.02);cursor:pointer;transition:all 0.2s}",
+  ".zproj-card:hover{border-color:rgba(192,139,92,0.3);background:rgba(192,139,92,0.04);transform:translateY(-2px)}",
+  ".zproj-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}",
+  ".zproj-card-id{font-size:10px;color:var(--dim);letter-spacing:1px}",
+  ".zproj-card-status{font-size:10px;padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:0.5px}",
+  ".st-done{background:rgba(93,170,150,0.15);color:var(--verd);border:1px solid rgba(93,170,150,0.3)}",
+  ".st-wip{background:rgba(192,139,92,0.15);color:var(--copper);border:1px solid rgba(192,139,92,0.3)}",
+  ".st-plan{background:rgba(212,168,71,0.15);color:var(--amber);border:1px solid rgba(212,168,71,0.3)}",
+  ".zproj-card-name{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;color:var(--bone);margin-bottom:6px}",
+  ".zproj-card-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}",
+  ".zproj-tags{display:flex;gap:6px;flex-wrap:wrap}",
+  ".zproj-tag{font-size:10px;padding:2px 8px;border-radius:3px;background:rgba(232,224,212,0.05);color:var(--dim);border:1px solid var(--bord)}",
+  ".zproj-back{padding:6px 12px;border-radius:4px;border:1px solid var(--bord);background:transparent;color:var(--copper);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;margin-bottom:16px;transition:all 0.15s}",
+  ".zproj-back:hover{background:rgba(192,139,92,0.1)}",
+  ".zproj-detail{padding:16px;border-radius:8px;border:1px solid var(--bord);background:rgba(232,224,212,0.02)}",
+  ".zproj-detail-hdr{margin-bottom:12px}",
+  ".zproj-status{display:inline-block;font-size:10px;padding:3px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:0.5px}",
+  ".zproj-detail-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--bone);margin-bottom:8px}",
+  ".zproj-detail-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px}",
+  ".zproj-detail-section{margin-bottom:16px}",
+  ".zproj-detail-label{font-size:10px;color:var(--verd);text-transform:uppercase
 ```
 
 ### `/zos-lite` (page, public)
