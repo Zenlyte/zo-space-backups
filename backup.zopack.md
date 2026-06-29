@@ -1702,10 +1702,243 @@ function ProjectModal({ project, onClose, onSave, columns, priorityColumns, colo
 }
 ```
 
-### `/about-the-build` (page, private)
+### `/about-the-build` (page, public)
 
 ```tsx
+import { useState } from "react";
 
+export default function AboutTheBuild() {
+  const [activeSection, setActiveSection] = useState("overview");
+  const sections = [
+    ["overview", "Overview"],
+    ["zo", "Powered by Zo"],
+    ["stack", "Tech Stack"],
+    ["timeline", "Build Timeline"],
+    ["decisions", "Design Decisions"],
+    ["challenges", "Challenges"],
+    ["credits", "Credits"],
+  ];
+
+  const zoFeatures: Array<[string, string, string]> = [
+    ["🌐", "zo.space hosting", "Entire ZOS experience hosted on zo.space with instant deploys and rollbacks."],
+    ["🗂️", "Space routes", "Every page and API endpoint is a Zo space route. /zos, /trivia, /zo-city, /secret, /about-the-build, /404, plus ~15 API routes."],
+    ["⚡", "Live API endpoints", "/api/zos/now, /api/zos/build-log, /api/zos/signals, /api/x-feed, /api/calendar, /api/projects, /api/blog, /api/contact, /api/trivia/*. All Zo-backed."],
+    ["🤖", "ask/zo voice agent", "Voi-ZOS uses the Zo ask endpoint as a guarded, homepage-only voice-first assistant."],
+    ["💳", "Stripe via Zo", "App Store and Zo Consultation payment links created through Zo's Stripe integration."],
+    ["🔄", "Route history + undo", "Leveraged Zo's built-in route versioning to recover and iterate without fear."],
+    ["🎨", "Space assets", "ZOS logo and wallpaper served directly from Zo space assets."],
+    ["🛠️", "Space settings", "Custom site title, description, favicon, and custom 404 route all configured through Zo."],
+    ["📡", "MCP tooling", "Built using Zo's MCP tools for route creation, code edits, diagnostics, and deployment."],
+  ];
+
+  const content: Record<string, JSX.Element> = {
+    overview: (
+      <div className="atb-text">
+        <div className="atb-hero">ZOS. A personal site rebuilt as an operating system.</div>
+        <h2 className="atb-h2">What is ZOS?</h2>
+        <p>ZOS (ZenOS) is a fully interactive desktop experience built entirely on <a href="https://zo.computer" target="_blank" rel="noopener" className="atb-link">Zo Computer</a> for the Zo Computer Challenge.</p>
+        <p>The name is a play on my handle (<strong>Zenlyte</strong>) and Zo Computer. Pronounced "Zoh-Ess".</p>
+        <p>It's a personal website disguised as an OS. Complete with a boot sequence, role-based access modes, a draggable/resizable window manager, command palette (⌘K), context menus, theme switching, toast notifications, a matrix rain screensaver, multiple easter eggs, mobile responsive design, Stripe payments, live Zo-backed APIs, a voice-first assistant, and 11 fully functional apps.</p>
+        <h2 className="atb-h2">Why an OS?</h2>
+        <p>Most personal websites are pages. I wanted mine to be an <em>experience</em>. Something you explore, not just scroll through. An OS metaphor gives visitors agency: they choose what to open, how to arrange things, what to discover.</p>
+        <p>Every interaction was designed to make you think: \u201cWait, this is a website?\u201d</p>
+        <h2 className="atb-h2">Signature moments</h2>
+        <ul className="atb-list">
+          <li>Press-and-hold anywhere to open a black hole that sucks in floating particles. Release for a big bang.</li>
+          <li>Role-based entry modes change the starter prompts and framing across the OS.</li>
+          <li>Voi-ZOS. A voice-first assistant grounded to the public homepage.</li>
+          <li>Hidden signals, terminal commands, and a secret route for the curious.</li>
+        </ul>
+      </div>
+    ),
+    zo: (
+      <div className="atb-text">
+        <h2 className="atb-h2">Powered by Zo Computer</h2>
+        <p>ZOS isn't just <em>hosted</em> on Zo. It's built end-to-end on Zo's primitives. Here's exactly what was used:</p>
+        <div className="atb-stack-grid">
+          {zoFeatures.map(([icon, name, desc], i) => (
+            <div key={i} className="atb-stack-item">
+              <span className="atb-stack-icon">{icon}</span>
+              <div><div className="atb-stack-name">{name}</div><div className="atb-stack-desc">{desc}</div></div>
+            </div>
+          ))}
+        </div>
+        <h2 className="atb-h2">Why this matters</h2>
+        <p>Zo collapses the usual web stack. Hosting, routing, serverless APIs, static assets, payments, and an AI endpoint. Into a single coherent surface. ZOS leans on that: every feature you interact with, from the window manager down to the voice agent, runs through a Zo primitive.</p>
+      </div>
+    ),
+    stack: (
+      <div className="atb-text">
+        <h2 className="atb-h2">Technology</h2>
+        <div className="atb-stack-grid">
+          {[["\u26A1", "Zo Computer", "Hosting, space routes, APIs, Stripe, ask endpoint, MCP tooling"],
+            ["\u269B\uFE0F", "React + TypeScript", "Component architecture, type safety, hooks-based state"],
+            ["\uD83C\uDFA8", "Custom CSS-in-JS", "Hand-crafted styles with CSS custom properties for theming"],
+            ["\uD83E\uDDE0", "AI-assisted workflow", "AI-driven planning, code generation, and rapid iteration"],
+            ["\uD83D\uDCB3", "Stripe", "Payment links for Zo Consultation and App Store goods"],
+            ["\uD83D\uDD0D", "Custom APIs", "Projects, blog, calendar, contact, trivia, X feed, signals"],
+          ].map(([icon, name, desc], i) => (
+            <div key={i} className="atb-stack-item">
+              <span className="atb-stack-icon">{icon}</span>
+              <div><div className="atb-stack-name">{name}</div><div className="atb-stack-desc">{desc}</div></div>
+            </div>
+          ))}
+        </div>
+        <h2 className="atb-h2">Architecture</h2>
+        <p>ZOS is a single-page React application rendered as a Zo space route. The entire OS. Boot sequence, window manager, all 11 apps, theming, particle system, cursor effects. Lives in one route file.</p>
+        <p>State management uses React hooks only. No external state libraries. The window manager tracks position, size, z-index, and minimized/maximized state per window.</p>
+      </div>
+    ),
+    timeline: (
+      <div className="atb-text">
+        <h2 className="atb-h2">Build Timeline</h2>
+        <div className="atb-timeline">
+          {[["Phase 1", "Foundation", "Boot sequence, role selection, window manager, taskbar, desktop, particles, cursor halo"],
+            ["Phase 2", "Core Apps", "About, Terminal, Projects, Settings (themes + roles)"],
+            ["Phase 3", "Advanced Apps", "Command Centre, Lab (Recruiter Decoder + Signal Hunt), Games"],
+            ["Phase 4", "Polish", "Context menu, command palette, Konami code, window animations, desktop widgets"],
+            ["Phase 5", "Full Suite", "X Feed (Briefings), Book Time, App Store with Stripe"],
+            ["Phase 6", "Screensaver & APIs", "Matrix rain screensaver with idle timer, 3 ZOS API routes"],
+            ["Phase 7", "Easter Eggs", "Hidden /secret route, watermark easter egg, expanded terminal"],
+            ["Phase 8", "Polish", "Toast system, mobile responsive CSS, /about-the-build, custom /404"],
+            ["Phase 9", "Interaction Deepening", "Click-hold black hole + big bang particle physics, larger default windows, doubled particle count"],
+            ["Phase 10", "Voice-First", "Voi-ZOS becomes a real voice agent via ask/zo, strictly scoped to public homepage content"],
+            ["Phase 11", "Presentation", "Powered-by-Zo credits, refreshed branding, favicon/title, submission polish"],
+          ].map(([phase, title, desc], i) => (
+            <div key={i} className="atb-tl-item">
+              <div className="atb-tl-marker"><div className="atb-tl-dot" /><div className="atb-tl-phase">{phase}</div></div>
+              <div className="atb-tl-content"><div className="atb-tl-title">{title}</div><div className="atb-tl-desc">{desc}</div></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+    decisions: (
+      <div className="atb-text">
+        <h2 className="atb-h2">Design Decisions</h2>
+        <div className="atb-decision">
+          <h3 className="atb-h3">🎨 "Oxidized Future" palette</h3>
+          <p>Warm copper and bone on deep midnight. Inspired by aged metal, weathered leather, and machines that have stories to tell. Avoids the typical "dark mode equals blue" trap.</p>
+        </div>
+        <div className="atb-decision">
+          <h3 className="atb-h3">🖥️ OS metaphor</h3>
+          <p>An OS provides natural affordances. Windows, menus, files. Visitors already understand them. The boot sequence sets expectations. The role selector personalizes the experience.</p>
+        </div>
+        <div className="atb-decision">
+          <h3 className="atb-h3">🎯 Role-based modes</h3>
+          <p>Visitor, Recruiter, Collaborator, Curious Human. Each tailors Voi-ZOS starter prompts and framing without fragmenting the product.</p>
+        </div>
+        <div className="atb-decision">
+          <h3 className="atb-h3">🥚 Easter eggs everywhere</h3>
+          <p>Konami code, secret terminal commands, hidden routes, watermark clicks. Discovery mechanics reward curiosity and make people want to come back.</p>
+        </div>
+        <div className="atb-decision">
+          <h3 className="atb-h3">🔒 Guardrailed voice agent</h3>
+          <p>Voi-ZOS is voice-first, but strictly scoped to public homepage content with server-side rate limits, refusal paths, and structured outputs. Low-cost and safe by default.</p>
+        </div>
+      </div>
+    ),
+    challenges: (
+      <div className="atb-text">
+        <h2 className="atb-h2">Challenges & lessons</h2>
+        <div className="atb-challenge">
+          <h3 className="atb-h3">Dynamic inline styles</h3>
+          <p>Double curly braces were interpreted as template variables in certain contexts. All dynamic positioning moved to refs + effects or CSS classes with data attributes.</p>
+        </div>
+        <div className="atb-challenge">
+          <h3 className="atb-h3">Single-file architecture</h3>
+          <p>The entire OS lives in one route file. Managing 11+ app components, a window manager, and hundreds of CSS rules required disciplined naming and section markers.</p>
+        </div>
+        <div className="atb-challenge">
+          <h3 className="atb-h3">Incremental edits vs. CSS arrays</h3>
+          <p>Incremental code edits tended to corrupt the CSS array. The fix: prefer focused full rewrites for routes with large stylesheet arrays.</p>
+        </div>
+        <div className="atb-challenge">
+          <h3 className="atb-h3">Voice on a budget</h3>
+          <p>Real voice interaction is expensive fast. ZOS uses browser STT + TTS, a tiny curated homepage corpus, a single guarded ask/zo call per finalized question, and cached common answers to stay cheap and safe.</p>
+        </div>
+      </div>
+    ),
+    credits: (
+      <div className="atb-text">
+        <h2 className="atb-h2">Credits</h2>
+        <p><strong>Built by:</strong> Zenlyte (<a href="https://github.com/Zenlyte" target="_blank" rel="noopener" className="atb-link">@Zenlyte</a>)</p>
+        <p><strong>Contact:</strong> <a href="mailto:info@zenlytics.net" className="atb-link">info@zenlytics.net</a></p>
+        <p><strong>Platform:</strong> <a href="https://zo.computer" target="_blank" rel="noopener" className="atb-link">Zo Computer</a></p>
+        <p><strong>Fonts:</strong> Inter, JetBrains Mono, Playfair Display, Space Grotesk</p>
+        <p><strong>Contest:</strong> <a href="https://contra.com/community/topic/zocomputerchallenge/guidelines" target="_blank" rel="noopener" className="atb-link">Zo Computer Challenge</a></p>
+        <div className="atb-thanks">Thanks for exploring ZOS. \u2764\uFE0F</div>
+      </div>
+    ),
+  };
+
+  return (
+    <div className="atb">
+      <style>{ATB_CSS}</style>
+      <div className="atb-nav">
+        <a href="/zos" className="atb-back">\u2190 Back to ZOS</a>
+        <a href="/press" className="atb-back">\ud83d\udcf0 Press Kit</a>
+        <div className="atb-logo">\u26A1 About the Build</div>
+        <div className="atb-tabs">
+          {sections.map(([id, label]) => (
+            <button key={id} className={"atb-tab" + (activeSection === id ? " active" : "")} onClick={() => setActiveSection(id)}>{label}</button>
+          ))}
+        </div>
+      </div>
+      <div className="atb-content">
+        <div className="atb-inner">{content[activeSection]}</div>
+      </div>
+    </div>
+  );
+}
+
+const ATB_CSS = [
+  "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap');",
+  "*{box-sizing:border-box;margin:0;padding:0}",
+  "body{background:#0e0e11;font-family:'Inter',sans-serif;color:#e8e0d4;overflow-x:hidden}",
+  ".atb{min-height:100vh;display:flex}",
+  ".atb-nav{width:260px;min-height:100vh;background:#151519;border-right:1px solid rgba(232,224,212,0.08);padding:24px 16px;display:flex;flex-direction:column;gap:16px;position:fixed;top:0;left:0}",
+  ".atb-back{font-family:'JetBrains Mono',monospace;font-size:12px;color:#c08b5c;text-decoration:none;transition:opacity 0.15s}",
+  ".atb-back:hover{opacity:0.7}",
+  ".atb-logo{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:#e8e0d4;padding-bottom:16px;border-bottom:1px solid rgba(232,224,212,0.08)}",
+  ".atb-tabs{display:flex;flex-direction:column;gap:4px}",
+  ".atb-tab{padding:10px 14px;border-radius:6px;border:none;background:transparent;color:#6b6b78;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;text-align:left;transition:all 0.15s}",
+  ".atb-tab:hover{color:#e8e0d4;background:rgba(232,224,212,0.04)}",
+  ".atb-tab.active{color:#c08b5c;background:rgba(192,139,92,0.1)}",
+  ".atb-content{margin-left:260px;flex:1;padding:48px;max-width:860px}",
+  ".atb-inner{animation:atbFade 0.3s ease}",
+  "@keyframes atbFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}",
+  ".atb-hero{font-family:'Playfair Display',serif;font-style:italic;font-size:22px;color:#c08b5c;margin-bottom:24px;padding:16px 18px;border-left:3px solid #c08b5c;background:rgba(192,139,92,0.06);border-radius:0 8px 8px 0}",
+  ".atb-text p{font-size:15px;line-height:1.8;color:#94938e;margin-bottom:14px}",
+  ".atb-text strong{color:#e8e0d4}",
+  ".atb-text em{color:#c08b5c;font-style:italic}",
+  ".atb-list{list-style:none;padding:0;margin:8px 0 18px}",
+  ".atb-list li{padding:8px 0 8px 22px;position:relative;color:#94938e;font-size:14px;line-height:1.7}",
+  ".atb-list li::before{content:'\u25B8';position:absolute;left:0;color:#c08b5c}",
+  ".atb-link{color:#c08b5c;text-decoration:none;border-bottom:1px solid rgba(192,139,92,0.3);transition:border-color 0.15s}",
+  ".atb-link:hover{border-color:#c08b5c}",
+  ".atb-h2{font-family:'Playfair Display',serif;font-size:24px;color:#e8e0d4;margin:32px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(232,224,212,0.08)}",
+  ".atb-h2:first-child{margin-top:0}",
+  ".atb-h3{font-family:'Space Grotesk',sans-serif;font-size:16px;color:#e8e0d4;margin-bottom:8px}",
+  ".atb-stack-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}",
+  ".atb-stack-item{display:flex;align-items:flex-start;gap:14px;padding:14px;border-radius:8px;border:1px solid rgba(232,224,212,0.08);background:rgba(232,224,212,0.02);transition:all 0.2s}",
+  ".atb-stack-item:hover{border-color:rgba(192,139,92,0.3);background:rgba(192,139,92,0.04)}",
+  ".atb-stack-icon{font-size:22px;width:32px;text-align:center;flex-shrink:0;padding-top:2px}",
+  ".atb-stack-name{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:#e8e0d4;margin-bottom:3px}",
+  ".atb-stack-desc{font-size:12px;color:#6b6b78;line-height:1.5}",
+  ".atb-timeline{display:flex;flex-direction:column;gap:0;padding-left:20px;border-left:2px solid rgba(232,224,212,0.08)}",
+  ".atb-tl-item{display:flex;gap:16px;padding:16px 0}",
+  ".atb-tl-marker{display:flex;flex-direction:column;align-items:center;min-width:60px;position:relative}",
+  ".atb-tl-dot{width:12px;height:12px;border-radius:50%;background:#c08b5c;border:2px solid #151519;position:absolute;left:-27px;top:4px;box-shadow:0 0 8px rgba(192,139,92,0.4)}",
+  ".atb-tl-phase{font-family:'JetBrains Mono',monospace;font-size:10px;color:#6b6b78;text-transform:uppercase;letter-spacing:1px}",
+  ".atb-tl-content{flex:1}",
+  ".atb-tl-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:#e8e0d4;margin-bottom:4px}",
+  ".atb-tl-desc{font-size:13px;color:#94938e;line-height:1.6}",
+  ".atb-decision,.atb-challenge{padding:16px;border-radius:8px;border:1px solid rgba(232,224,212,0.08);background:rgba(232,224,212,0.02);margin-bottom:14px}",
+  ".atb-thanks{margin-top:32px;padding:20px;border-radius:10px;background:rgba(192,139,92,0.08);border:1px solid rgba(192,139,92,0.2);text-align:center;font-family:'Playfair Display',serif;font-size:18px;color:#c08b5c}",
+  "@media(max-width:768px){.atb-nav{width:100%;min-height:auto;position:static;border-right:none;border-bottom:1px solid rgba(232,224,212,0.08)}.atb-tabs{flex-direction:row;flex-wrap:wrap}.atb-content{margin-left:0;padding:24px}}",
+].join("\
+");
 ```
 
 ### `/api/agents` (api, public)
