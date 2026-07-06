@@ -1,0 +1,678 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/404",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/Zo-Ops",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/about-the-build",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/agents",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/audit",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/auth-status",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/benchmarks",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/benchmarks/refresh",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/billing",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/blog",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/blog/:slug",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/buildin/callback",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/buildin/disconnect",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/buildin/status",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/byok-reference",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/calendar",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/career-ops",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/career-ops/applications",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/career-ops/batch",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/career-ops/pipeline",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/career-ops/scan",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/career-ops/scan-history",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/contact",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/credits",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/datasets/list",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/datasets/proxy/*",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/datasets/start",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/datasets/viewer",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/diagnose",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/extension-save",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/failures",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/family-log",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/files",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/flowpulse",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/generate-icon",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/health-check",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/logs",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/models",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/my-models",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/nav-links",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/projects",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/projects-conversations",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/puzzle-callback",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/receipt-images",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/receipts",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/security",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/services",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/share",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/share/:id",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/share/:id/download",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/sites",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/skills-gallery",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/speech-game-auth",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/speech-game-data",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/system-stats",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/telemetry-data",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/temporal-auth-check",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/temporal/*",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/test-deps",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/test-env",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/test-exec",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/test-write",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/trivia",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/trivia/by-date",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/trivia/dates",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/trivia/leaderboard",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/trivia/random",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/trivia/subscribe",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/trivia/unsubscribe",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/trivia/user-stats",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/twinmind",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/twinmind-callback",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/updates",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/voi-zos",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/x-feed",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/zo-city-data",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/zo-space-theme-gallery",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/zo-space-theme-gallery/:id",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/zo-space-theme-gallery/skill",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/zoboard/*",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/zos/build-log",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/zos/now",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/api/zos/signals",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/blog",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/blog/:slug",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/buildin-auth",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/byok-reference",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/career-ops",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/dashboard",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/data-explorer",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/data/zo-trivia/",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/data/zo-trivia/api/query",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/docs",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/icon-configurator",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/job-ops",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/kg-browse",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/kg-by-type",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/kg-entity",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/kg-graph",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/kg-recall",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/kg-search",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/kg-stats",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/knowledge-graph",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/model-advisor",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/openclaw-dashboard",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/press",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/profile",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/receipts",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/repurpose",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/s/:id",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/secret",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/share",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/skills-gallery",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/speech-game",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/speech-game-manifest.json",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/speech-game-sw.js",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/speech-game/stats",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/speech-game/stickers",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/telemetry",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/temporal",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/trivia",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/trivia/archive",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/trivia/leaderboard",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/zo-city",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/zo-city-three-test",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/zo-control-deck",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/zo-space-theme-gallery",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/zo-space-theme-gallery/:id",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/zo-status",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/zoboard",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/zoboard/:slug",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/zos",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "/zos-lite",
+      "code": "",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    }
+  ],
+  "meta": {
+    "generatedAt": "2026-07-04T20:23:05.581746+00:00",
+    "routeCount": 134
+  }
+}
