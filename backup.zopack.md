@@ -614,7 +614,7 @@ import type { Context } from "hono";\n\nexport default async (c: Context) => {\n
 ### `/kg-graph` (api, public)
 
 ```
-import type { Context } from "hono";\n\nexport default async (c: Context) => {\n  const secret = process.env.MENGRAM_API_KEY || "";\n  if (!secret) return c.json({ error: "Server misconfigured" }, 500);\n\n  try {\n    const response = await fetch("http://localhost:8420/api/graph", {\n      headers: {\n        "Authorization": `Bearer ${secret}`,\n        "Content-Type": "application/json",\n      },\n    });\n    \n    if (!response.ok) {\n      return c.json({ error: `Mengram API error: ${response.status}` }, response.status);\n    }\n    \n    const data = await response.json();\n    return c.json(data);\n  } catch (error: any) {\n    return c.json({ error: `Connection failed: ${error.message}` }, 500);\n  }\n};\n
+
 ```
 
 ### `/kg-recall` (api, public)
