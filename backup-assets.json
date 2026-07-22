@@ -1,0 +1,222 @@
+[
+  {
+    "path": "/icons/speech-game-192.png",
+    "size": 6722
+  },
+  {
+    "path": "/icons/speech-game-512.png",
+    "size": 12097
+  },
+  {
+    "path": "/icons/speech-game-180.png",
+    "size": 6255
+  },
+  {
+    "path": "/data/zo-trivia-api.ts",
+    "size": 3235
+  },
+  {
+    "path": "/images/avatar-profile.jpg",
+    "size": 12075
+  },
+  {
+    "path": "/images/profile-cover.png",
+    "size": 1626622
+  },
+  {
+    "path": "/images/zo-logo-white.png",
+    "size": 114725
+  },
+  {
+    "path": "/images/pixel-banana-v2.png",
+    "size": 153470
+  },
+  {
+    "path": "/images/memory-architecture.png",
+    "size": 105688
+  },
+  {
+    "path": "/images/ZOS/zos-logo.png",
+    "size": 440537
+  },
+  {
+    "path": "/images/ZOS/zos-logo-black.png",
+    "size": 2436411
+  },
+  {
+    "path": "/images/ZOS/zos-logo-transparent.png",
+    "size": 545712
+  },
+  {
+    "path": "/images/ZOS/zos-wallpaper.png",
+    "size": 4592180
+  },
+  {
+    "path": "/images/zo-logo-black.png",
+    "size": 108080
+  },
+  {
+    "path": "/images/pixel-banana.png",
+    "size": 1699
+  },
+  {
+    "path": "/images/avatar.png",
+    "size": 1127638
+  },
+  {
+    "path": "/images/themes/organic-preview.jpg",
+    "size": 146505
+  },
+  {
+    "path": "/images/themes/monochrome-preview.jpg",
+    "size": 235969
+  },
+  {
+    "path": "/images/themes/kinetic-preview.jpg",
+    "size": 279004
+  },
+  {
+    "path": "/images/themes/retro-preview.jpg",
+    "size": 337912
+  },
+  {
+    "path": "/images/themes/bold-typography-preview.jpg",
+    "size": 140212
+  },
+  {
+    "path": "/images/themes/playful-geometric-preview.jpg",
+    "size": 281303
+  },
+  {
+    "path": "/images/themes/terminal-preview.jpg",
+    "size": 162664
+  },
+  {
+    "path": "/images/themes/modern-dark-preview.jpg",
+    "size": 143692
+  },
+  {
+    "path": "/images/themes/flat-design-preview.jpg",
+    "size": 114964
+  },
+  {
+    "path": "/images/themes/enterprise-preview.jpg",
+    "size": 162638
+  },
+  {
+    "path": "/images/themes/botanical-preview.jpg",
+    "size": 140539
+  },
+  {
+    "path": "/images/themes/web3-preview.jpg",
+    "size": 175701
+  },
+  {
+    "path": "/images/themes/bauhaus-preview.jpg",
+    "size": 225473
+  },
+  {
+    "path": "/images/themes/art-deco-preview.jpg",
+    "size": 207550
+  },
+  {
+    "path": "/images/themes/minimal-dark-preview.jpg",
+    "size": 143633
+  },
+  {
+    "path": "/images/themes/claymorphism-preview.jpg",
+    "size": 183446
+  },
+  {
+    "path": "/images/themes/cyberpunk-preview.jpg",
+    "size": 180598
+  },
+  {
+    "path": "/images/themes/swiss-minimalist-preview.jpg",
+    "size": 161570
+  },
+  {
+    "path": "/images/themes/luxury-preview.jpg",
+    "size": 331236
+  },
+  {
+    "path": "/images/themes/newsprint-preview.jpg",
+    "size": 194569
+  },
+  {
+    "path": "/images/themes/professional-preview.jpg",
+    "size": 149429
+  },
+  {
+    "path": "/images/themes/saas-preview.jpg",
+    "size": 406192
+  },
+  {
+    "path": "/images/themes/neo-brutalism-preview.jpg",
+    "size": 472118
+  },
+  {
+    "path": "/images/themes/vaporwave-preview.jpg",
+    "size": 141365
+  },
+  {
+    "path": "/images/themes/material-design-preview.jpg",
+    "size": 155942
+  },
+  {
+    "path": "/images/themes/industrial-preview.jpg",
+    "size": 165044
+  },
+  {
+    "path": "/images/themes/neumorphism-preview.jpg",
+    "size": 135980
+  },
+  {
+    "path": "/images/themes/sketch-preview.jpg",
+    "size": 96607
+  },
+  {
+    "path": "/images/themes/academia-preview.jpg",
+    "size": 1094082
+  },
+  {
+    "path": "/images/themes/maximalism-preview.jpg",
+    "size": 180598
+  },
+  {
+    "path": "/images/zo-trivia-logo.png",
+    "size": 108080
+  },
+  {
+    "path": "/images/memory-system-flow.png",
+    "size": 105688
+  },
+  {
+    "path": "/images/cover-profile.png",
+    "size": 694955
+  },
+  {
+    "path": "/pets/zenny-running-right-v2.png",
+    "size": 275774
+  },
+  {
+    "path": "/pets/zenny-idle-v1.png",
+    "size": 183143
+  },
+  {
+    "path": "/pets/zenny-running-left-v2.png",
+    "size": 276215
+  },
+  {
+    "path": "/pets/zenny-running-right-v1.png",
+    "size": 280526
+  },
+  {
+    "path": "/pets/zenny-running-left-v1.png",
+    "size": 282373
+  },
+  {
+    "path": "/pets/zenny-idle-v2.png",
+    "size": 229674
+  }
+]
