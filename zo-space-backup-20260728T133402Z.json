@@ -1,0 +1,1084 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/404",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/Zo-Ops",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/about-the-build",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/agents",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/audit",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/auth-status",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/benchmarks",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/benchmarks/refresh",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/billing",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/blog",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/blog/:slug",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/buildin/callback",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/buildin/disconnect",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/buildin/status",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/bydesign/callback",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/byok-reference",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/calendar",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/career-ops",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/career-ops/applications",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/career-ops/batch",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/career-ops/pipeline",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/career-ops/scan",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/career-ops/scan-history",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/contact",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/credits",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/datasets/list",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/datasets/proxy/*",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/datasets/start",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/datasets/viewer",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/diagnose",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/extension-save",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/failures",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/family-log",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/files",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/flowpulse",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/generate-icon",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/health-check",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/logs",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/model-explorer/models",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/model-explorer/providers",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/model-explorer/stats",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/model-explorer/sync",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/model-explorer/workbench",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/models",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/my-models",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/nav-links",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/oauth-mcp/callback",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/projects",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/projects-conversations",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/puzzle-callback",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/receipt-images",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/receipts",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/security",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/services",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/share",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/share/:id",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/share/:id/download",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/sites",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/skills-gallery",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/speech-game-auth",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/speech-game-data",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/system-stats",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/telemetry-data",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/temporal-auth-check",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/temporal/*",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/test-deps",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/test-env",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/test-exec",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/test-write",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/trivia",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/trivia/by-date",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/trivia/dates",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/trivia/leaderboard",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/trivia/random",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/trivia/subscribe",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/trivia/unsubscribe",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/trivia/user-stats",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/twinmind",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/twinmind-callback",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/updates",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/voi-zos",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/x-feed",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/zo-city-data",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/zo-space-theme-gallery",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/zo-space-theme-gallery/:id",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/zo-space-theme-gallery/skill",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/zoboard/*",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/zos/build-log",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/zos/now",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/api/zos/signals",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/blog",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/blog/:slug",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/buildin-auth",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/byok-reference",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/career-ops",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/dashboard",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/data-explorer",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/data/zo-trivia/",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/data/zo-trivia/api/query",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/docs",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/icon-configurator",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/job-ops",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/kg-browse",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/kg-by-type",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/kg-entity",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/kg-graph",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/kg-recall",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/kg-search",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/kg-stats",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/knowledge-graph",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/model-advisor",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/model-explorer",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/openclaw-dashboard",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/press",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/profile",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/receipts",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/repurpose",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/s/:id",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/secret",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/share",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/skills-gallery",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/speech-game",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/speech-game-manifest.json",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/speech-game-sw.js",
+      "route_type": "api",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/speech-game/stats",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/speech-game/stickers",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/telemetry",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/temporal",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/trivia",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/trivia/archive",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/trivia/leaderboard",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/zo-city",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/zo-city-three-test",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/zo-control-deck",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/zo-space-theme-gallery",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/zo-space-theme-gallery/:id",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/zo-status",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/zoboard",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/zoboard/:slug",
+      "route_type": "page",
+      "public": false,
+      "code": ""
+    },
+    {
+      "path": "/zos",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    },
+    {
+      "path": "/zos-lite",
+      "route_type": "page",
+      "public": true,
+      "code": ""
+    }
+  ],
+  "assets": [
+    {
+      "path": "/icons/speech-game-180.png",
+      "size": 6255
+    },
+    {
+      "path": "/icons/speech-game-512.png",
+      "size": 12097
+    },
+    {
+      "path": "/icons/speech-game-192.png",
+      "size": 6722
+    },
+    {
+      "path": "/pets/zenny-running-left-v1.png",
+      "size": 282373
+    },
+    {
+      "path": "/pets/zenny-running-right-v1.png",
+      "size": 280526
+    },
+    {
+      "path": "/pets/zenny-idle-v2.png",
+      "size": 229674
+    },
+    {
+      "path": "/pets/zenny-idle-v1.png",
+      "size": 183143
+    },
+    {
+      "path": "/pets/zenny-running-left-v2.png",
+      "size": 276215
+    },
+    {
+      "path": "/pets/zenny-running-right-v2.png",
+      "size": 275774
+    },
+    {
+      "path": "/images/avatar-profile.jpg",
+      "size": 12075
+    },
+    {
+      "path": "/images/ZOS/zos-logo-black.png",
+      "size": 2436411
+    },
+    {
+      "path": "/images/ZOS/zos-logo-transparent.png",
+      "size": 545712
+    },
+    {
+      "path": "/images/ZOS/zos-logo.png",
+      "size": 440537
+    },
+    {
+      "path": "/images/ZOS/zos-wallpaper.png",
+      "size": 4592180
+    },
+    {
+      "path": "/images/cover-profile.png",
+      "size": 694955
+    },
+    {
+      "path": "/images/memory-architecture.png",
+      "size": 105688
+    },
+    {
+      "path": "/images/themes/enterprise-preview.jpg",
+      "size": 162638
+    },
+    {
+      "path": "/images/themes/industrial-preview.jpg",
+      "size": 165044
+    },
+    {
+      "path": "/images/themes/monochrome-preview.jpg",
+      "size": 235969
+    },
+    {
+      "path": "/images/themes/vaporwave-preview.jpg",
+      "size": 141365
+    },
+    {
+      "path": "/images/themes/terminal-preview.jpg",
+      "size": 162664
+    },
+    {
+      "path": "/images/themes/neo-brutalism-preview.jpg",
+      "size": 472118
+    },
+    {
+      "path": "/images/themes/bold-typography-preview.jpg",
+      "size": 140212
+    },
+    {
+      "path": "/images/themes/organic-preview.jpg",
+      "size": 146505
+    },
+    {
+      "path": "/images/themes/web3-preview.jpg",
+      "size": 175701
+    },
+    {
+      "path": "/images/themes/playful-geometric-preview.jpg",
+      "size": 281303
+    },
+    {
+      "path": "/images/themes/kinetic-preview.jpg",
+      "size": 279004
+    },
+    {
+      "path": "/images/themes/flat-design-preview.jpg",
+      "size": 114964
+    },
+    {
+      "path": "/images/themes/professional-preview.jpg",
+      "size": 149429
+    },
+    {
+      "path": "/images/themes/minimal-dark-preview.jpg",
+      "size": 143633
+    },
+    {
+      "path": "/images/themes/newsprint-preview.jpg",
+      "size": 194569
+    },
+    {
+      "path": "/images/themes/claymorphism-preview.jpg",
+      "size": 183446
+    },
+    {
+      "path": "/images/themes/botanical-preview.jpg",
+      "size": 140539
+    },
+    {
+      "path": "/images/themes/saas-preview.jpg",
+      "size": 406192
+    },
+    {
+      "path": "/images/themes/sketch-preview.jpg",
+      "size": 96607
+    },
+    {
+      "path": "/images/themes/academia-preview.jpg",
+      "size": 1094082
+    },
+    {
+      "path": "/images/themes/luxury-preview.jpg",
+      "size": 331236
+    },
+    {
+      "path": "/images/themes/art-deco-preview.jpg",
+      "size": 207550
+    },
+    {
+      "path": "/images/themes/material-design-preview.jpg",
+      "size": 155942
+    },
+    {
+      "path": "/images/themes/neumorphism-preview.jpg",
+      "size": 135980
+    },
+    {
+      "path": "/images/themes/swiss-minimalist-preview.jpg",
+      "size": 161570
+    },
+    {
+      "path": "/images/themes/cyberpunk-preview.jpg",
+      "size": 180598
+    },
+    {
+      "path": "/images/themes/modern-dark-preview.jpg",
+      "size": 143692
+    },
+    {
+      "path": "/images/themes/bauhaus-preview.jpg",
+      "size": 225473
+    },
+    {
+      "path": "/images/themes/maximalism-preview.jpg",
+      "size": 180598
+    },
+    {
+      "path": "/images/themes/retro-preview.jpg",
+      "size": 337912
+    },
+    {
+      "path": "/images/profile-cover.png",
+      "size": 1626622
+    },
+    {
+      "path": "/images/memory-system-flow.png",
+      "size": 105688
+    },
+    {
+      "path": "/images/zo-trivia-logo.png",
+      "size": 108080
+    },
+    {
+      "path": "/images/pixel-banana.png",
+      "size": 1699
+    },
+    {
+      "path": "/images/avatar.png",
+      "size": 1127638
+    },
+    {
+      "path": "/images/pixel-banana-v2.png",
+      "size": 153470
+    },
+    {
+      "path": "/images/zo-logo-white.png",
+      "size": 114725
+    },
+    {
+      "path": "/images/zo-logo-black.png",
+      "size": 108080
+    },
+    {
+      "path": "/data/zo-trivia-api.ts",
+      "size": 3235
+    }
+  ],
+  "meta": {
+    "generatedAt": "2026-07-28T13:34:02.425913+00:00",
+    "routeCount": 142,
+    "assetCount": 55,
+    "fullHash": "24ca152a44547ef36bffbeec19b68e3dc94e05d8fcd40dc41f8ff38bca048942"
+  }
+}

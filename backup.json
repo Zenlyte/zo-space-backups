@@ -1,13 +1,9 @@
 {
   "assets_count": 55,
   "assets_hash": "863bbeb2cf4ef6aae2adfe7e8e9e5391e9d100bfb24f2cf3d30b3fa7e59372c3",
-  "id": "20260727T100926Z",
-  "routes_count": 34,
-  "routes_hash": "a0ff7dcc5e913e21f05f47ba3ec00e0051d92cb97a5a9d1588fea2cb5109817d",
-  "snapshot": {
-    "assets_hash": "863bbeb2cf4ef6aae2adfe7e8e9e5391e9d100bfb24f2cf3d30b3fa7e59372c3",
-    "file": "zo-space-backup-20260727T100926Z.json",
-    "routes_hash": "a0ff7dcc5e913e21f05f47ba3ec00e0051d92cb97a5a9d1588fea2cb5109817d"
-  },
-  "timestamp": "2026-07-27T10:09:26Z"
+  "id": "20260728T050504Z",
+  "routes_count": 136,
+  "routes_hash": "2e8ee99277187796198c8ea985dddd0e5cee16901a34556251bd123a06ce5639",
+  "snapshot": "zo-space-backup-20260728T050504Z.json",
+  "timestamp": "2026-07-28T05:05:04Z"
 }
