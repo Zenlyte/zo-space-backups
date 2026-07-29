@@ -1,12 +1,12 @@
 {
-  "lastHash": "7d842aa9610909b5",
-  "lastTimestamp": "2026-07-29T190646Z",
+  "lastHash": "d313d8917b568897",
+  "lastTimestamp": "2026-07-29T200414Z",
   "routeCount": 143,
-  "contentHash": "7d842aa9610909b5",
+  "contentHash": "d313d8917b568897",
   "assetHash": "",
-  "lastCheckedAt": "2026-07-29T19:06:46.523507+00:00",
-  "lastBackupAt": "2026-07-29T19:06:46.523527+00:00",
-  "lastBackupPath": "/home/workspace/GitHub/zo-space-backups/zo-space-backup-2026-07-29T190646Z.json",
+  "lastCheckedAt": "2026-07-29T20:04:14.171507+00:00",
+  "lastBackupAt": "2026-07-29T20:04:14.171975+00:00",
+  "lastBackupPath": "/home/workspace/GitHub/zo-space-backups/zo-space-backup-2026-07-29T200414Z.json",
   "route_count": 143,
   "asset_count": 0,
   "lastRoutes": [
