@@ -1,0 +1,388 @@
+{
+  "assets": [
+    {
+      "path": "/icons/speech-game-512.png"
+    },
+    {
+      "path": "/icons/speech-game-180.png"
+    },
+    {
+      "path": "/icons/speech-game-192.png"
+    },
+    {
+      "path": "/images/avatar-profile.jpg"
+    },
+    {
+      "path": "/images/ZOS/zos-wallpaper.png"
+    },
+    {
+      "path": "/images/ZOS/zos-logo-transparent.png"
+    },
+    {
+      "path": "/images/ZOS/zos-logo.png"
+    },
+    {
+      "path": "/images/ZOS/zos-logo-black.png"
+    },
+    {
+      "path": "/images/profile-cover.png"
+    },
+    {
+      "path": "/images/pixel-banana-v2.png"
+    },
+    {
+      "path": "/images/themes/claymorphism-preview.jpg"
+    },
+    {
+      "path": "/images/themes/material-design-preview.jpg"
+    },
+    {
+      "path": "/images/themes/bold-typography-preview.jpg"
+    },
+    {
+      "path": "/images/themes/luxury-preview.jpg"
+    },
+    {
+      "path": "/images/themes/monochrome-preview.jpg"
+    },
+    {
+      "path": "/images/themes/botanical-preview.jpg"
+    },
+    {
+      "path": "/images/themes/saas-preview.jpg"
+    },
+    {
+      "path": "/images/themes/academia-preview.jpg"
+    },
+    {
+      "path": "/images/themes/modern-dark-preview.jpg"
+    },
+    {
+      "path": "/images/themes/newsprint-preview.jpg"
+    },
+    {
+      "path": "/images/themes/swiss-minimalist-preview.jpg"
+    },
+    {
+      "path": "/images/themes/vaporwave-preview.jpg"
+    },
+    {
+      "path": "/images/themes/retro-preview.jpg"
+    },
+    {
+      "path": "/images/themes/neo-brutalism-preview.jpg"
+    },
+    {
+      "path": "/images/themes/cyberpunk-preview.jpg"
+    },
+    {
+      "path": "/images/themes/web3-preview.jpg"
+    },
+    {
+      "path": "/images/themes/playful-geometric-preview.jpg"
+    },
+    {
+      "path": "/images/themes/terminal-preview.jpg"
+    },
+    {
+      "path": "/images/themes/sketch-preview.jpg"
+    },
+    {
+      "path": "/images/themes/bauhaus-preview.jpg"
+    },
+    {
+      "path": "/images/themes/art-deco-preview.jpg"
+    },
+    {
+      "path": "/images/themes/professional-preview.jpg"
+    },
+    {
+      "path": "/images/themes/enterprise-preview.jpg"
+    },
+    {
+      "path": "/images/themes/flat-design-preview.jpg"
+    },
+    {
+      "path": "/images/themes/minimal-dark-preview.jpg"
+    },
+    {
+      "path": "/images/themes/kinetic-preview.jpg"
+    },
+    {
+      "path": "/images/themes/maximalism-preview.jpg"
+    },
+    {
+      "path": "/images/themes/neumorphism-preview.jpg"
+    },
+    {
+      "path": "/images/themes/organic-preview.jpg"
+    },
+    {
+      "path": "/images/themes/industrial-preview.jpg"
+    },
+    {
+      "path": "/images/memory-system-flow.png"
+    },
+    {
+      "path": "/images/zo-logo-black.png"
+    },
+    {
+      "path": "/images/zo-logo-white.png"
+    },
+    {
+      "path": "/images/memory-architecture.png"
+    },
+    {
+      "path": "/images/pixel-banana.png"
+    },
+    {
+      "path": "/images/avatar.png"
+    },
+    {
+      "path": "/images/cover-profile.png"
+    },
+    {
+      "path": "/images/zo-trivia-logo.png"
+    },
+    {
+      "path": "/pets/zenny-running-left-v1.png"
+    },
+    {
+      "path": "/pets/zenny-running-left-v2.png"
+    },
+    {
+      "path": "/pets/zenny-idle-v2.png"
+    },
+    {
+      "path": "/pets/zenny-idle-v1.png"
+    },
+    {
+      "path": "/pets/zenny-running-right-v2.png"
+    },
+    {
+      "path": "/pets/zenny-running-right-v1.png"
+    },
+    {
+      "path": "/data/zo-trivia-api.ts"
+    }
+  ],
+  "routes": [
+    {
+      "path": "/",
+      "public": true,
+      "route_type": "page",
+      "source": "custom"
+    },
+    {
+      "path": "/404",
+      "public": true,
+      "route_type": "page",
+      "source": "custom"
+    },
+    {
+      "path": "/Zo-Ops",
+      "public": false,
+      "route_type": "page",
+      "source": "custom"
+    },
+    {
+      "path": "/about-the-build",
+      "public": true,
+      "route_type": "page",
+      "source": "custom"
+    },
+    {
+      "path": "/api/agents",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/audit",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/auth-status",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/benchmarks",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/benchmarks/refresh",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/billing",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/blog",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/blog/:slug",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/buildin/callback",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/buildin/disconnect",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/buildin/status",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/bydesign/callback",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/byok-reference",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/calendar",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/career-ops",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/career-ops/applications",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/career-ops/batch",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/career-ops/pipeline",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/career-ops/scan",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/career-ops/scan-history",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/contact",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/credits",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/datasets/list",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/datasets/proxy/*",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/datasets/start",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/datasets/viewer",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/diagnose",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/extension-save",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/failures",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/family-log",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/files",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    },
+    {
+      "path": "/api/flowpulse",
+      "public": true,
+      "route_type": "api",
+      "source": "custom"
+    }
+  ],
+  "timestamp": "2026-08-01T05:03:21Z"
+}
