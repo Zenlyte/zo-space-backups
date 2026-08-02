@@ -1,0 +1,373 @@
+{
+  "exported_at": "2026-08-02T19:03:26.451453+00:00",
+  "count": 0,
+  "routes": [],
+  "assets": [
+    {
+      "path": "/data/zo-trivia-api.ts",
+      "size": 0
+    },
+    {
+      "path": "/images/ZOS/zos-logo-transparent.png",
+      "size": 0
+    },
+    {
+      "path": "/images/ZOS/zos-wallpaper.png",
+      "size": 0
+    },
+    {
+      "path": "/images/ZOS/zos-logo-black.png",
+      "size": 0
+    },
+    {
+      "path": "/images/ZOS/zos-logo.png",
+      "size": 0
+    },
+    {
+      "path": "/images/zo-logo-white.png",
+      "size": 0
+    },
+    {
+      "path": "/images/memory-architecture.png",
+      "size": 0
+    },
+    {
+      "path": "/images/memory-system-flow.png",
+      "size": 0
+    },
+    {
+      "path": "/images/cover-profile.png",
+      "size": 0
+    },
+    {
+      "path": "/images/zo-trivia-logo.png",
+      "size": 0
+    },
+    {
+      "path": "/images/zo-logo-black.png",
+      "size": 0
+    },
+    {
+      "path": "/images/avatar-profile.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/profile-cover.png",
+      "size": 0
+    },
+    {
+      "path": "/images/pixel-banana.png",
+      "size": 0
+    },
+    {
+      "path": "/images/pixel-banana-v2.png",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/cyberpunk-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/vaporwave-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/web3-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/luxury-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/sketch-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/enterprise-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/bold-typography-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/swiss-minimalist-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/playful-geometric-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/modern-dark-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/retro-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/industrial-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/maximalism-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/botanical-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/flat-design-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/neo-brutalism-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/saas-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/neumorphism-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/organic-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/kinetic-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/academia-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/art-deco-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/terminal-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/bauhaus-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/monochrome-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/claymorphism-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/minimal-dark-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/newsprint-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/professional-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/themes/material-design-preview.jpg",
+      "size": 0
+    },
+    {
+      "path": "/images/avatar.png",
+      "size": 0
+    },
+    {
+      "path": "/pets/zenny-running-right-v1.png",
+      "size": 0
+    },
+    {
+      "path": "/pets/zenny-idle-v2.png",
+      "size": 0
+    },
+    {
+      "path": "/pets/zenny-running-left-v1.png",
+      "size": 0
+    },
+    {
+      "path": "/pets/zenny-running-right-v2.png",
+      "size": 0
+    },
+    {
+      "path": "/pets/zenny-idle-v1.png",
+      "size": 0
+    },
+    {
+      "path": "/pets/zenny-running-left-v2.png",
+      "size": 0
+    },
+    {
+      "path": "/icons/speech-game-192.png",
+      "size": 0
+    },
+    {
+      "path": "/icons/speech-game-180.png",
+      "size": 0
+    },
+    {
+      "path": "/icons/speech-game-512.png",
+      "size": 0
+    }
+  ],
+  "errors": [
+    "/: parse failed",
+    "/404: parse failed",
+    "/Zo-Ops: parse failed",
+    "/about-the-build: parse failed",
+    "/api/agents: parse failed",
+    "/api/audit: parse failed",
+    "/api/auth-status: parse failed",
+    "/api/benchmarks: parse failed",
+    "/api/benchmarks/refresh: parse failed",
+    "/api/billing: parse failed",
+    "/api/blog: parse failed",
+    "/api/blog/:slug: parse failed",
+    "/api/buildin/callback: parse failed",
+    "/api/buildin/disconnect: parse failed",
+    "/api/buildin/status: parse failed",
+    "/api/bydesign/callback: parse failed",
+    "/api/byok-reference: parse failed",
+    "/api/calendar: parse failed",
+    "/api/career-ops: parse failed",
+    "/api/career-ops/applications: parse failed",
+    "/api/career-ops/batch: parse failed",
+    "/api/career-ops/pipeline: parse failed",
+    "/api/career-ops/scan: parse failed",
+    "/api/career-ops/scan-history: parse failed",
+    "/api/contact: parse failed",
+    "/api/credits: parse failed",
+    "/api/datasets/list: parse failed",
+    "/api/datasets/proxy/*: parse failed",
+    "/api/datasets/start: parse failed",
+    "/api/datasets/viewer: parse failed",
+    "/api/diagnose: parse failed",
+    "/api/extension-save: parse failed",
+    "/api/failures: parse failed",
+    "/api/family-log: parse failed",
+    "/api/files: parse failed",
+    "/api/flowpulse: parse failed",
+    "/api/generate-icon: parse failed",
+    "/api/health-check: parse failed",
+    "/api/logs: parse failed",
+    "/api/model-explorer/import-omniroute: parse failed",
+    "/api/model-explorer/models: parse failed",
+    "/api/model-explorer/providers: parse failed",
+    "/api/model-explorer/providers/delete: parse failed",
+    "/api/model-explorer/stats: parse failed",
+    "/api/model-explorer/sync: parse failed",
+    "/api/model-explorer/workbench: parse failed",
+    "/api/models: parse failed",
+    "/api/my-models: parse failed",
+    "/api/nav-links: parse failed",
+    "/api/oauth-mcp/callback: parse failed",
+    "/api/projects: parse failed",
+    "/api/projects-conversations: parse failed",
+    "/api/puzzle-callback: parse failed",
+    "/api/receipt-images: parse failed",
+    "/api/receipts: parse failed",
+    "/api/security: parse failed",
+    "/api/services: parse failed",
+    "/api/share: parse failed",
+    "/api/share/:id: parse failed",
+    "/api/share/:id/download: parse failed",
+    "/api/sites: parse failed",
+    "/api/skills-gallery: parse failed",
+    "/api/speech-game-auth: parse failed",
+    "/api/speech-game-data: parse failed",
+    "/api/system-stats: parse failed",
+    "/api/telemetry-data: parse failed",
+    "/api/temporal-auth-check: parse failed",
+    "/api/temporal/*: parse failed",
+    "/api/test-deps: parse failed",
+    "/api/test-env: parse failed",
+    "/api/test-exec: parse failed",
+    "/api/test-write: parse failed",
+    "/api/trivia: parse failed",
+    "/api/trivia/by-date: parse failed",
+    "/api/trivia/dates: parse failed",
+    "/api/trivia/leaderboard: parse failed",
+    "/api/trivia/random: parse failed",
+    "/api/trivia/subscribe: parse failed",
+    "/api/trivia/unsubscribe: parse failed",
+    "/api/trivia/user-stats: parse failed",
+    "/api/twinmind: parse failed",
+    "/api/twinmind-callback: parse failed",
+    "/api/updates: parse failed",
+    "/api/voi-zos: parse failed",
+    "/api/x-feed: parse failed",
+    "/api/zo-city-data: parse failed",
+    "/api/zo-space-theme-gallery: parse failed",
+    "/api/zo-space-theme-gallery/:id: parse failed",
+    "/api/zo-space-theme-gallery/skill: parse failed",
+    "/api/zoboard/*: parse failed",
+    "/api/zos/build-log: parse failed",
+    "/api/zos/now: parse failed",
+    "/api/zos/signals: parse failed",
+    "/blog: parse failed",
+    "/blog/:slug: parse failed",
+    "/buildin-auth: parse failed",
+    "/byok-reference: parse failed",
+    "/career-ops: parse failed",
+    "/dashboard: parse failed",
+    "/data-explorer: parse failed",
+    "/data/zo-trivia/: parse failed",
+    "/data/zo-trivia/api/query: parse failed",
+    "/docs: parse failed",
+    "/icon-configurator: parse failed",
+    "/job-ops: parse failed",
+    "/kg-browse: parse failed",
+    "/kg-by-type: parse failed",
+    "/kg-entity: parse failed",
+    "/kg-graph: parse failed",
+    "/kg-recall: parse failed",
+    "/kg-search: parse failed",
+    "/kg-stats: parse failed",
+    "/knowledge-graph: parse failed",
+    "/model-advisor: parse failed",
+    "/model-explorer: parse failed",
+    "/openclaw-dashboard: parse failed",
+    "/press: parse failed",
+    "/profile: parse failed",
+    "/receipts: parse failed",
+    "/repurpose: parse failed",
+    "/s/:id: parse failed",
+    "/secret: parse failed",
+    "/share: parse failed",
+    "/skills-gallery: parse failed",
+    "/speech-game: parse failed",
+    "/speech-game-manifest.json: parse failed",
+    "/speech-game-sw.js: parse failed",
+    "/speech-game/stats: parse failed",
+    "/speech-game/stickers: parse failed",
+    "/telemetry: parse failed",
+    "/temporal: parse failed",
+    "/trivia: parse failed",
+    "/trivia/archive: parse failed",
+    "/trivia/leaderboard: parse failed",
+    "/zo-city: parse failed",
+    "/zo-city-three-test: parse failed",
+    "/zo-control-deck: parse failed",
+    "/zo-space-theme-gallery: parse failed",
+    "/zo-space-theme-gallery/:id: parse failed",
+    "/zo-status: parse failed",
+    "/zoboard: parse failed",
+    "/zoboard/:slug: parse failed",
+    "/zos: parse failed",
+    "/zos-lite: parse failed"
+  ]
+}
