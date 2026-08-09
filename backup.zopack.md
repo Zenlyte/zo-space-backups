@@ -3,24 +3,774 @@ format: zopack
 version: "1.0"
 name: zo-space-backup
 author: curtastrophe.zo.computer
-routes: 145
-exported: 2026-08-08
+routes: 144
+exported: 2026-08-09
 ---
 
 # zo-space-backup
 
 ## Routes
 
-### `/` (page, private)
+### `/` (page, public)
 
 ```tsx
+import { useState, useEffect, useRef } from "react";
+import {
+  ArrowRight, Github, Twitter, Linkedin, MessageSquare, Send, CheckCircle,
+  Database, Bot, Users, Wrench, ExternalLink, Gamepad2, Sparkles, Clock,
+  Tag, ChevronDown, Menu, X,
+  LayoutDashboard, Palette, Settings, Share2, Briefcase, PenLine, Lock
+} from "lucide-react";
 
+const COLORS = {
+  bg: "#0a0a0f",
+  card: "#0f1117",
+  cardHover: "#141420",
+  cyan: "#06b6d4",
+  cyanLight: "#22d3ee",
+  indigo: "#6366f1",
+  indigoLight: "#818cf8",
+  muted: "#94a3b8",
+  dimmed: "#64748b",
+  border: "rgba(255,255,255,0.08)",
+  borderHover: "rgba(6,182,212,0.4)",
+};
+
+const PROJECTS = [
+  { name: "Canadian Daycare Finder", desc: "A web service for Canadian parents to find, filter, and evaluate daycares using provincial data enriched with Google Maps and news.", status: "planned", tags: ["Web", "Data", "Maps"], link: null },
+  { name: "Theme Gallery", desc: "30+ design system themes for Zo Space with one-click application and live preview.", status: "completed", tags: ["Zo Space", "React", "Design"], link: "/zo-space-theme-gallery" },
+  { name: "MemWiki", desc: "Git-backed personal knowledge system and cognitive extension with consciousness continuity and multi-agent synthesis.", status: "completed", tags: ["TypeScript", "Git", "AI"], link: "/docs" },
+  { name: "Zo Icon Configurator", desc: "Custom Zo Computer logo generator with AI enhancement, theme presets, and canvas rendering.", status: "completed", tags: ["React", "AI", "Canvas"], link: "/icon-configurator" },
+  { name: "JobOps", desc: "Advanced job search orchestration platform with automated scraping, AI scoring, and resume tailoring.", status: "in-progress", tags: ["TypeScript", "AI", "Automation"], link: null },
+  { name: "Straico Rust Proxy", desc: "High-performance Rust-based proxy for Straico and Ollama model orchestration with streaming support.", status: "completed", tags: ["Rust", "API", "AI"], link: null },
+  { name: "Zo Discord Bot", desc: "Discord integration for Zo Computer with thread management, model overrides, and persistent memory.", status: "completed", tags: ["Python", "Discord", "AI"], link: null },
+  { name: "Temporal Dashboard", desc: "Temporal development server and workflow orchestration dashboard for complex distributed systems.", status: "in-progress", tags: ["Infra", "Workflow", "Orchestration"], link: null },
+  { name: "OpenClaw Dashboard", desc: "Management interface for OpenClaw multi-machine agent orchestration and distributed AI workloads.", status: "in-progress", tags: ["Python", "Agents", "Infra"], link: null },
+  { name: "Skill Gallery", desc: "Browsable gallery of Zo Computer skills with search, filtering, and easy installation.", status: "in-progress", tags: ["Zo Space", "Community"], link: null },
+  { name: "Zo Status", desc: "System health and service monitoring dashboard for tracking Zo Computer performance and availability.", status: "completed", tags: ["Monitoring", "Dashboard"], link: null },
+  { name: "Published Skills & PRs", desc: "Community contributions to the Zo skills ecosystem, open-source tools and integrations.", status: "completed", tags: ["TypeScript", "Open Source"], link: null },
+  { name: "Automations", desc: "Scheduled agents, notifications, digests, and workflow automation on Zo Computer.", status: "completed", tags: ["Agents", "Integrations"], link: null },
+  { name: "Receipts", desc: "Shared household expense tracker for tracking receipts and spending.", status: "completed", tags: ["Finance", "Zo Space"], link: null },
+  { name: "Family Butler Dashboard", desc: "Shared hub for schedules, tasks, and household information management.", status: "completed", tags: ["React", "Zo Space"], link: "/dashboard" },
+  { name: "Personal OS", desc: "Task management and personal productivity system built on Zo.", status: "in-progress", tags: ["Productivity", "Zo Space"], link: null },
+  { name: "Docs", desc: "Project documentation and knowledge base for the entire personal Zo ecosystem.", status: "in-progress", tags: ["Documentation", "Wiki"], link: "/docs" },
+  { name: "Prompt Gallery", desc: "Template library for curated and saved prompts across various AI use cases.", status: "in-progress", tags: ["Productivity", "AI"], link: null },
+  { name: "MCP Staging", desc: "Staging environment for developing and testing Model Context Protocol (MCP) servers.", status: "in-progress", tags: ["MCP", "Development"], link: null },
+];
+
+const SOCIAL_LINKS = [
+  { name: "X / Twitter", icon: Twitter, url: "https://x.com/curtastrophe_", color: "#1da1f2" },
+  { name: "LinkedIn", icon: Linkedin, url: "https://linkedin.com/in/curtischow", color: "#0a66c2" },
+  { name: "GitHub", icon: Github, url: "https://github.com/curtastrophe", color: "#f0f6fc" },
+  { name: "Reddit", icon: MessageSquare, url: "https://reddit.com/user/GoomiBare", color: "#ff4500" },
+];
+
+const NAV_ITEMS = ["About", "Projects", "Blog", "Social", "Contact"];
+
+const ZENNY_IDLE = "/pets/zenny-idle-v2.png";
+const ZENNY_RUN_RIGHT = "/pets/zenny-running-right-v2.png";
+const ZENNY_RUN_LEFT = "/pets/zenny-running-left-v2.png";
+
+const ZENNY_STATES = {
+  idle: { src: ZENNY_IDLE, frames: 6 },
+  left: { src: ZENNY_RUN_LEFT, frames: 8 },
+  right: { src: ZENNY_RUN_RIGHT, frames: 8 },
+} as const;
+
+function DraggableZenny() {
+  const [position, setPosition] = useState({ x: 24, y: 120 });
+  const [mode, setMode] = useState<keyof typeof ZENNY_STATES>("idle");
+  const [frame, setFrame] = useState(0);
+  const dragRef = useRef({ active: false, pointerId: -1, offsetX: 0, offsetY: 0, lastX: 0 });
+  const width = 96;
+  const height = 104;
+  const pet = ZENNY_STATES[mode];
+
+  useEffect(() => {
+    const placeZenny = () => {
+      setPosition({
+        x: Math.max(8, window.innerWidth - width - 32),
+        y: window.innerWidth < 768 ? 96 : 132,
+      });
+    };
+    placeZenny();
+    window.addEventListener("resize", placeZenny);
+    return () => window.removeEventListener("resize", placeZenny);
+  }, []);
+
+  useEffect(() => {
+    setFrame(0);
+    const id = window.setInterval(() => {
+      setFrame((current) => (current + 1) % ZENNY_STATES[mode].frames);
+    }, mode === "idle" ? 180 : 95);
+    return () => window.clearInterval(id);
+  }, [mode]);
+
+  const clamp = (x: number, y: number) => ({
+    x: Math.max(8, Math.min(window.innerWidth - width - 8, x)),
+    y: Math.max(84, Math.min(window.innerHeight - height - 8, y)),
+  });
+
+  const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    event.currentTarget.setPointerCapture(event.pointerId);
+    dragRef.current = {
+      active: true,
+      pointerId: event.pointerId,
+      offsetX: event.clientX - position.x,
+      offsetY: event.clientY - position.y,
+      lastX: event.clientX,
+    };
+  };
+
+  const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current;
+    if (!drag.active || drag.pointerId !== event.pointerId) return;
+    const dx = event.clientX - drag.lastX;
+    if (dx > 1) setMode("right");
+    if (dx < -1) setMode("left");
+    drag.lastX = event.clientX;
+    setPosition(clamp(event.clientX - drag.offsetX, event.clientY - drag.offsetY));
+  };
+
+  const stopDragging = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragRef.current.active || dragRef.current.pointerId !== event.pointerId) return;
+    dragRef.current.active = false;
+    setMode("idle");
+  };
+
+  return (
+    <div
+      role="button"
+      aria-label="Drag Zenny"
+      title="Drag Zenny"
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={stopDragging}
+      onPointerCancel={stopDragging}
+      className="fixed z-[60] cursor-grab active:cursor-grabbing select-none touch-none"
+      style={{
+        left: position.x,
+        top: position.y,
+        width,
+        height,
+        imageRendering: "pixelated",
+        backgroundImage: `url(${pet.src})`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: `${8 * width}px ${height}px`,
+        backgroundPosition: `-${frame * width}px 0px`,
+        filter: "drop-shadow(0 10px 18px rgba(0,0,0,0.35))",
+      }}
+    />
+  );
+}
+
+function HexAvatar({ size = 140 }: { size?: number }) {
+  const r = size / 2;
+  const points = Array.from({ length: 6 }, (_, i) => {
+    const angle = (Math.PI / 3) * i - Math.PI / 2;
+    return `${r + r * 0.92 * Math.cos(angle)},${r + r * 0.92 * Math.sin(angle)}`;
+  }).join(" ");
+  const outerPoints = Array.from({ length: 6 }, (_, i) => {
+    const angle = (Math.PI / 3) * i - Math.PI / 2;
+    return `${r + r * Math.cos(angle)},${r + r * Math.sin(angle)}`;
+  }).join(" ");
+
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <defs>
+          <linearGradient id="hex-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={COLORS.cyan} />
+            <stop offset="100%" stopColor={COLORS.indigo} />
+          </linearGradient>
+          <clipPath id="hex-clip">
+            <polygon points={points} />
+          </clipPath>
+        </defs>
+        <polygon points={outerPoints} fill="none" stroke="url(#hex-grad)" strokeWidth="2.5" />
+        <polygon points={points} fill={COLORS.card} />
+        <image
+          href="/images/avatar.png"
+          x="0"
+          y="0"
+          width={size}
+          height={size}
+          clipPath="url(#hex-clip)"
+          preserveAspectRatio="xMidYMid slice"
+        />
+      </svg>
+      <div className="absolute inset-0 opacity-30" style={{
+        background: `radial-gradient(circle at 30% 30%, ${COLORS.cyan}33, transparent 60%)`,
+        clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
+      }} />
+    </div>
+  );
+}
+
+function SectionHeader({ label, title, highlight }: { label: string; title: string; highlight: string }) {
+  return (
+    <div className="text-center mb-16">
+      <span className="text-xs font-mono tracking-widest uppercase" style={{ color: COLORS.cyan }}>{label}</span>
+      <h2 className="font-heading text-3xl md:text-5xl font-bold mt-3">
+        {title}{" "}
+        <span style={{
+          background: `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})`,
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+        }}>{highlight}</span>
+      </h2>
+    </div>
+  );
+}
+
+function StatusBadge({ status }: { status: string }) {
+  const config: Record<string, { bg: string; text: string; label: string }> = {
+    completed: { bg: "rgba(34,197,94,0.15)", text: "#4ade80", label: "Completed" },
+    "in-progress": { bg: `${COLORS.cyan}20`, text: COLORS.cyanLight, label: "In Progress" },
+    planned: { bg: `${COLORS.indigo}20`, text: COLORS.indigoLight, label: "Planned" },
+  };
+  const c = config[status] || config.planned;
+  return (
+    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono tracking-wider uppercase"
+      style={{ background: c.bg, color: c.text, border: `1px solid ${c.text}30` }}>
+      {c.label}
+    </span>
+  );
+}
+
+interface PostMeta { slug: string; title: string; excerpt: string; date: string; tags: string[]; readTime: string; }
+
+export default function Home() {
+  const [mounted, setMounted] = useState(false);
+  const [activeFilter, setActiveFilter] = useState("all");
+  const [posts, setPosts] = useState<PostMeta[]>([]);
+  const [formState, setFormState] = useState({ name: "", email: "", message: "" });
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [formError, setFormError] = useState("");
+  const [mobileNav, setMobileNav] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [navLinks, setNavLinks] = useState<any[]>([]);
+  const [navAuth, setNavAuth] = useState(false);
+  const [pagesOpen, setPagesOpen] = useState(false);
+  const pagesRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+    fetch("/api/blog", { headers: { Accept: "application/json" } })
+      .then(r => r.json())
+      .then(d => setPosts((d.posts || []).slice(0, 3)))
+      .catch(() => {});
+    fetch("/api/nav-links", { headers: { Accept: "application/json" } })
+      .then(r => r.json())
+      .then(d => { setNavLinks(d.links || []); setNavAuth(d.authenticated); })
+      .catch(() => {});
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll);
+    const onClickOutside = (e: MouseEvent) => {
+      if (pagesRef.current && !pagesRef.current.contains(e.target as Node)) {
+        setPagesOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onClickOutside);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("mousedown", onClickOutside);
+    };
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSending(true);
+    setFormError("");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(formState),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Something went wrong");
+      setSent(true);
+      setFormState({ name: "", email: "", message: "" });
+    } catch (err: any) {
+      setFormError(err.message || "Something went wrong");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const filteredProjects = activeFilter === "all" ? PROJECTS : PROJECTS.filter(p => p.status === activeFilter);
+
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const navHeight = 80;
+      const targetY = el.getBoundingClientRect().top + window.scrollY - navHeight;
+      window.scrollTo({ top: targetY, behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const ICON_MAP: Record<string, any> = {
+    "pencil": PenLine,
+    "palette": Palette,
+    "settings": Settings,
+    "layout-dashboard": LayoutDashboard,
+    "sparkles": Sparkles,
+    "share-2": Share2,
+    "clock": Clock,
+    "briefcase": Briefcase,
+  };
+
+  const filteredNavLinks = navLinks.filter((link: any) => link.path !== "/blog");
+
+  return (
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        .font-heading { font-family: 'Space Grotesk', sans-serif; }
+        .font-body { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .bg-grid {
+          background-size: 60px 60px;
+          background-image:
+            linear-gradient(to right, rgba(99,102,241,0.06) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(6,182,212,0.06) 1px, transparent 1px);
+        }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+        @keyframes glow-pulse { 0%,100%{opacity:0.4} 50%{opacity:0.8} }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-glow { animation: glow-pulse 4s ease-in-out infinite; }
+        .glass { background: rgba(15,17,23,0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { border-color: rgba(6,182,212,0.4); box-shadow: 0 0 30px -10px rgba(6,182,212,0.15); transform: translateY(-2px); }
+      `}</style>
+
+      <div className="min-h-screen text-white font-body relative overflow-hidden" style={{ background: COLORS.bg }}>
+        <DraggableZenny />
+        {/* Background effects */}
+        <div className="absolute inset-0 bg-grid pointer-events-none" />
+        <div className="absolute pointer-events-none" style={{ top: -200, left: "30%", width: 500, height: 500, background: COLORS.cyan, borderRadius: "50%", opacity: 0.04, filter: "blur(150px)" }} />
+        <div className="absolute pointer-events-none" style={{ bottom: -200, right: "10%", width: 400, height: 400, background: COLORS.indigo, borderRadius: "50%", opacity: 0.05, filter: "blur(120px)" }} />
+
+        {/* NAV */}
+        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "glass shadow-lg" : ""}`}>
+          <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="/" className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{
+                background: `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})`,
+                boxShadow: `0 0 20px -5px ${COLORS.cyan}80`,
+              }}>
+                <span className="text-white font-bold text-sm font-heading">C</span>
+              </div>
+              <span className="font-heading font-semibold text-lg">curtastrophe</span>
+            </a>
+            <div className="hidden md:flex items-center gap-6">
+              {NAV_ITEMS.map(item => (
+                item === "Blog" ? (
+                  <a key={item} href="/blog"
+                    className="text-xs font-mono tracking-widest uppercase transition-colors hover:text-white" style={{ color: COLORS.muted }}>
+                    {item}
+                  </a>
+                ) : (
+                  <button key={item} onClick={() => scrollToSection(item.toLowerCase())}
+                    className="text-xs font-mono tracking-widest uppercase transition-colors hover:text-white bg-transparent border-none cursor-pointer" style={{ color: COLORS.muted }}>
+                    {item}
+                  </button>
+                )
+              ))}
+              {filteredNavLinks.length > 0 && (
+                <div className="relative" ref={pagesRef}>
+                  <button
+                    onClick={() => setPagesOpen(!pagesOpen)}
+                    className="flex items-center gap-1.5 text-xs font-mono tracking-widest uppercase transition-colors hover:text-white"
+                    style={{ color: COLORS.muted }}
+                  >
+                    Pages <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${pagesOpen ? "rotate-180" : ""}`} />
+                  </button>
+                  {pagesOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-64 glass rounded-xl p-3 z-50" style={{ border: `1px solid ${COLORS.border}` }}>
+                      <div className="flex flex-col gap-1">
+                        {filteredNavLinks.map((link: any) => {
+                          const IconComp = ICON_MAP[link.icon] || ExternalLink;
+                          return (
+                            <a key={link.path} href={link.path}
+                              className="flex items-start gap-3 p-2.5 rounded-lg transition-colors hover:bg-white/5">
+                              <IconComp className="w-4 h-4 mt-0.5" style={{ color: link.category === "private" ? COLORS.indigoLight : COLORS.cyan }} />
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm font-medium truncate">{link.name}</span>
+                                  {link.category === "private" && (
+                                    <span className="px-1.5 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider"
+                                      style={{ background: `${COLORS.indigo}20`, color: COLORS.indigoLight }}>
+                                      Private
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="text-xs mt-0.5 truncate" style={{ color: COLORS.dimmed }}>{link.description}</p>
+                              </div>
+                            </a>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <button className="md:hidden" onClick={() => setMobileNav(!mobileNav)}>
+              {mobileNav ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
+          {mobileNav && (
+            <div className="md:hidden glass border-t" style={{ borderColor: COLORS.border }}>
+              <div className="px-6 py-4 flex flex-col gap-3">
+                {NAV_ITEMS.map(item => (
+                  item === "Blog" ? (
+                    <a key={item} href="/blog"
+                      onClick={() => setMobileNav(false)}
+                      className="text-sm font-mono tracking-wider uppercase py-2" style={{ color: COLORS.muted }}>
+                      {item}
+                    </a>
+                  ) : (
+                    <button key={item} onClick={() => { scrollToSection(item.toLowerCase()); setMobileNav(false); }}
+                      className="text-sm font-mono tracking-wider uppercase py-2 text-left bg-transparent border-none cursor-pointer" style={{ color: COLORS.muted }}>
+                      {item}
+                    </button>
+                  )
+                ))}
+                {filteredNavLinks.length > 0 && (
+                  <>
+                    <div className="h-px my-1" style={{ background: COLORS.border }} />
+                    <span className="text-xs font-mono tracking-widest uppercase pt-1" style={{ color: COLORS.dimmed }}>
+                      Pages {navAuth && <Lock className="w-3 h-3 inline ml-1" style={{ color: COLORS.cyan }} />}
+                    </span>
+                    {filteredNavLinks.map((link: any) => {
+                      const IconComp = ICON_MAP[link.icon] || ExternalLink;
+                      return (
+                        <a key={link.path} href={link.path}
+                          onClick={() => setMobileNav(false)}
+                          className="flex items-center gap-3 py-2">
+                          <IconComp className="w-4 h-4" style={{ color: link.category === "private" ? COLORS.indigoLight : COLORS.cyan }} />
+                          <span className="text-sm" style={{ color: COLORS.muted }}>{link.name}</span>
+                          {link.category === "private" && (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono uppercase" style={{ background: `${COLORS.indigo}20`, color: COLORS.indigoLight }}>
+                              Private
+                            </span>
+                          )}
+                        </a>
+                      );
+                    })}
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+        </nav>
+
+        {/* HERO */}
+        <section className="relative z-10 max-w-7xl mx-auto px-6 pt-28 pb-20 md:pt-36 md:pb-28">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6" style={{ background: "rgba(255,255,255,0.05)", border: `1px solid ${COLORS.border}` }}>
+                <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: COLORS.cyan }} />
+                <span className="text-xs font-mono tracking-wider uppercase" style={{ color: COLORS.muted }}>Building things on Zo Space</span>
+              </div>
+
+              <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl font-bold leading-tight mb-4">
+                Zenlyte
+              </h1>
+              <p className="font-mono text-sm mb-6" style={{ color: COLORS.cyan }}>@curtastrophe</p>
+              <p className="text-lg md:text-xl leading-relaxed mb-8 max-w-lg" style={{ color: COLORS.muted }}>
+                Data & Analytics professional and AI builder. Turning raw data into decisions, and exploring the frontier of AI on Zo Computer.
+              </p>
+
+              <div className="flex flex-wrap gap-4">
+                <button onClick={() => scrollToSection("projects")} className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-semibold text-sm tracking-wider uppercase transition-all duration-300 hover:scale-105" style={{
+                  background: `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})`,
+                  boxShadow: `0 0 25px -5px ${COLORS.cyan}60`,
+                  border: "none", cursor: "pointer",
+                }}>
+                  View Projects <ArrowRight className="w-4 h-4" />
+                </button>
+                <a href="/blog" className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm tracking-wider uppercase transition-all duration-300 hover:bg-white/10" style={{
+                  border: "2px solid rgba(255,255,255,0.2)",
+                }}>
+                  Read Blog
+                </a>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center">
+              <div className="animate-float relative">
+                <HexAvatar size={180} />
+                <div className="absolute -top-2 -right-8 px-3 py-1.5 rounded-lg glass text-xs font-mono animate-bounce" style={{ animationDuration: "3s", color: COLORS.cyanLight }}>
+                  Data & AI
+                </div>
+                <div className="absolute -bottom-2 -left-8 px-3 py-1.5 rounded-lg glass text-xs font-mono animate-bounce" style={{ animationDuration: "4s", animationDelay: "1s", color: COLORS.indigoLight }}>
+                  Builder
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ABOUT */}
+        <section id="about" className="relative z-10 max-w-7xl mx-auto px-6 py-24">
+          <SectionHeader label="About" title="Who I" highlight="am" />
+          <div className="grid md:grid-cols-5 gap-8">
+            <div className="md:col-span-2">
+              <p className="text-lg leading-relaxed mb-4" style={{ color: COLORS.muted }}>
+                Data & Analytics professional by day, AI tinkerer by night. Building tools, agents, and dashboards on Zo Computer while exploring what's possible at the intersection of data and artificial intelligence.
+              </p>
+              <p className="text-sm leading-relaxed" style={{ color: COLORS.muted }}>
+                Somewhere between a beginner software dev and a power user who ships. Interested in the intersection of data, AI, and productivity systems.
+              </p>
+            </div>
+            <div className="md:col-span-3 grid sm:grid-cols-2 gap-4">
+              {[
+                { icon: Database, title: "Data & Analytics", desc: "Turning raw data into decisions and insights that drive impact." },
+                { icon: Bot, title: "AI & Automation", desc: "Agents, LLMs, memory systems, and intelligent workflows." },
+                { icon: Users, title: "Community", desc: "Leading EDBA and contributing to the Zo Computer community." },
+                { icon: Wrench, title: "Building", desc: "Shipping skills, tools, dashboards, and open-source projects." },
+              ].map(card => (
+                <div key={card.title} className="p-6 rounded-xl card-hover" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-4" style={{ background: `${COLORS.cyan}15`, border: `1px solid ${COLORS.cyan}30` }}>
+                    <card.icon className="w-5 h-5" style={{ color: COLORS.cyan }} />
+                  </div>
+                  <h3 className="font-heading font-semibold text-lg mb-2">{card.title}</h3>
+                  <p className="text-sm leading-relaxed" style={{ color: COLORS.muted }}>{card.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* PROJECTS */}
+        <section id="projects" className="relative z-10 py-24" style={{ background: COLORS.card }}>
+          <div className="max-w-7xl mx-auto px-6">
+            <SectionHeader label="Projects" title="What I'm" highlight="building" />
+            <div className="flex flex-wrap justify-center gap-3 mb-12">
+              {[
+                { key: "all", label: "All" },
+                { key: "completed", label: "Completed" },
+                { key: "in-progress", label: "In Progress" },
+                { key: "planned", label: "Planned" },
+              ].map(f => (
+                <button key={f.key} onClick={() => setActiveFilter(f.key)}
+                  className="px-4 py-2 rounded-full text-xs font-mono tracking-wider uppercase transition-all duration-200"
+                  style={{
+                    background: activeFilter === f.key ? `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})` : "rgba(255,255,255,0.05)",
+                    color: activeFilter === f.key ? "white" : COLORS.muted,
+                    border: `1px solid ${activeFilter === f.key ? "transparent" : COLORS.border}`,
+                  }}>
+                  {f.label}
+                </button>
+              ))}
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredProjects.map(p => (
+                <div key={p.name} className="p-6 rounded-xl card-hover flex flex-col" style={{ background: COLORS.bg, border: `1px solid ${COLORS.border}` }}>
+                  <div className="flex items-start justify-between mb-4">
+                    <StatusBadge status={p.status} />
+                    {p.link && (
+                      <a href={p.link} className="transition-colors hover:opacity-80" style={{ color: COLORS.cyan }}>
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    )}
+                  </div>
+                  <h3 className="font-heading font-semibold text-lg mb-2">{p.name}</h3>
+                  <p className="text-sm leading-relaxed mb-4 flex-grow" style={{ color: COLORS.muted }}>{p.desc}</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {p.tags.map(t => (
+                      <span key={t} className="px-2 py-0.5 rounded text-xs font-mono" style={{ background: `${COLORS.indigo}15`, color: COLORS.indigoLight }}>
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* BLOG PREVIEW */}
+        <section id="blog" className="relative z-10 max-w-7xl mx-auto px-6 py-24">
+          <SectionHeader label="Blog" title="Latest" highlight="posts" />
+          {posts.length > 0 ? (
+            <div className="grid md:grid-cols-3 gap-6 mb-10">
+              {posts.map(post => {
+                const d = new Date(post.date + "T00:00:00").toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" });
+                return (
+                  <a key={post.slug} href={`/blog/${post.slug}`} className="block p-6 rounded-xl card-hover" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
+                    <div className="h-1 w-12 rounded-full mb-5" style={{ background: `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})` }} />
+                    <div className="flex flex-wrap gap-1.5 mb-3">
+                      {post.tags.slice(0, 2).map(t => (
+                        <span key={t} className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-mono" style={{ background: `${COLORS.cyan}15`, color: COLORS.cyan, border: `1px solid ${COLORS.cyan}25` }}>
+                          <Tag className="w-2.5 h-2.5" />{t}
+                        </span>
+                      ))}
+                    </div>
+                    <h3 className="font-heading font-semibold text-lg mb-2 leading-tight">{post.title}</h3>
+                    <p className="text-sm leading-relaxed mb-4 line-clamp-2" style={{ color: COLORS.muted }}>{post.excerpt}</p>
+                    <div className="flex items-center gap-3 text-xs font-mono" style={{ color: COLORS.dimmed }}>
+                      <span>{d}</span>
+                      <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{post.readTime}</span>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="font-mono text-sm" style={{ color: COLORS.dimmed }}>No posts yet. Check back soon.</p>
+            </div>
+          )}
+          <div className="text-center">
+            <a href="/blog" className="inline-flex items-center gap-2 text-sm font-mono tracking-wider uppercase transition-colors" style={{ color: COLORS.cyan }}>
+              View all posts <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
+        </section>
+
+        {/* SOCIAL */}
+        <section id="social" className="relative z-10 py-24" style={{ background: COLORS.card }}>
+          <div className="max-w-7xl mx-auto px-6">
+            <SectionHeader label="Social" title="Find me" highlight="online" />
+            <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
+              {SOCIAL_LINKS.map(s => (
+                <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer"
+                  className="group p-6 rounded-xl card-hover text-center" style={{ background: COLORS.bg, border: `1px solid ${COLORS.border}` }}>
+                  <div className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center transition-all duration-300 group-hover:scale-110" style={{ background: `${s.color}15`, border: `1px solid ${s.color}30` }}>
+                    <s.icon className="w-5 h-5" style={{ color: s.color }} />
+                  </div>
+                  <h3 className="font-heading font-semibold text-sm mb-1">{s.name}</h3>
+                  <p className="text-xs font-mono" style={{ color: COLORS.dimmed }}>
+                    {s.url.replace("https://", "").split("/").slice(0, 2).join("/")}
+                  </p>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* INTERACTIVE */}
+        <section className="relative z-10 max-w-7xl mx-auto px-6 py-24">
+          <SectionHeader label="Play" title="Interactive" highlight="zone" />
+          <div className="grid md:grid-cols-2 gap-6">
+            <a href="/trivia" className="block p-8 rounded-xl card-hover relative overflow-hidden group" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
+              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <ArrowRight className="w-5 h-5" style={{ color: COLORS.cyanLight }} />
+              </div>
+              <Sparkles className="w-10 h-10 mb-4" style={{ color: COLORS.cyan }} />
+              <h3 className="font-heading font-semibold text-xl mb-2 group-hover:text-cyan-400 transition-colors">Zo Trivia</h3>
+              <p className="text-sm leading-relaxed" style={{ color: COLORS.muted }}>
+                Daily trivia questions about Zo Computer features, tips, and hidden gems. Test your knowledge and learn something new.
+              </p>
+            </a>
+            <a href="/icon-configurator" className="block p-8 rounded-xl card-hover relative overflow-hidden group" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
+              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <ArrowRight className="w-5 h-5" style={{ color: COLORS.indigoLight }} />
+              </div>
+              <Gamepad2 className="w-10 h-10 mb-4" style={{ color: COLORS.indigo }} />
+              <h3 className="font-heading font-semibold text-xl mb-2 group-hover:text-indigo-400 transition-colors">Zo Icon Configurator</h3>
+              <p className="text-sm leading-relaxed" style={{ color: COLORS.muted }}>
+                Choose a black or white Zo Computer logo, describe your modifications, and generate a custom version to download.
+              </p>
+            </a>
+          </div>
+        </section>
+
+        {/* CONTACT */}
+        <section id="contact" className="relative z-10 py-24" style={{ background: COLORS.card }}>
+          <div className="max-w-7xl mx-auto px-6">
+            <SectionHeader label="Contact" title="Get in" highlight="touch" />
+            <div className="max-w-xl mx-auto">
+              {sent ? (
+                <div className="text-center p-12 rounded-xl" style={{ background: COLORS.bg, border: `1px solid ${COLORS.cyan}40` }}>
+                  <CheckCircle className="w-12 h-12 mx-auto mb-4" style={{ color: COLORS.cyan }} />
+                  <h3 className="font-heading text-xl font-semibold mb-2">Message sent!</h3>
+                  <p className="text-sm mb-6" style={{ color: COLORS.muted }}>Thanks for reaching out. I'll get back to you soon.</p>
+                  <button onClick={() => setSent(false)} className="text-sm font-mono tracking-wider uppercase transition-colors" style={{ color: COLORS.cyan }}>
+                    Send another
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  {[
+                    { name: "name", label: "Name", type: "text", placeholder: "Your name" },
+                    { name: "email", label: "Email", type: "email", placeholder: "you@example.com" },
+                  ].map(field => (
+                    <div key={field.name}>
+                      <label className="block text-xs font-mono tracking-wider uppercase mb-2" style={{ color: COLORS.muted }}>{field.label}</label>
+                      <input type={field.type} required
+                        value={(formState as any)[field.name]}
+                        onChange={e => setFormState(s => ({ ...s, [field.name]: e.target.value }))}
+                        className="w-full px-4 py-3 rounded-xl font-body transition-all outline-none"
+                        style={{ background: COLORS.bg, border: `1px solid ${COLORS.border}`, color: "white" }}
+                        onFocus={e => e.target.style.borderColor = `${COLORS.cyan}50`}
+                        onBlur={e => e.target.style.borderColor = COLORS.border}
+                        placeholder={field.placeholder} />
+                    </div>
+                  ))}
+                  <div>
+                    <label className="block text-xs font-mono tracking-wider uppercase mb-2" style={{ color: COLORS.muted }}>Message</label>
+                    <textarea required rows={5} maxLength={2000}
+                      value={formState.message}
+                      onChange={e => setFormState(s => ({ ...s, message: e.target.value }))}
+                      className="w-full px-4 py-3 rounded-xl font-body transition-all outline-none resize-none"
+                      style={{ background: COLORS.bg, border: `1px solid ${COLORS.border}`, color: "white" }}
+                      onFocus={e => (e.target as HTMLTextAreaElement).style.borderColor = `${COLORS.cyan}50`}
+                      onBlur={e => (e.target as HTMLTextAreaElement).style.borderColor = COLORS.border}
+                      placeholder="What's on your mind?" />
+                  </div>
+                  {formError && <p className="text-red-400 text-sm font-mono">{formError}</p>}
+                  <button type="submit" disabled={sending}
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-white font-semibold text-sm tracking-wider uppercase transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{
+                      background: `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})`,
+                      boxShadow: `0 0 25px -5px ${COLORS.cyan}50`,
+                    }}>
+                    {sending ? "Sending..." : <><span>Send message</span><Send className="w-4 h-4" /></>}
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* FOOTER */}
+        <footer className="relative z-10 py-8" style={{ borderTop: `1px solid ${COLORS.border}` }}>
+          <div className="max-w-7xl mx-auto px-6 flex flex-wrap items-center justify-between gap-4">
+            <p className="text-xs font-mono tracking-wider" style={{ color: COLORS.dimmed }}>&copy; 2026 Zenlyte</p>
+            <div className="flex items-center gap-4">
+              {SOCIAL_LINKS.map(s => (
+                <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer" className="transition-colors hover:opacity-80" style={{ color: COLORS.dimmed }}>
+                  <s.icon className="w-4 h-4" />
+                </a>
+              ))}
+            </div>
+            <p className="text-xs" style={{ color: COLORS.dimmed }}>
+              Built on{" "}
+              <a href="https://zo.computer" target="_blank" rel="noopener" className="transition-colors hover:text-white" style={{ color: COLORS.cyan }}>
+                Zo Computer
+              </a>
+            </p>
+          </div>
+        </footer>
+      </div>
+    </>
+  );
+}
 ```
 
-### `/404` (page, private)
+### `/404` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect } from "react";
 
 export default function NotFound() {
@@ -113,13 +863,13 @@ const NF_CSS = [
   ".nf-links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}",
   ".nf-link{padding:10px 20px;border-radius:8px;border:1px solid rgba(232,224,212,0.1);background:rgba(232,224,212,0.03);color:#e8e0d4;text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:13px;transition:all 0.2s}",
   ".nf-link:hover{border-color:#c08b5c;background:rgba(192,139,92,0.08);color:#c08b5c}",
-].join("\n");
+].join("\
+");
 ```
 
-### `/Zo/Ops` (page, private)
+### `/Zo-Ops` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -952,10 +1702,9 @@ function ProjectModal({ project, onClose, onSave, columns, priorityColumns, colo
 }
 ```
 
-### `/about/the/build` (page, private)
+### `/about-the-build` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState } from "react";
 
 export default function AboutTheBuild() {
@@ -1188,13 +1937,13 @@ const ATB_CSS = [
   ".atb-decision,.atb-challenge{padding:16px;border-radius:8px;border:1px solid rgba(232,224,212,0.08);background:rgba(232,224,212,0.02);margin-bottom:14px}",
   ".atb-thanks{margin-top:32px;padding:20px;border-radius:10px;background:rgba(192,139,92,0.08);border:1px solid rgba(192,139,92,0.2);text-align:center;font-family:'Playfair Display',serif;font-size:18px;color:#c08b5c}",
   "@media(max-width:768px){.atb-nav{width:100%;min-height:auto;position:static;border-right:none;border-bottom:1px solid rgba(232,224,212,0.08)}.atb-tabs{flex-direction:row;flex-wrap:wrap}.atb-content{margin-left:0;padding:24px}}",
-].join("\n");
+].join("\
+");
 ```
 
 ### `/api/agents` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -1249,7 +1998,6 @@ export default async (c: Context) => {
 ### `/api/audit` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { timingSafeEqual } from "node:crypto";
 
@@ -1296,10 +2044,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/auth/status` (api, public)
+### `/api/auth-status` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -1320,7 +2067,6 @@ export default (c: Context) => {
 ### `/api/benchmarks` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
@@ -1470,7 +2216,6 @@ export default async (c: Context) => {
 ### `/api/benchmarks/refresh` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { spawn } from "child_process";
 
@@ -1493,7 +2238,6 @@ export default async (c: Context) => {
 ### `/api/billing` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { timingSafeEqual } from "node:crypto";
 
@@ -1541,7 +2285,6 @@ export default async (c: Context) => {
 ### `/api/blog` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
@@ -1561,7 +2304,10 @@ export interface BlogPost {
 // Simple frontmatter parser
 function parseMarkdown(filePath: string): { data: any; content: string } {
   const fileContent = readFileSync(filePath, "utf-8");
-  const frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
+  const frontmatterRegex = /^---\
+([\s\S]*?)\
+---\
+([\s\S]*)$/;
   const match = fileContent.match(frontmatterRegex);
   
   if (!match) {
@@ -1572,7 +2318,8 @@ function parseMarkdown(filePath: string): { data: any; content: string } {
   const content = match[2];
   
   const data: any = {};
-  frontmatterString.split("\n").forEach((line) => {
+  frontmatterString.split("\
+").forEach((line) => {
     const colonIndex = line.indexOf(":");
     if (colonIndex === -1) return;
     const key = line.slice(0, colonIndex).trim();
@@ -1651,7 +2398,6 @@ export default async (c: Context) => {
 ### `/api/blog/:slug` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
@@ -1659,7 +2405,10 @@ import { join } from "node:path";
 // Share the same parsing logic
 function parseMarkdown(filePath: string): { data: any; content: string } {
   const fileContent = readFileSync(filePath, "utf-8");
-  const frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
+  const frontmatterRegex = /^---\
+([\s\S]*?)\
+---\
+([\s\S]*)$/;
   const match = fileContent.match(frontmatterRegex);
   
   if (!match) {
@@ -1670,7 +2419,8 @@ function parseMarkdown(filePath: string): { data: any; content: string } {
   const content = match[2];
   
   const data: any = {};
-  frontmatterString.split("\n").forEach((line) => {
+  frontmatterString.split("\
+").forEach((line) => {
     const colonIndex = line.indexOf(":");
     if (colonIndex === -1) return;
     const key = line.slice(0, colonIndex).trim();
@@ -1741,7 +2491,6 @@ export default async (c: Context) => {
 ### `/api/buildin/callback` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { writeFileSync, mkdirSync } from "fs";
 
@@ -1835,7 +2584,6 @@ export default async (c: Context) => {
 ### `/api/buildin/disconnect` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -1855,7 +2603,6 @@ export default async (c: Context) => {
 ### `/api/buildin/status` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -1892,7 +2639,6 @@ export default async (c: Context) => {
 ### `/api/bydesign/callback` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { mkdir, writeFile } from "node:fs/promises";
 
@@ -1909,7 +2655,8 @@ export default async (c: Context) => {
 
   try {
     await mkdir("/home/workspace/Data/bydesign", { recursive: true });
-    await writeFile(OUTPUT_PATH, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+    await writeFile(OUTPUT_PATH, `${JSON.stringify(payload, null, 2)}\
+`, "utf8");
   } catch (error) {
     console.error("Failed to persist ByDesign OAuth callback", error);
     return c.json(
@@ -1950,10 +2697,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/byok/reference` (api, public)
+### `/api/byok-reference` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 // Server-side cache. zo.space server keeps the Hono process warm, so this
@@ -2109,7 +2855,6 @@ export default async (c: Context) => {
 ### `/api/calendar` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 /**
  * Calendar API - Phase 2.1 (Live Integration)
  * Fetches next 48 hours of events from "Jess and Curt's Events" calendar
@@ -2320,10 +3065,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/career/ops` (api, public)
+### `/api/career-ops` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -2394,10 +3138,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/career/ops/applications` (api, public)
+### `/api/career-ops/applications` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -2419,10 +3162,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/career/ops/batch` (api, public)
+### `/api/career-ops/batch` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -2454,10 +3196,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/career/ops/pipeline` (api, public)
+### `/api/career-ops/pipeline` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -2473,10 +3214,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/career/ops/scan` (api, public)
+### `/api/career-ops/scan` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { spawn } from "node:child_process";
 
@@ -2506,10 +3246,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/career/ops/scan/history` (api, public)
+### `/api/career-ops/scan-history` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -2525,7 +3264,6 @@ export default (c: Context) => {
 ### `/api/contact` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import fs from "node:fs";
 
@@ -2571,7 +3309,8 @@ export default async (c: Context) => {
       timestamp: new Date().toISOString(),
       ip,
     });
-    fs.appendFileSync(path, entry + "\n");
+    fs.appendFileSync(path, entry + "\
+");
 
     console.log(`[contact] submission saved from ${name} <${email}>`);
     return c.json({ success: true, message: "Thanks! Your request was received." });
@@ -2585,7 +3324,6 @@ export default async (c: Context) => {
 ### `/api/credits` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 // Query Zo API for real credits/billing data
@@ -2636,7 +3374,6 @@ export default async (c: Context) => {
 ### `/api/datasets/list` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -2712,7 +3449,6 @@ export default async (c: Context) => {
 ### `/api/datasets/proxy/*` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 function isOwnerLike(c: Context): boolean {
@@ -2777,7 +3513,6 @@ export default async (c: Context) => {
 ### `/api/datasets/start` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { execSync } from "child_process";
 
@@ -2880,7 +3615,6 @@ EOF`
 ### `/api/datasets/viewer` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { execSync, spawn } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, readFileSync } from "node:fs";
@@ -2981,7 +3715,6 @@ export default async (c: Context) => {
 ### `/api/diagnose` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -3016,10 +3749,9 @@ Please diagnose the issue, attempt to repair it, and once you have finished, sen
 };
 ```
 
-### `/api/extension/save` (api, public)
+### `/api/extension-save` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -3033,7 +3765,6 @@ export default async (c: Context) => {
 ### `/api/failures` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { execSync } from "node:child_process";
@@ -3051,7 +3782,8 @@ interface Failure {
 function tailFile(path: string, maxLines: number): string[] {
   try {
     const content = readFileSync(path, "utf8");
-    const lines = content.split("\n").filter(l => l.trim());
+    const lines = content.split("\
+").filter(l => l.trim());
     return lines.slice(-maxLines);
   } catch { return []; }
 }
@@ -3187,10 +3919,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/family/log` (api, public)
+### `/api/family-log` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { readFile, writeFile } from "node:fs/promises";
 import type { Context } from "hono";
 
@@ -3259,7 +3990,8 @@ export default async (c: Context) => {
       });
     }
 
-    const lines = logContent.split("\n");
+    const lines = logContent.split("\
+");
     const todos = [];
     const health = { emi: "", ellie: "" };
     const butlerNotes = [];
@@ -3357,7 +4089,6 @@ export default async (c: Context) => {
 ### `/api/files` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readdir, stat } from "fs/promises";
 import { join, extname } from "path";
@@ -3447,7 +4178,6 @@ export default async (c: Context) => {
 ### `/api/flowpulse` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { existsSync, readFileSync } from "fs";
 
@@ -3458,7 +4188,8 @@ function readJsonl(file: string): any[] {
   if (!existsSync(p)) return [];
   const raw = readFileSync(p, "utf-8").trim();
   if (!raw) return [];
-  return raw.split("\n").filter(Boolean).map((l: string) => JSON.parse(l));
+  return raw.split("\
+").filter(Boolean).map((l: string) => JSON.parse(l));
 }
 
 function readJson(file: string): any {
@@ -3581,10 +4312,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/generate/icon` (api, public)
+### `/api/generate-icon` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { randomUUID } from "node:crypto";
@@ -3614,7 +4344,8 @@ function saveRateLimits(limits: Record<string, { count: number; resetDate: strin
 function sanitizeInput(input: string): string {
   if (!input) return "";
   // Strip control characters, newlines, limit to 100 characters to prevent injection
-  return input.replace(/[\r\n\t\x00-\x1F]/g, " ").slice(0, 100).trim();
+  return input.replace(/[\r\
+\t\x00-\x1F]/g, " ").slice(0, 100).trim();
 }
 
 function isAuthenticated(c: Context): boolean {
@@ -3786,7 +4517,8 @@ async function runGeneration(jobId: string, logoType: string, colors: string, th
             imagePath: destImage,
             status: "success"
           };
-          appendFileSync("/home/workspace/zo-icon-generations/source/generations.jsonl", JSON.stringify(logEntry) + "\n");
+          appendFileSync("/home/workspace/zo-icon-generations/source/generations.jsonl", JSON.stringify(logEntry) + "\
+");
         } catch (e) {
           console.error("Failed to log generation:", e);
         }
@@ -3866,10 +4598,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/health/check` (api, public)
+### `/api/health-check` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { execSync } from "node:child_process";
@@ -3994,7 +4725,8 @@ export default async (c: Context) => {
     const telemetryPath = "/home/workspace/.zo/gemini-telemetry.jsonl";
     
     if (existsSync(telemetryPath)) {
-      const lines = readFileSync(telemetryPath, "utf-8").split("\n").filter(l => l.trim());
+      const lines = readFileSync(telemetryPath, "utf-8").split("\
+").filter(l => l.trim());
       const totalRequests = lines.length;
       
       // Check for quota errors in recent telemetry
@@ -4094,7 +4826,6 @@ export default async (c: Context) => {
 ### `/api/logs` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 
@@ -4137,7 +4868,8 @@ function parseGenericLog(line: string, source: string): LogLine | null {
 function tailFile(path: string, maxLines: number): string[] {
   try {
     const content = readFileSync(path, "utf8");
-    const lines = content.split("\n").filter(l => l.trim());
+    const lines = content.split("\
+").filter(l => l.trim());
     return lines.slice(-maxLines);
   } catch { return []; }
 }
@@ -4230,10 +4962,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/model/explorer/import/omniroute` (api, public)
+### `/api/model-explorer/import-omniroute` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -4435,10 +5166,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model/explorer/models` (api, public)
+### `/api/model-explorer/models` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -4542,10 +5272,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model/explorer/providers` (api, public)
+### `/api/model-explorer/providers` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 import { isIP } from "node:net";
@@ -4665,10 +5394,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model/explorer/providers/delete` (api, public)
+### `/api/model-explorer/providers/delete` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -4790,10 +5518,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model/explorer/stats` (api, public)
+### `/api/model-explorer/stats` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -4866,10 +5593,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model/explorer/sync` (api, public)
+### `/api/model-explorer/sync` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 async function validateSession(c: Context): Promise<boolean> {
@@ -4921,10 +5647,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model/explorer/workbench` (api, public)
+### `/api/model-explorer/workbench` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -5047,7 +5772,6 @@ export default async (c: Context) => {
 ### `/api/models` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -5077,10 +5801,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/my/models` (api, public)
+### `/api/my-models` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -5114,10 +5837,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/nav/links` (api, public)
+### `/api/nav-links` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync } from "node:fs";
 
@@ -5184,10 +5906,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/oauth/mcp/callback` (api, public)
+### `/api/oauth-mcp/callback` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { existsSync, readFileSync, writeFileSync, mkdirSync, unlinkSync } from "fs";
 
@@ -5287,7 +6008,6 @@ export default async (c: Context) => {
 ### `/api/projects` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -5391,10 +6111,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/projects/conversations` (api, public)
+### `/api/projects-conversations` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "node:fs";
 
@@ -5438,10 +6157,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/puzzle/callback` (page, private)
+### `/api/puzzle-callback` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 export default function PuzzleCallback() {
   return (
     <div className="min-h-screen bg-zinc-900 text-white flex items-center justify-center">
@@ -5489,57 +6207,15 @@ export default function PuzzleCallback() {
 }
 ```
 
-### `/api/receipt/images` (api, public)
+### `/api/receipt-images` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
-import { timingSafeEqual } from 'node:crypto';
-import type { Context } from 'hono';
 
-const IMAGES_DIR = '/home/workspace/Data/ReceiptTracker/Images';
-
-function checkAuth(passcode: string | undefined) {
-  const secret = process.env.COSTCO_APP_PASSCODE;
-  if (!secret || !passcode) return false;
-  try {
-    const aBytes = Buffer.from(passcode);
-    const bBytes = Buffer.from(secret);
-    if (aBytes.length !== bBytes.length) return false;
-    return timingSafeEqual(aBytes, bBytes);
-  } catch(e) {
-    return false;
-  }
-}
-
-export default async (c: Context) => {
-  const passcode = c.req.header('X-Passcode') || c.req.query('passcode');
-  if (!checkAuth(passcode)) return c.text('Unauthorized', 401);
-  const id = c.req.query('id');
-  if (!id) return c.text('Missing id', 400);
-  const safeId = path.basename(id);
-  const filepath = path.join(IMAGES_DIR, safeId);
-  try {
-    const fileBuf = await fs.readFile(filepath);
-    const ext = path.extname(safeId).toLowerCase();
-    const mime = ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg';
-    return new Response(fileBuf, {
-      headers: {
-        'Content-Type': mime,
-        'Cache-Control': 'public, max-age=31536000'
-      }
-    });
-  } catch (e) {
-    return c.text('Image not found', 404);
-  }
-};
 ```
 
 ### `/api/receipts` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { exec } from 'node:child_process';
@@ -5614,7 +6290,27 @@ function checkAuth(c: Context) {
 }
 
 async function extractItemsFromText(rawText: string): Promise<{ items: any[], total: number, date: string, store_name: string }> {
-  const prompt = `You are a receipt parser. Extract all purchased items from this retail receipt OCR text (Costco, Winners, Marshalls, etc.).\n\nIMPORTANT: \n- Identify the store name from the top of the receipt (e.g. "Costco", "Winners", "Marshalls", "Walmart").\n- Only extract actual purchased ITEMS (products), ignore: SUBTOTAL, TAX, TOTAL, payment info, store info, "APPROVED", card numbers, dates without items\n- Item codes might be alphanumeric depending on the store (e.g., 7 digits for Costco, others vary). If there is no item code, use an empty string or the most likely identifier.\n- Return ONLY valid JSON, no markdown\n\nReturn JSON in this exact format:\n{\n  "store_name": "Costco",\n  "items": [\n    {"item_code": "1851427", "description": "MTG MARVEL", "price": 49.99},\n    {"item_code": "1748763", "description": "BAC&EGG SAND", "price": 24.99}\n  ],\n  "total": 186.98,\n  "date": "2026-03-16"\n}\n\nReceipt text:\n${rawText}`;
+  const prompt = `You are a receipt parser. Extract all purchased items from this retail receipt OCR text (Costco, Winners, Marshalls, etc.).\
+\
+IMPORTANT: \
+- Identify the store name from the top of the receipt (e.g. "Costco", "Winners", "Marshalls", "Walmart").\
+- Only extract actual purchased ITEMS (products), ignore: SUBTOTAL, TAX, TOTAL, payment info, store info, "APPROVED", card numbers, dates without items\
+- Item codes might be alphanumeric depending on the store (e.g., 7 digits for Costco, others vary). If there is no item code, use an empty string or the most likely identifier.\
+- Return ONLY valid JSON, no markdown\
+\
+Return JSON in this exact format:\
+{\
+  "store_name": "Costco",\
+  "items": [\
+    {"item_code": "1851427", "description": "MTG MARVEL", "price": 49.99},\
+    {"item_code": "1748763", "description": "BAC&EGG SAND", "price": 24.99}\
+  ],\
+  "total": 186.98,\
+  "date": "2026-03-16"\
+}\
+\
+Receipt text:\
+${rawText}`;
 
   try {
     const zoRes = await fetch('https://api.zo.computer/zo/ask', {
@@ -5794,7 +6490,6 @@ export default async (c: Context) => {
 ### `/api/security` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 
@@ -5811,7 +6506,8 @@ interface SecurityEvent {
 function tailFile(path: string, maxLines: number): string[] {
   try {
     const content = readFileSync(path, "utf8");
-    const lines = content.split("\n").filter(l => l.trim());
+    const lines = content.split("\
+").filter(l => l.trim());
     return lines.slice(-maxLines);
   } catch { return []; }
 }
@@ -5949,7 +6645,6 @@ export default (c: Context) => {
 ### `/api/services` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 // Query Zo API for real service data
@@ -6007,7 +6702,6 @@ export default async (c: Context) => {
 ### `/api/share` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFile, writeFile, copyFile, mkdir, stat } from "fs/promises";
 import { join, basename, extname } from "path";
@@ -6194,7 +6888,6 @@ export default async (c: Context) => {
 ### `/api/share/:id` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
@@ -6306,7 +6999,6 @@ export default async (c: Context) => {
 ### `/api/share/:id/download` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
@@ -6388,7 +7080,6 @@ export default async (c: Context) => {
 ### `/api/sites` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 // Query Zo API for real space routes (Sites/Spaces)
@@ -6438,10 +7129,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/skills/gallery` (api, public)
+### `/api/skills-gallery` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readdir, readFile, stat } from "fs/promises";
 import { join, relative } from "path";
@@ -6462,9 +7152,14 @@ function requireAuth(c: Context): boolean {
 
 // Simple frontmatter parser (no external deps)
 function parseFrontmatter(raw: string): { data: Record<string, any>; content: string } {
-  const s = raw.replace(/\r\n/g, "\n");
-  if (!s.startsWith("---\n")) return { data: {}, content: raw };
-  const end = s.indexOf("\n---\n", 4);
+  const s = raw.replace(/\r\
+/g, "\
+");
+  if (!s.startsWith("---\
+")) return { data: {}, content: raw };
+  const end = s.indexOf("\
+---\
+", 4);
   if (end === -1) return { data: {}, content: raw };
   const fmBlock = s.slice(4, end);
   const content = s.slice(end + 5);
@@ -6475,7 +7170,8 @@ function parseFrontmatter(raw: string): { data: Record<string, any>; content: st
   let inNestedObj = "";
   const nestedData: Record<string, Record<string, any>> = {};
 
-  for (const line of fmBlock.split("\n")) {
+  for (const line of fmBlock.split("\
+")) {
     // Nested object key (e.g. "metadata:")
     const nestedMatch = line.match(/^([a-zA-Z_][a-zA-Z0-9_-]*):\s*$/);
     if (nestedMatch && !inArray) {
@@ -6592,7 +7288,9 @@ function stringifyFrontmatter(data: Record<string, any>, content: string): strin
     }
   }
   lines.push("---");
-  return lines.join("\n") + "\n" + content;
+  return lines.join("\
+") + "\
+" + content;
 }
 
 async function findSkillFiles(dir: string): Promise<string[]> {
@@ -6780,10 +7478,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/speech/game/auth` (api, public)
+### `/api/speech-game-auth` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -6795,10 +7492,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/speech/game/data` (api, public)
+### `/api/speech-game-data` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { timingSafeEqual } from "node:crypto";
 
@@ -7024,17 +7720,17 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/system/stats` (api, public)
+### `/api/system-stats` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 function readMemInfo() {
   const text = readFileSync("/proc/meminfo", "utf8");
   const values: Record<string, number> = {};
-  for (const line of text.split("\n")) {
+  for (const line of text.split("\
+")) {
     const match = line.match(/^([^:]+):\s+(\d+)/);
     if (match) values[match[1]] = Number(match[2]);
   }
@@ -7064,10 +7760,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/telemetry/data` (api, public)
+### `/api/telemetry-data` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -7080,7 +7775,8 @@ function readJsonl(path: string): any[] {
   if (!existsSync(path)) return [];
   const raw = readFileSync(path, "utf-8").trim();
   if (!raw) return [];
-  return raw.split("\n").map(line => { try { return JSON.parse(line); } catch { return null; } }).filter(Boolean);
+  return raw.split("\
+").map(line => { try { return JSON.parse(line); } catch { return null; } }).filter(Boolean);
 }
 
 export default async (c: Context) => {
@@ -7176,10 +7872,50 @@ export default async (c: Context) => {
 };
 ```
 
+### `/api/temporal-auth-check` (api, public)
+
+```typescript
+import type { Context } from "hono";
+
+// Check if user is authenticated via Zo session
+export default async (c: Context) => {
+  // Check X-Zo-User header (set by Zo for authenticated requests)
+  const zoUser = c.req.header("X-Zo-User");
+  if (zoUser === "curtastrophe") {
+    return c.json({ authenticated: true, method: "zo_user" });
+  }
+  
+  // Check for Zo session cookie
+  const cookieHeader = c.req.header("Cookie") || "";
+  const hasSession = cookieHeader.includes("zo_session") || 
+                     cookieHeader.includes("auth_token");
+  
+  if (hasSession) {
+    return c.json({ authenticated: true, method: "session" });
+  }
+  
+  // Check Referer - if from authenticated Zo page, allow
+  const referer = c.req.header("Referer") || "";
+  if (referer.includes("curtastrophe.zo.space") || referer.includes("curtastrophe.zo.computer")) {
+    return c.json({ authenticated: true, method: "referer" });
+  }
+  
+  // Check for Bearer token (API access)
+  const authHeader = c.req.header("Authorization");
+  if (authHeader?.startsWith("Bearer ")) {
+    const token = authHeader.slice(7);
+    if (process.env.ZO_API_KEY && token === process.env.ZO_API_KEY) {
+      return c.json({ authenticated: true, method: "api_key" });
+    }
+  }
+  
+  return c.json({ authenticated: false, error: "Unauthorized" }, 401);
+};
+```
+
 ### `/api/temporal/*` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 // Proxy to internal Temporal gRPC endpoint
@@ -7233,52 +7969,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/temporal/auth/check` (api, public)
+### `/api/test-deps` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
-import type { Context } from "hono";
-
-// Check if user is authenticated via Zo session
-export default async (c: Context) => {
-  // Check X-Zo-User header (set by Zo for authenticated requests)
-  const zoUser = c.req.header("X-Zo-User");
-  if (zoUser === "curtastrophe") {
-    return c.json({ authenticated: true, method: "zo_user" });
-  }
-  
-  // Check for Zo session cookie
-  const cookieHeader = c.req.header("Cookie") || "";
-  const hasSession = cookieHeader.includes("zo_session") || 
-                     cookieHeader.includes("auth_token");
-  
-  if (hasSession) {
-    return c.json({ authenticated: true, method: "session" });
-  }
-  
-  // Check Referer - if from authenticated Zo page, allow
-  const referer = c.req.header("Referer") || "";
-  if (referer.includes("curtastrophe.zo.space") || referer.includes("curtastrophe.zo.computer")) {
-    return c.json({ authenticated: true, method: "referer" });
-  }
-  
-  // Check for Bearer token (API access)
-  const authHeader = c.req.header("Authorization");
-  if (authHeader?.startsWith("Bearer ")) {
-    const token = authHeader.slice(7);
-    if (process.env.ZO_API_KEY && token === process.env.ZO_API_KEY) {
-      return c.json({ authenticated: true, method: "api_key" });
-    }
-  }
-  
-  return c.json({ authenticated: false, error: "Unauthorized" }, 401);
-};
-```
-
-### `/api/test/deps` (api, public)
-
-```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 export default async (c) => {
   const fs = require("fs");
   const path = require("path");
@@ -7292,10 +7985,9 @@ export default async (c) => {
 };
 ```
 
-### `/api/test/env` (api, public)
+### `/api/test-env` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -7307,10 +7999,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/test/exec` (api, public)
+### `/api/test-exec` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { exec } from "node:child_process";
 import { promisify } from "node:util";
 import type { Context } from "hono";
@@ -7327,10 +8018,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/test/write` (api, public)
+### `/api/test-write` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { promises as fs } from "node:fs";
 import type { Context } from "hono";
 
@@ -7347,7 +8037,6 @@ export default async (c: Context) => {
 ### `/api/trivia` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -7534,10 +8223,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/trivia/by/date` (api, public)
+### `/api/trivia/by-date` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -7677,7 +8365,6 @@ export default async (c: Context) => {
 ### `/api/trivia/dates` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -7710,7 +8397,6 @@ export default async (c: Context) => {
 ### `/api/trivia/leaderboard` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -7796,7 +8482,6 @@ export default async (c: Context) => {
 ### `/api/trivia/random` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -7882,7 +8567,6 @@ export default async (c: Context) => {
 ### `/api/trivia/subscribe` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 const TEABLE_BASE = "https://app.teable.io/api";
@@ -8007,7 +8691,6 @@ export default async (c: Context) => {
 ### `/api/trivia/unsubscribe` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -8127,10 +8810,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/trivia/user/stats` (api, public)
+### `/api/trivia/user-stats` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -8206,7 +8888,6 @@ export default async (c: Context) => {
 ### `/api/twinmind` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 /**
  * TwinMind Synthesis API - Phase 3.3
  * Provides meeting insights and action items from TwinMind recordings
@@ -8303,10 +8984,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/twinmind/callback` (api, public)
+### `/api/twinmind-callback` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 // This route captures the OAuth authorization code from TwinMind
@@ -8344,7 +9024,6 @@ export default async (c: Context) => {
 ### `/api/updates` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, writeFileSync, existsSync, statSync, readdirSync } from "node:fs";
 import { resolve, join } from "node:path";
@@ -8431,7 +9110,9 @@ function fetchNotes(): UpdateItem[] {
   for (const file of files) {
     try {
       const content = readFileSync(join(notesDir, file), "utf-8");
-      const match = content.match(/^---\n([\s\S]*?)\n---/);
+      const match = content.match(/^---\
+([\s\S]*?)\
+---/);
       if (match) {
         const fm = match[1];
         const titleMatch = fm.match(/title:\s*(.+)/);
@@ -8491,10 +9172,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/voi/zos` (api, public)
+### `/api/voi-zos` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 const VOI_LOCKDOWN = (process.env.VOI_LOCKDOWN ?? "true") !== "false";
@@ -8524,7 +9204,8 @@ const HOMEPAGE_KB: Record<string, string> = {
 
 const KB_TEXT = Object.entries(HOMEPAGE_KB)
   .map(([k, v]) => `[${k}] ${v}`)
-  .join("\n");
+  .join("\
+");
 
 const REFUSAL = "I can only answer based on information publicly shown on the homepage.";
 
@@ -8745,7 +9426,8 @@ const OUTPUT_SCHEMA = {
 } as const;
 
 function sanitizeAnswer(s: string): string {
-  let out = s.replace(/[\r\n\t]+/g, " ");
+  let out = s.replace(/[\r\
+\t]+/g, " ");
   out = out.replace(/^[\s`*_>#\-]+/, "");
   out = out.replace(/[\s`*_]+$/, "");
   out = out.replace(/\*\*([^*]+)\*\*/g, "$1");
@@ -8759,7 +9441,9 @@ function sanitizeAnswer(s: string): string {
 async function callAskZo(question: string): Promise<VoiResponse> {
   if (!ZO_TOKEN) return refusal();
 
-  const input = `Homepage question: ${question}\n\nReminder: call final_result once. Plain text only. No markdown. No leading/trailing whitespace or newlines.`;
+  const input = `Homepage question: ${question}\
+\
+Reminder: call final_result once. Plain text only. No markdown. No leading/trailing whitespace or newlines.`;
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 8000);
@@ -8856,10 +9540,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/x/feed` (api, public)
+### `/api/x-feed` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, writeFileSync, existsSync, statSync } from "node:fs";
 import { resolve } from "node:path";
@@ -9024,10 +9707,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/zo/city/data` (api, public)
+### `/api/zo-city-data` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFile, readdir, stat, access } from "node:fs/promises";
 import path from "node:path";
@@ -9114,10 +9796,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/zo/space/theme/gallery` (api, public)
+### `/api/zo-space-theme-gallery` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync } from "fs";
 
@@ -9158,10 +9839,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/zo/space/theme/gallery/:id` (api, public)
+### `/api/zo-space-theme-gallery/:id` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -9186,7 +9866,8 @@ export default (c: Context) => {
       const content = readFileSync(SKILL_PATH, "utf-8");
       return c.text(content);
     } catch {
-      return c.text("# Error\nSkill file not found.", 500);
+      return c.text("# Error\
+Skill file not found.", 500);
     }
   }
 
@@ -9209,10 +9890,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/zo/space/theme/gallery/skill` (api, public)
+### `/api/zo-space-theme-gallery/skill` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync } from "fs";
 
@@ -9232,7 +9912,9 @@ export default (c: Context) => {
     const skillContent = readFileSync(SKILL_PATH, "utf-8");
     return c.text(skillContent);
   } catch {
-    return c.text("# Skill not found\n\nThe zo-space-themer skill could not be loaded.", 404);
+    return c.text("# Skill not found\
+\
+The zo-space-themer skill could not be loaded.", 404);
   }
 };
 ```
@@ -9240,7 +9922,6 @@ export default (c: Context) => {
 ### `/api/zoboard/*` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import {
   readFileSync,
@@ -9330,10 +10011,14 @@ function generateId(): string {
 }
 
 function parseFrontmatter(raw: string): { data: Record<string, any>; content: string } {
-  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+  const match = raw.match(/^---\r?\
+([\s\S]*?)\r?\
+---\r?\
+([\s\S]*)$/);
   if (!match) return { data: {}, content: raw };
   const data: Record<string, any> = {};
-  match[1].split("\n").forEach((line) => {
+  match[1].split("\
+").forEach((line) => {
     const idx = line.indexOf(":");
     if (idx === -1) return;
     const key = line.slice(0, idx).trim();
@@ -9356,7 +10041,11 @@ function stringifyFrontmatter(data: Record<string, unknown>, content: string): s
     if (typeof v === "string" && (v.includes(":") || v.includes("#") || v.includes("'"))) return `${k}: '${v}'`;
     return `${k}: ${v}`;
   });
-  return `---\n${fmLines.join("\n")}\n---\n${content}`;
+  return `---\
+${fmLines.join("\
+")}\
+---\
+${content}`;
 }
 
 function readIndex() {
@@ -9499,7 +10188,8 @@ export default async (c: Context) => {
           timestamp: ts, action: "create", card_id: id,
           card_title: fm.title, board_slug: route.slug, origin: "api",
           mengram_id: mengramId || undefined,
-        }) + "\n", "utf-8");
+        }) + "\
+", "utf-8");
         return c.json({ card: { id, ...fm, body: body.body || "" } }, 201);
       }
 
@@ -9529,7 +10219,8 @@ export default async (c: Context) => {
           timestamp: ts,
           action: body.column_id && body.column_id !== data.column_id ? "move" : "update",
           card_id: route.id, card_title: merged.title, board_slug: entry.board_slug, origin: "api",
-        }) + "\n", "utf-8");
+        }) + "\
+", "utf-8");
         return c.json({ card: { ...merged, body: newContent } });
       }
 
@@ -9550,7 +10241,8 @@ export default async (c: Context) => {
         appendFileSync(ACTIVITY_PATH, JSON.stringify({
           timestamp: ts, action: "delete",
           card_id: route.id, card_title: entry.title, board_slug: entry.board_slug, origin: "api",
-        }) + "\n", "utf-8");
+        }) + "\
+", "utf-8");
         if (existsSync(cardPath)) unlinkSync(cardPath);
         rebuildIndex();
         return c.json({ deleted: route.id });
@@ -9579,7 +10271,8 @@ export default async (c: Context) => {
           : [];
         let recentActivity: any[] = [];
         if (existsSync(ACTIVITY_PATH)) {
-          const lines = readFileSync(ACTIVITY_PATH, "utf-8").trim().split("\n").filter(Boolean);
+          const lines = readFileSync(ACTIVITY_PATH, "utf-8").trim().split("\
+").filter(Boolean);
           recentActivity = lines
             .map((l) => {
               try { return JSON.parse(l); } catch { return null; }
@@ -9614,7 +10307,8 @@ export default async (c: Context) => {
 
       case "activity": {
         if (!existsSync(ACTIVITY_PATH)) return c.json({ activity: [] });
-        const lines = readFileSync(ACTIVITY_PATH, "utf-8").trim().split("\n").filter(Boolean);
+        const lines = readFileSync(ACTIVITY_PATH, "utf-8").trim().split("\
+").filter(Boolean);
         const entries = lines.map((l) => JSON.parse(l));
         if (!route.since) return c.json({ activity: entries });
         return c.json({ activity: entries.filter((e: any) => e.timestamp > route.since!) });
@@ -9630,10 +10324,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/zos/build/log` (api, public)
+### `/api/zos/build-log` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -9659,7 +10352,6 @@ export default (c: Context) => {
 ### `/api/zos/now` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -9689,7 +10381,6 @@ export default (c: Context) => {
 ### `/api/zos/signals` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -9707,10 +10398,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/blog` (page, private)
+### `/blog` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useRef } from "react";
 import { ArrowRight, ArrowLeft, Clock, Tag, Search, Filter, X, Menu, Lock } from "lucide-react";
 
@@ -10105,10 +10795,9 @@ export default function Blog() {
 }
 ```
 
-### `/blog/:slug` (page, private)
+### `/blog/:slug` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Clock, Tag, Share2, ChevronUp } from "lucide-react";
 
@@ -10222,7 +10911,8 @@ function GlobalNav() {
 }
 
 function MarkdownRenderer({ content }: { content: string }) {
-  const lines = content.trim().split("\n");
+  const lines = content.trim().split("\
+");
   const elements: React.ReactNode[] = [];
   let i = 0, inCodeBlock = false, codeLines: string[] = [], codeLang = "";
 
@@ -10240,7 +10930,8 @@ function MarkdownRenderer({ content }: { content: string }) {
           <div key={`code-${i}`} className="my-6 rounded-xl overflow-hidden" style={{ border: `1px solid ${COLORS.border}` }}>
             {codeLang && <div className="px-4 py-2 text-xs font-mono tracking-wider uppercase" style={{ background: COLORS.card, borderBottom: `1px solid ${COLORS.border}`, color: `${COLORS.cyan}99` }}>{codeLang}</div>}
             <pre className="p-4 overflow-x-auto" style={{ background: "#06060a" }}>
-              <code className="text-sm font-mono leading-relaxed" style={{ color: "#e2e8f0" }}>{codeLines.join("\n")}</code>
+              <code className="text-sm font-mono leading-relaxed" style={{ color: "#e2e8f0" }}>{codeLines.join("\
+")}</code>
             </pre>
           </div>
         );
@@ -10512,10 +11203,9 @@ export default function BlogPost() {
 }
 ```
 
-### `/buildin/auth` (page, private)
+### `/buildin-auth` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect } from "react";
 
 export default function BuildinAuth() {
@@ -10652,10 +11342,9 @@ export default function BuildinAuth() {
 }
 ```
 
-### `/byok/reference` (page, private)
+### `/byok-reference` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useEffect, useMemo, useState } from "react";
 import { Copy, Check, RefreshCw, Database, Search, ExternalLink, AlertCircle, Clock } from "lucide-react";
 
@@ -10826,7 +11515,8 @@ export default function ByokReference() {
                 backgroundColor: theme.card,
                 color: isStale ? "#fca5a5" : theme.muted,
               }}
-              title={`Source: ${data.source}\nFetched: ${data.fetchedAt}`}
+              title={`Source: ${data.source}\
+Fetched: ${data.fetchedAt}`}
             >
               {isStale ? <AlertCircle className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
               <span className="font-mono">{fmtAge(now - new Date(data.fetchedAt).getTime())}</span>
@@ -11017,10 +11707,9 @@ export default function ByokReference() {
 }
 ```
 
-### `/career/ops` (page, private)
+### `/career-ops` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useCallback } from "react";
 import {
   Briefcase, FileText, TrendingUp, BarChart3, Plus,
@@ -11370,7 +12059,6 @@ export default function CareerOpsDashboard() {
 ### `/dashboard` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 /**
  * Family Butler Dashboard - Phase 3.3, 4.1 & 4.2
  * Updates: TwinMind Synthesis (3.3), Mobile PWA (4.1), Interactive Actions (4.2)
@@ -11880,10 +12568,9 @@ export default function FamilyDashboard() {
 }
 ```
 
-### `/data/explorer` (page, private)
+### `/data-explorer` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useEffect } from "react";
 
 export default function DataExplorerRedirect() {
@@ -11896,10 +12583,9 @@ export default function DataExplorerRedirect() {
 }
 ```
 
-### `/data/zo/trivia` (page, private)
+### `/data/zo-trivia/` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useEffect, useState } from "react";
 import { 
   Bar, 
@@ -12212,10 +12898,9 @@ function StatCard({ title, value, icon, color }: { title: string, value: any, ic
 }
 ```
 
-### `/data/zo/trivia/api/query` (api, public)
+### `/data/zo-trivia/api/query` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -12305,7 +12990,6 @@ export default async (c: Context) => {
 ### `/docs` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -12313,10 +12997,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/icon/configurator` (page, private)
+### `/icon-configurator` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useCallback, useEffect, useRef } from "react";
 import { 
   Download, Loader2, Wand2, ArrowLeft, Zap, Sparkles, Info, Menu, X, Lock,
@@ -12772,7 +13455,9 @@ export default function IconConfigurator() {
           return;
         } else if (result.status === "error") {
           setAiAttempt(null);
-          const detail = result.detail ? `\n\nDetail: ${result.detail}` : "";
+          const detail = result.detail ? `\
+\
+Detail: ${result.detail}` : "";
           const retryNote = result.retriesExhausted ? " (retries exhausted)" : "";
           throw new Error((result.error || "AI generation failed") + retryNote + detail);
         }
@@ -13059,173 +13744,9 @@ export default function IconConfigurator() {
 }
 ```
 
-### `/index` (api, public)
-
-```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
-import type { Context } from "hono";
-
-export type ApiRouteHandler = (c: Context) => Response | Promise<Response>;
-
-export interface ApiRouteConfig {
-  handler: ApiRouteHandler;
-  public: boolean;
-}
-
-export interface ApiRouteManifest {
-  file: string;
-  public: boolean;
-}
-
-export const apiRouteManifest: Record<string, ApiRouteManifest> = {
-  "/api/agents": { file: "api-agents", public: true },
-  "/api/temporal-auth-check": { file: "api-temporal-auth-check", public: true },
-  "/api/temporal/*": { file: "api-temporal-*", public: true },
-  "/api/share/:id/download": { file: "api-share-:id-download", public: true },
-  "/api/flowpulse": { file: "api-flowpulse", public: true },
-  "/api/blog/:slug": { file: "api-blog-:slug", public: true },
-  "/api/career-ops/scan-history": { file: "api-career-ops-scan-history", public: true },
-  "/api/skills-gallery": { file: "api-skills-gallery", public: true },
-  "/api/zo-space-theme-gallery/skill": { file: "api-zo-space-theme-gallery-skill", public: true },
-  "/api/zo-space-theme-gallery": { file: "api-zo-space-theme-gallery", public: true },
-  "/api/zo-space-theme-gallery/:id": { file: "api-zo-space-theme-gallery-:id", public: true },
-  "/api/logs": { file: "api-logs", public: true },
-  "/api/security": { file: "api-security", public: true },
-  "/api/failures": { file: "api-failures", public: true },
-  "/api/trivia/dates": { file: "api-trivia-dates", public: true },
-  "/api/calendar": { file: "api-calendar", public: true },
-  "/api/extension-save": { file: "api-extension-save", public: true },
-  "/api/generate-icon": { file: "api-generate-icon", public: true },
-  "/api/test-write": { file: "api-test-write", public: true },
-  "/api/test-exec": { file: "api-test-exec", public: true },
-  "/api/benchmarks/refresh": { file: "api-benchmarks-refresh", public: true },
-  "/api/billing": { file: "api-billing", public: true },
-  "/api/audit": { file: "api-audit", public: true },
-  "/api/test-env": { file: "api-test-env", public: true },
-  "/api/diagnose": { file: "api-diagnose", public: true },
-  "/api/receipts": { file: "api-receipts", public: true },
-  "/api/model-explorer/workbench": { file: "api-model-explorer-workbench", public: true },
-  "/api/twinmind": { file: "api-twinmind", public: true },
-  "/api/datasets/start": { file: "api-datasets-start", public: true },
-  "/docs": { file: "docs", public: true },
-  "/api/sites": { file: "api-sites", public: true },
-  "/api/my-models": { file: "api-my-models", public: true },
-  "/api/updates": { file: "api-updates", public: true },
-  "/api/blog": { file: "api-blog", public: true },
-  "/kg-search": { file: "kg-search", public: true },
-  "/api/share": { file: "api-share", public: true },
-  "/kg-entity": { file: "kg-entity", public: true },
-  "/api/models": { file: "api-models", public: true },
-  "/kg-by-type": { file: "kg-by-type", public: true },
-  "/kg-stats": { file: "kg-stats", public: true },
-  "/kg-recall": { file: "kg-recall", public: true },
-  "/kg-browse": { file: "kg-browse", public: true },
-  "/kg-graph": { file: "kg-graph", public: true },
-  "/api/files": { file: "api-files", public: true },
-  "/api/services": { file: "api-services", public: true },
-  "/api/system-stats": { file: "api-system-stats", public: true },
-  "/api/credits": { file: "api-credits", public: true },
-  "/api/trivia/leaderboard": { file: "api-trivia-leaderboard", public: true },
-  "/api/trivia/random": { file: "api-trivia-random", public: true },
-  "/api/trivia/by-date": { file: "api-trivia-by-date", public: true },
-  "/api/datasets/proxy/*": { file: "api-datasets-proxy-*", public: true },
-  "/api/benchmarks": { file: "api-benchmarks", public: true },
-  "/api/career-ops/scan": { file: "api-career-ops-scan", public: true },
-  "/api/speech-game-auth": { file: "api-speech-game-auth", public: true },
-  "/api/career-ops/batch": { file: "api-career-ops-batch", public: true },
-  "/speech-game-manifest.json": { file: "speech-game-manifest.json", public: true },
-  "/speech-game-sw.js": { file: "speech-game-sw.js", public: true },
-  "/data/zo-trivia/api/query": { file: "data-zo-trivia-api-query", public: true },
-  "/api/buildin/disconnect": { file: "api-buildin-disconnect", public: true },
-  "/api/projects": { file: "api-projects", public: true },
-  "/api/test-deps": { file: "api-test-deps", public: true },
-  "/api/zos/now": { file: "api-zos-now", public: true },
-  "/api/zos/build-log": { file: "api-zos-build-log", public: true },
-  "/api/auth-status": { file: "api-auth-status", public: true },
-  "/api/zos/signals": { file: "api-zos-signals", public: true },
-  "/api/career-ops": { file: "api-career-ops", public: true },
-  "/api/career-ops/pipeline": { file: "api-career-ops-pipeline", public: true },
-  "/api/career-ops/applications": { file: "api-career-ops-applications", public: true },
-  "/api/health-check": { file: "api-health-check", public: true },
-  "/api/speech-game-data": { file: "api-speech-game-data", public: true },
-  "/api/telemetry-data": { file: "api-telemetry-data", public: true },
-  "/api/buildin/callback": { file: "api-buildin-callback", public: true },
-  "/api/datasets/viewer": { file: "api-datasets-viewer", public: true },
-  "/api/datasets/list": { file: "api-datasets-list", public: true },
-  "/api/nav-links": { file: "api-nav-links", public: true },
-  "/api/share/:id": { file: "api-share-:id", public: true },
-  "/api/trivia": { file: "api-trivia", public: true },
-  "/api/family-log": { file: "api-family-log", public: true },
-  "/api/trivia/user-stats": { file: "api-trivia-user-stats", public: true },
-  "/api/projects-conversations": { file: "api-projects-conversations", public: true },
-  "/api/receipt-images": { file: "api-receipt-images", public: true },
-  "/api/buildin/status": { file: "api-buildin-status", public: true },
-  "/api/contact": { file: "api-contact", public: true },
-  "/api/x-feed": { file: "api-x-feed", public: true },
-  "/api/zo-city-data": { file: "api-zo-city-data", public: true },
-  "/api/voi-zos": { file: "api-voi-zos", public: true },
-  "/api/model-explorer/models": { file: "api-model-explorer-models", public: true },
-  "/api/model-explorer/sync": { file: "api-model-explorer-sync", public: true },
-  "/api/model-explorer/stats": { file: "api-model-explorer-stats", public: true },
-  "/api/zoboard/*": { file: "api-zoboard-*", public: true },
-  "/api/model-explorer/import-omniroute": { file: "api-model-explorer-import-omniroute", public: true },
-  "/api/trivia/subscribe": { file: "api-trivia-subscribe", public: true },
-  "/api/model-explorer/providers": { file: "api-model-explorer-providers", public: true },
-  "/api/model-explorer/providers/delete": { file: "api-model-explorer-providers-delete", public: true },
-  "/api/byok-reference": { file: "api-byok-reference", public: true },
-  "/api/twinmind-callback": { file: "api-twinmind-callback", public: true },
-  "/api/bydesign/callback": { file: "api-bydesign-callback", public: true },
-  "/api/trivia/unsubscribe": { file: "api-trivia-unsubscribe", public: true },
-  "/api/oauth-mcp/callback": { file: "api-oauth-mcp-callback", public: true },
-};
-
-export const apiRoutes: Record<string, ApiRouteConfig> = {};
-
-export async function loadApiRoutes(
-  writeError: (route: string, type: "import", error: unknown) => Promise<void>,
-  clearError: (route: string) => Promise<void>
-): Promise<void> {
-  for (const [path, manifest] of Object.entries(apiRouteManifest)) {
-    try {
-      const module = await import(`./${manifest.file}.ts`);
-      let handler: ApiRouteHandler;
-
-      if (typeof module.default === "function") {
-        handler = module.default;
-      } else if (typeof module.default === "object" && module.default !== null) {
-        const methods: Record<string, ApiRouteHandler> = {};
-        for (const [key, val] of Object.entries(module.default)) {
-          if (typeof val === "function") methods[key.toUpperCase()] = val as ApiRouteHandler;
-        }
-        if (Object.keys(methods).length === 0) {
-          throw new Error(`Route ${path} default export has no handler methods`);
-        }
-        handler = async (c: Context) => {
-          const fn = methods[c.req.method];
-          if (!fn) return c.json({ error: "Method not allowed" }, 405);
-          return fn(c);
-        };
-      } else {
-        throw new Error(`Route ${path} must export a default function or method handlers`);
-      }
-
-      apiRoutes[path] = {
-        handler,
-        public: manifest.public,
-      };
-
-      await clearError(path);
-    } catch (error) {
-      await writeError(path, "import", error);
-    }
-  }
-}
-```
-
-### `/job/ops` (page, private)
+### `/job-ops` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useRef } from "react";
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -13410,10 +13931,9 @@ export default function JobOps() {
 }
 ```
 
-### `/kg/browse` (api, public)
+### `/kg-browse` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, readdirSync } from "fs";
 import { join } from "path";
@@ -13428,11 +13948,14 @@ export default async (c: Context) => {
     for (const file of files) {
       try {
         const content = readFileSync(join(vaultPath, file), "utf-8");
-        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+        const frontmatterMatch = content.match(/^---\
+([\s\S]*?)\
+---/);
         
         if (frontmatterMatch) {
           const fm: Record<string, string> = {};
-          for (const line of frontmatterMatch[1].split("\n")) {
+          for (const line of frontmatterMatch[1].split("\
+")) {
             const [key, ...vals] = line.split(":");
             if (key && vals.length) {
               fm[key.trim()] = vals.join(":").trim();
@@ -13471,10 +13994,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg/by/type` (api, public)
+### `/kg-by-type` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -13504,10 +14026,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg/entity` (api, public)
+### `/kg-entity` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -13537,10 +14058,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg/graph` (api, public)
+### `/kg-graph` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -13567,10 +14087,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg/recall` (api, public)
+### `/kg-recall` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -13594,10 +14113,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg/search` (api, public)
+### `/kg-search` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -13621,10 +14139,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg/stats` (api, public)
+### `/kg-stats` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -13642,10 +14159,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/knowledge/graph` (page, private)
+### `/knowledge-graph` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useRef } from "react";
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -14492,10 +15008,9 @@ export default function KnowledgeGraph() {
 }
 ```
 
-### `/model/advisor` (page, private)
+### `/model-advisor` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { Brain, Zap, DollarSign, Download, ChevronDown, ChevronUp, Sparkles, ArrowUpDown, Check, Info, Calculator, Trophy, Star, Target, MessageSquare, Code, BookOpen, Scale, Cpu, Sun, Moon, Bot, X, Filter, Search } from "lucide-react";
 
@@ -15046,1644 +15561,15 @@ export default function ModelAdvisor() {
 }
 ```
 
-### `/model/explorer` (page, private)
+### `/model-explorer` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
-import { useState, useEffect, useMemo, useCallback, Fragment, type CSSProperties } from "react";
-import {
-  Search, Filter, Database, Zap, ChevronDown, ChevronRight, X,
-  CheckCircle2, AlertCircle, Clock, RefreshCw, Eye, Brain,
-  ArrowUpRight, Send, Loader2, Settings2, Layers, Cpu, Hash,
-  ToggleLeft, ToggleRight, Trash2, Plus, ExternalLink, Copy, PanelLeftClose,
-} from "lucide-react";
 
-// ─── Theme ───────────────────────────────────────────────────────────
-const theme = {
-  bg: "#0e0e0d",
-  surface: "rgba(26, 24, 20, 0.92)",
-  surfaceHover: "rgba(36, 33, 28, 0.95)",
-  border: "rgba(120, 113, 108, 0.18)",
-  borderActive: "rgba(216, 166, 87, 0.4)",
-  fg: "#f5f1e8",
-  muted: "#a39a8e",
-  dim: "#6b6359",
-  accent: "#d8a657",
-  accentDim: "rgba(216, 166, 87, 0.15)",
-  green: "#89b482",
-  red: "#ea6962",
-  blue: "#7daea3",
-};
-
-// ─── Types ───────────────────────────────────────────────────────────
-interface Provider {
-  id: number;
-  name: string;
-  prefix: string;
-  base_url: string;
-  secret_name: string;
-  sync_status: string;
-  last_error: string | null;
-  model_count: number;
-  last_synced_at: string | null;
-}
-
-interface Model {
-  id: number;
-  provider_id: number;
-  model_id: string;
-  friendly_name: string;
-  owned_by: string;
-  context_window: number | null;
-  max_completion_tokens: number | null;
-  input_modalities: string;
-  output_modalities: string;
-  reasoning: string;
-  raw_metadata: string;
-  released_at: string | null;
-}
-
-interface ModelsResponse {
-  models: Model[];
-  total: number;
-  limit: number;
-  offset: number;
-}
-
-interface WorkbenchResult {
-  response?: any;
-  elapsed_ms?: number;
-  error?: string;
-  detail?: string;
-}
-
-interface OmniImportProvider {
-  omni_id: string;
-  name: string;
-  prefix: string;
-  base_url: string;
-  models_path: string | null;
-  existing_provider_id: number | null;
-  action: "create" | "update";
-  current_secret_name: string;
-  secret_candidates: string[];
-  suggested_secret_name: string;
-  secret_status: "matched" | "needs_selection" | "missing";
-}
-
-type MultiSelectOption = { value: string; label: string };
-
-function MultiSelectFilter({ label, options, selected, onChange, allLabel }: { label: string; options: MultiSelectOption[]; selected: string[]; onChange: (values: string[]) => void; allLabel: string }) {
-  const summary = selected.length === 0 ? allLabel : selected.length === 1 ? options.find((option) => option.value === selected[0])?.label || selected[0] : `${selected.length} selected`;
-  const toggle = (value: string) => onChange(selected.includes(value) ? selected.filter((item) => item !== value) : [...selected, value]);
-
-  return (
-    <div>
-      <label className="mb-1.5 block text-xs font-medium" style={{ color: theme.muted }}>{label}</label>
-      <details className="relative">
-        <summary className="flex cursor-pointer list-none items-center justify-between rounded-lg px-3 py-2 text-sm" style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}>
-          <span className="truncate">{summary}</span><ChevronDown className="size-3.5 shrink-0" style={{ color: theme.dim }} />
-        </summary>
-        <div className="absolute left-0 right-0 z-30 mt-1 max-h-64 space-y-1 overflow-y-auto rounded-lg p-2 shadow-xl" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
-          {selected.length > 0 && <button type="button" onClick={() => onChange([])} className="mb-1 w-full rounded px-2 py-1 text-left text-xs" style={{ color: theme.accent }}>Clear selection</button>}
-          {options.map((option) => (
-            <label key={option.value} className="flex cursor-pointer items-start gap-2 rounded px-2 py-1.5 text-xs hover:opacity-80" style={{ color: theme.fg }}>
-              <input type="checkbox" checked={selected.includes(option.value)} onChange={() => toggle(option.value)} className="mt-0.5 accent-current" />
-              <span className="min-w-0 break-words">{option.label}</span>
-            </label>
-          ))}
-        </div>
-      </details>
-    </div>
-  );
-}
-
-// ─── Helpers ─────────────────────────────────────────────────────────
-function fmtNum(n: number | null): string {
-  if (n == null) return "—";
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000) return `${(n / 1_000).toFixed(0)}K`;
-  return String(n);
-}
-
-function parseMods(s: string): string[] {
-  try { return JSON.parse(s); } catch { return []; }
-}
-
-function parseReasoning(s: string): any {
-  try { return JSON.parse(s); } catch { return null; }
-}
-
-function statusIcon(status: string) {
-  if (status === "success") return <CheckCircle2 className="size-3.5" style={{ color: theme.green }} />;
-  if (status === "error") return <AlertCircle className="size-3.5" style={{ color: theme.red }} />;
-  return <Clock className="size-3.5" style={{ color: theme.dim }} />;
-}
-
-// ─── Tabs ────────────────────────────────────────────────────────────
-type Tab = "browser" | "providers" | "workbench";
-
-export default function ModelExplorer() {
-  const [tab, setTab] = useState<Tab>("browser");
-
-  return (
-    <main
-      style={{ "--bg": theme.bg, "--fg": theme.fg, "--muted": theme.muted } as CSSProperties}
-      className="min-h-screen"
-    >
-      <div style={{ background: theme.bg, color: theme.fg, minHeight: "100vh" }}>
-        {/* Header */}
-        <header
-          className="sticky top-0 z-20 backdrop-blur-md"
-          style={{
-            background: "rgba(14,14,13,0.85)",
-            borderBottom: `1px solid ${theme.border}`,
-          }}
-        >
-          <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-3 px-3 py-3 sm:px-6">
-            <div className="flex items-center gap-3">
-              <Database className="size-6" style={{ color: theme.accent }} />
-              <div>
-                <h1 className="text-lg font-bold tracking-tight">BYOK Model Explorer</h1>
-                <p className="text-xs" style={{ color: theme.muted }}>
-                  Browse, filter, and test all your bring-your-own-key models
-                </p>
-              </div>
-            </div>
-            <nav className="flex gap-1 rounded-lg p-1" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
-              <button
-                onClick={() => setTab("browser")}
-                className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition"
-                style={{
-                  background: tab === "browser" ? theme.accentDim : "transparent",
-                  color: tab === "browser" ? theme.accent : theme.muted,
-                }}
-              >
-                <Filter className="size-3.5" /> Browser
-              </button>
-              <button
-                onClick={() => setTab("providers")}
-                className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition"
-                style={{
-                  background: tab === "providers" ? theme.accentDim : "transparent",
-                  color: tab === "providers" ? theme.accent : theme.muted,
-                }}
-              >
-                <Settings2 className="size-3.5" /> Providers
-              </button>
-              <button
-                onClick={() => setTab("workbench")}
-                className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition"
-                style={{
-                  background: tab === "workbench" ? theme.accentDim : "transparent",
-                  color: tab === "workbench" ? theme.accent : theme.muted,
-                }}
-              >
-                <Zap className="size-3.5" /> Workbench
-              </button>
-            </nav>
-          </div>
-        </header>
-
-        {/* Content */}
-        <div className="mx-auto max-w-[1600px] px-3 py-4 sm:px-6 sm:py-6">
-          {tab === "browser" ? <ModelBrowser /> : tab === "providers" ? <ProvidersManager /> : <PromptWorkbench />}
-        </div>
-      </div>
-    </main>
-  );
-}
-
-// ─── Model Browser ───────────────────────────────────────────────────
-function ModelBrowser() {
-  const [providers, setProviders] = useState<Provider[]>([]);
-  const [filtersOpen, setFiltersOpen] = useState(() => typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches);
-  const [models, setModels] = useState<Model[]>([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState("");
-  const [syncing, setSyncing] = useState(false);
-  const [selectedModel, setSelectedModel] = useState<Model | null>(null);
-  const [selectedModelDetail, setSelectedModelDetail] = useState<Model | null>(null);
-
-  // Filters
-  const [providerFilter, setProviderFilter] = useState<string[]>([]);
-  const [llmProviderFilter, setLlmProviderFilter] = useState<string[]>([]);
-  const [endpointFilter, setEndpointFilter] = useState<string[]>([]);
-  const [secretFilter, setSecretFilter] = useState<string[]>([]);
-  const [search, setSearch] = useState("");
-  const [minContext, setMinContext] = useState<number | "">("");
-  const [minMaxOutput, setMinMaxOutput] = useState<number | "">("");
-  const [modalityFilter, setModalityFilter] = useState<string[]>([]);
-  const [outputModalityFilter, setOutputModalityFilter] = useState<string[]>([]);
-  const [reasoningOnly, setReasoningOnly] = useState(false);
-  const [sortKey, setSortKey] = useState<"model_id" | "context_window" | "owned_by" | "provider_name" | "released_at">("owned_by");
-  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
-  const [groupBy, setGroupBy] = useState<"none" | "byok" | "llm">("none");
-  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
-  const [limit, setLimit] = useState(100);
-  const [offset, setOffset] = useState(0);
-
-  // Fetch providers once
-  useEffect(() => {
-    fetch("/api/model-explorer/providers", {
-      credentials: "same-origin",
-      headers: { Accept: "application/json" },
-    })
-      .then(async (r) => {
-        const data = await r.json().catch(() => ({}));
-        if (!r.ok) throw new Error(data.error || `Provider request failed (${r.status})`);
-        return data;
-      })
-      .then((d) => setProviders(d.providers || []))
-      .catch((err) => setLoadError(err instanceof Error ? err.message : String(err)));
-  }, []);
-
-  // Fetch models when filters change
-  const fetchModels = useCallback(async () => {
-    setLoading(true);
-    setLoadError("");
-    const params = new URLSearchParams();
-    if (providerFilter.length) params.set("provider_id", providerFilter.join(","));
-    if (llmProviderFilter.length) params.set("owned_by", llmProviderFilter.join(","));
-    if (endpointFilter.length) params.set("base_url", endpointFilter.join(","));
-    if (secretFilter.length) params.set("secret_name", secretFilter.join(","));
-    if (search) params.set("search", search);
-    if (minContext !== "") params.set("min_context", String(minContext));
-    if (minMaxOutput !== "") params.set("min_max_output", String(minMaxOutput));
-    if (modalityFilter.length) params.set("input_modality", modalityFilter.join(","));
-    if (outputModalityFilter.length) params.set("output_modality", outputModalityFilter.join(","));
-    if (reasoningOnly) params.set("reasoning", "true");
-    params.set("sort_by", sortKey);
-    params.set("sort_dir", sortDir);
-    params.set("limit", String(limit));
-    params.set("offset", String(offset));
-    try {
-      const r = await fetch(`/api/model-explorer/models?${params}`, {
-        credentials: "same-origin",
-        headers: { Accept: "application/json" },
-      });
-      const d = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(d.error || `Model request failed (${r.status})`);
-      setModels(d.models || []);
-      setTotal(d.total || 0);
-    } catch (err) {
-      setModels([]);
-      setTotal(0);
-      setLoadError(err instanceof Error ? err.message : String(err));
-    } finally {
-      setLoading(false);
-    }
-  }, [providerFilter, llmProviderFilter, endpointFilter, secretFilter, search, minContext, minMaxOutput, modalityFilter, outputModalityFilter, reasoningOnly, sortKey, sortDir, limit, offset]);
-
-  useEffect(() => { fetchModels(); }, [fetchModels]);
-
-  // Debounced search
-  useEffect(() => {
-    const t = setTimeout(() => { setOffset(0); fetchModels(); }, 350);
-    return () => clearTimeout(t);
-    // eslint-disable-next-line
-  }, [search]);
-
-  // Collect LLM providers from current model set
-  const llmProviders = useMemo(() => {
-    const set = new Set<string>();
-    models.forEach((m) => { if (m.owned_by) set.add(m.owned_by); });
-    return Array.from(set).sort();
-  }, [models]);
-
-  // All known LLM providers (fetch once)
-  const [allLlmProviders, setAllLlmProviders] = useState<string[]>([]);
-  useEffect(() => {
-    fetch("/api/model-explorer/models?limit=1&fields=owned_by", { headers: { Accept: "application/json" } })
-      .then((r) => r.json())
-      .then(() => {})
-      .catch(() => {});
-    // Get distinct owned_by from a large fetch
-    fetch("/api/model-explorer/models?limit=500&sort=owned_by&dir=asc", { headers: { Accept: "application/json" } })
-      .then((r) => r.json())
-      .then((d: ModelsResponse) => {
-        const set = new Set<string>();
-        (d.models || []).forEach((m) => { if (m.owned_by) set.add(m.owned_by); });
-        setAllLlmProviders(Array.from(set).sort());
-      })
-      .catch(() => {});
-  }, []);
-
-  const handleSync = async () => {
-    setSyncing(true);
-    try {
-      const selectedProvider = providerFilter.length === 1 ? providers.find((provider) => String(provider.id) === providerFilter[0]) : null;
-      await fetch("/api/model-explorer/sync", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(selectedProvider ? { provider_prefix: selectedProvider.prefix } : {}),
-      });
-      // Refresh providers and models
-      const pr = await fetch("/api/model-explorer/providers", { headers: { Accept: "application/json" } }).then((r) => r.json());
-      setProviders(pr.providers || []);
-      fetchModels();
-    } catch {}
-    setSyncing(false);
-  };
-
-  const toggleModality = (mod: string) => {
-    setModalityFilter((current) => current.includes(mod) ? current.filter((m) => m !== mod) : [...current, mod]);
-  };
-
-  const toggleOutputModality = (mod: string) => {
-    setOutputModalityFilter((current) => current.includes(mod) ? current.filter((m) => m !== mod) : [...current, mod]);
-  };
-
-  const toggleSort = (key: typeof sortKey) => {
-    if (sortKey === key) {
-      setSortDir((d) => d === "asc" ? "desc" : "asc");
-    } else {
-      setSortKey(key);
-      setSortDir("asc");
-    }
-  };
-
-  const totalPages = Math.ceil(total / limit);
-  const currentPage = Math.floor(offset / limit) + 1;
-  const groupedModels = useMemo(() => {
-    if (groupBy === "none") return [{ key: "all", label: "All models", models }];
-    const groups = new Map<string, Model[]>();
-    for (const model of models) {
-      const key = groupBy === "byok" ? (model.provider_name || "Unknown BYOK provider") : (model.owned_by || "Unknown LLM provider");
-      const current = groups.get(key) || [];
-      current.push(model);
-      groups.set(key, current);
-    }
-    return Array.from(groups.entries()).sort(([a], [b]) => a.localeCompare(b)).map(([key, grouped]) => ({ key, label: key, models: grouped }));
-  }, [groupBy, models]);
-
-  const toggleGroup = (key: string) => setCollapsedGroups((current) => ({ ...current, [key]: !current[key] }));
-  const allGroupsCollapsed = groupBy !== "none" && groupedModels.length > 0 && groupedModels.every((group) => collapsedGroups[group.key]);
-  const toggleAllGroups = () => {
-    if (allGroupsCollapsed) {
-      setCollapsedGroups({});
-      return;
-    }
-    setCollapsedGroups(Object.fromEntries(groupedModels.map((group) => [group.key, true])));
-  };
-
-  const providerOptions = providers.map((provider) => ({ value: String(provider.id), label: `${provider.name} (${provider.model_count})` }));
-  const llmProviderOptions = (allLlmProviders.length ? allLlmProviders : llmProviders).map((provider) => ({ value: provider, label: provider }));
-  const endpointOptions = Array.from(new Set(providers.map((provider) => provider.base_url).filter(Boolean))).sort().map((endpoint) => ({ value: endpoint, label: endpoint }));
-  const secretOptions = Array.from(new Set(providers.map((provider) => provider.secret_name).filter(Boolean))).sort().map((secret) => ({ value: secret, label: secret }));
-
-  return (
-    <div className="flex flex-col gap-5 lg:flex-row" style={{ minHeight: "calc(100vh - 120px)" }}>
-      {/* Sidebar */}
-      {filtersOpen && (
-      <aside className="w-full space-y-4 lg:w-[17rem] lg:flex-shrink-0">
-        <div className="rounded-xl p-4 space-y-4" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Filter className="size-4" style={{ color: theme.accent }} />
-              <h2 className="text-sm font-semibold">Filters</h2>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setFiltersOpen(false)}
-                aria-label="Collapse filters"
-                title="Collapse filters"
-                className="rounded-md p-1.5 transition hover:opacity-80"
-                style={{ color: theme.muted, background: theme.bg, border: `1px solid ${theme.border}` }}
-              >
-                <PanelLeftClose className="size-4" />
-              </button>
-              <button onClick={() => { setProviderFilter([]); setLlmProviderFilter([]); setEndpointFilter([]); setSecretFilter([]); setSearch(""); setMinContext(""); setMinMaxOutput(""); setInputModalityFilter([]); setOutputModalityFilter([]); setReasoningOnly(false); setOffset(0); }}
-                type="button"
-                aria-label="Expand filters"
-                title="Expand filters"
-                className="rounded-md p-1.5 transition hover:opacity-80"
-                style={{ color: theme.muted, background: theme.bg, border: `1px solid ${theme.border}` }}
-              >
-                <Filter className="size-4" />
-              </button>
-              <button
-                onClick={() => { setProviderFilter([]); setLlmProviderFilter([]); setEndpointFilter([]); setSecretFilter([]); setSearch(""); setMinContext(""); setMinMaxOutput(""); setInputModalityFilter([]); setOutputModalityFilter([]); setReasoningOnly(false); setOffset(0); }}
-                type="button"
-                className="text-xs hover:underline"
-                style={{ color: theme.accent }}
-              >
-                Clear
-              </button>
-            </div>
-          </div>
-
-          {/* BYOK Provider */}
-          <div>
-            <MultiSelectFilter label="BYOK Provider" options={providerOptions} selected={providerFilter} onChange={(values) => { setProviderFilter(values); setOffset(0); }} allLabel="All providers" />
-          </div>
-
-          {/* LLM Provider */}
-          <div>
-            <MultiSelectFilter label="LLM Provider (owned_by)" options={llmProviderOptions} selected={llmProviderFilter} onChange={(values) => { setLlmProviderFilter(values); setOffset(0); }} allLabel="All LLM providers" />
-          </div>
-
-          <div>
-            <MultiSelectFilter label="Endpoint" options={endpointOptions} selected={endpointFilter} onChange={(values) => { setEndpointFilter(values); setOffset(0); }} allLabel="All endpoints" />
-          </div>
-
-          <div>
-            <MultiSelectFilter label="Key / Secret Name" options={secretOptions} selected={secretFilter} onChange={(values) => { setSecretFilter(values); setOffset(0); }} allLabel="All secret names" />
-          </div>
-
-          {/* Min Context */}
-          <div>
-            <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.muted }}>Min Context (tokens)</label>
-            <input
-              type="number"
-              value={minContext}
-              onChange={(e) => { setMinContext(e.target.value === "" ? "" : Number(e.target.value)); setOffset(0); }}
-              placeholder="e.g. 128000"
-              className="w-full rounded-lg px-3 py-2 text-sm outline-none"
-              style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
-            />
-          </div>
-
-          {/* Modalities */}
-          <div>
-            <label className="text-xs font-medium mb-2 block" style={{ color: theme.muted }}>Input Modalities</label>
-            <div className="flex flex-wrap gap-1.5">
-              {["text", "image", "audio", "video", "file"].map((mod) => (
-                <button
-                  key={mod}
-                  onClick={() => { toggleModality(mod); setOffset(0); }}
-                  className="rounded-md px-2 py-1 text-xs font-medium transition"
-                  style={{
-                    background: modalityFilter.includes(mod) ? theme.accentDim : "transparent",
-                    color: modalityFilter.includes(mod) ? theme.accent : theme.muted,
-                    border: `1px solid ${modalityFilter.includes(mod) ? theme.borderActive : theme.border}`,
-                  }}
-                >
-                  {mod}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <label className="text-xs font-medium mb-2 block" style={{ color: theme.muted }}>Output Modalities</label>
-            <div className="flex flex-wrap gap-1.5">
-              {["text", "image", "audio", "video", "file"].map((mod) => (
-                <button
-                  key={mod}
-                  type="button"
-                  onClick={() => { toggleOutputModality(mod); setOffset(0); }}
-                  className="rounded-md px-2 py-1 text-xs font-medium transition"
-                  style={{
-                    background: outputModalityFilter.includes(mod) ? theme.accentDim : "transparent",
-                    color: outputModalityFilter.includes(mod) ? theme.accent : theme.muted,
-                    border: `1px solid ${outputModalityFilter.includes(mod) ? theme.borderActive : theme.border}`,
-                  }}
-                >
-                  {mod}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Reasoning toggle */}
-          <button
-            onClick={() => { setReasoningOnly(!reasoningOnly); setOffset(0); }}
-            className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm"
-            style={{ background: reasoningOnly ? theme.accentDim : "transparent", border: `1px solid ${reasoningOnly ? theme.borderActive : theme.border}` }}
-          >
-            <span className="flex items-center gap-1.5" style={{ color: reasoningOnly ? theme.accent : theme.muted }}>
-              <Brain className="size-3.5" /> Reasoning only
-            </span>
-            {reasoningOnly ? <ToggleRight className="size-5" style={{ color: theme.accent }} /> : <ToggleLeft className="size-5" style={{ color: theme.dim }} />}
-          </button>
-        </div>
-
-        {/* Sync panel */}
-        <div className="rounded-xl p-4 space-y-2" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: theme.muted }}>Sync Status</span>
-            <button
-              onClick={handleSync}
-              disabled={syncing}
-              className="flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition disabled:opacity-50"
-              style={{ background: theme.accentDim, color: theme.accent }}
-            >
-              <RefreshCw className={`size-3 ${syncing ? "animate-spin" : ""}`} /> {syncing ? "Syncing..." : providerFilter.length === 1 ? "Sync selected" : "Sync all"}
-            </button>
-          </div>
-          <div className="space-y-1">
-            {providers.map((p) => (
-              <div key={p.id} className="flex items-center justify-between text-xs">
-                <span className="flex items-center gap-1.5" style={{ color: theme.fg }}>
-                  {statusIcon(p.sync_status)} {p.name}
-                </span>
-                <span style={{ color: theme.dim }}>{p.model_count}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </aside>
-      )}
-
-      {!filtersOpen && (
-        <button
-          type="button"
-          onClick={() => setFiltersOpen(true)}
-          aria-label="Show filters"
-          title="Show filters"
-          className="fixed bottom-5 left-5 z-30 inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium shadow-lg transition hover:opacity-90 lg:static lg:h-fit lg:flex-shrink-0"
-          style={{ background: theme.surface, color: theme.accent, border: `1px solid ${theme.border}` }}
-        >
-          <Filter className="size-4" />
-          <span className="hidden sm:inline">Filters</span>
-        </button>
-      )}
-
-      {/* Main: Table + Detail */}
-      <div className="flex-1 min-w-0">
-        {/* Search bar */}
-        <div className="mb-3 flex flex-wrap items-center gap-3">
-          <div className="relative flex-1">
-            <Search className="size-4 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.dim }} />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search model ID or friendly name..."
-              className="w-full rounded-lg py-2 pl-9 pr-3 text-sm outline-none"
-              style={{ background: theme.surface, color: theme.fg, border: `1px solid ${theme.border}` }}
-            />
-          </div>
-          <label className="flex items-center gap-2 text-xs" style={{ color: theme.muted }}>Group By
-            <select value={groupBy} onChange={(e) => { setGroupBy(e.target.value as typeof groupBy); setCollapsedGroups({}); }} className="rounded-lg px-2 py-2 text-xs outline-none" style={{ background: theme.surface, color: theme.fg, border: `1px solid ${theme.border}` }}>
-              <option value="none">None</option>
-              <option value="byok">BYOK Provider</option>
-              <option value="llm">LLM Provider</option>
-            </select>
-          </label>
-          {groupBy !== "none" && (
-            <button
-              type="button"
-              onClick={toggleAllGroups}
-              className="whitespace-nowrap rounded-lg px-3 py-2 text-xs font-medium transition hover:opacity-80"
-              style={{ background: theme.accentDim, color: theme.accent, border: `1px solid ${theme.accent}40` }}
-              aria-label={allGroupsCollapsed ? "Expand all groups" : "Collapse all groups"}
-            >
-              {allGroupsCollapsed ? "Expand All" : "Collapse All"}
-            </button>
-          )}
-          <span className="text-sm whitespace-nowrap" style={{ color: theme.muted }}>
-            {loading ? "Loading..." : `${total} models`}
-          </span>
-        </div>
-
-        {/* Table */}
-        <div className="rounded-xl overflow-hidden" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr style={{ borderBottom: `1px solid ${theme.border}` }}>
-                  <th className="px-3 py-2.5 text-left font-medium cursor-pointer" style={{ color: theme.muted }} onClick={() => toggleSort("model_id")}>
-                    <span className="flex items-center gap-1"><Hash className="size-3" /> Model ID {sortKey === "model_id" && (sortDir === "asc" ? "↑" : "↓")}</span>
-                  </th>
-                  <th className="px-3 py-2.5 text-left font-medium cursor-pointer" style={{ color: theme.muted }} onClick={() => toggleSort("provider_name")}>
-                    <span className="flex items-center gap-1"><Layers className="size-3" /> BYOK Provider {sortKey === "provider_name" && (sortDir === "asc" ? "↑" : "↓")}</span>
-                  </th>
-                  <th className="px-3 py-2.5 text-left font-medium cursor-pointer" style={{ color: theme.muted }} onClick={() => toggleSort("owned_by")}>
-                    <span className="flex items-center gap-1"><Cpu className="size-3" /> LLM Provider {sortKey === "owned_by" && (sortDir === "asc" ? "↑" : "↓")}</span>
-                  </th>
-                  <th className="px-3 py-2.5 text-right font-medium cursor-pointer" style={{ color: theme.muted }} onClick={() => toggleSort("context_window")}>
-                    <span className="flex items-center gap-1 justify-end"><Cpu className="size-3" /> Context {sortKey === "context_window" && (sortDir === "asc" ? "↑" : "↓")}</span>
-                  </th>
-                  <th className="px-3 py-2.5 text-right font-medium cursor-pointer" style={{ color: theme.muted }} onClick={() => toggleSort("released_at")}>
-                    <span className="flex items-center gap-1 justify-end"><Clock className="size-3" /> Released / Created {sortKey === "released_at" && (sortDir === "asc" ? "↑" : "↓")}</span>
-                  </th>
-                  <th className="px-3 py-2.5 text-center font-medium" style={{ color: theme.muted }}>Input</th>
-                  <th className="px-3 py-2.5 text-center font-medium" style={{ color: theme.muted }}>Output</th>
-                  <th className="px-3 py-2.5 text-center font-medium" style={{ color: theme.muted }}>Reason</th>
-                  <th className="px-3 py-2.5" style={{ color: theme.muted }}></th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr><td colSpan={8} className="py-12 text-center" style={{ color: theme.dim }}>
-                    <Loader2 className="size-5 animate-spin mx-auto mb-2" /> Loading models...
-                  </td></tr>
-                ) : loadError ? (
-                  <tr><td colSpan={8} className="px-6 py-12 text-center">
-                    <AlertCircle className="mx-auto mb-2 size-5" style={{ color: theme.red }} />
-                    <div className="text-sm font-medium" style={{ color: theme.red }}>Could not load the model catalogue</div>
-                    <div className="mt-1 text-xs" style={{ color: theme.muted }}>{loadError}</div>
-                  </td></tr>
-                ) : models.length === 0 ? (
-                  <tr><td colSpan={8} className="py-12 text-center" style={{ color: theme.dim }}>
-                    No models match your filters.
-                  </td></tr>
-                ) : (
-                  groupedModels.map((group) => (
-                    <Fragment key={group.key}>
-                      {groupBy !== "none" && <tr className="cursor-pointer" onClick={() => toggleGroup(group.key)} style={{ background: theme.accentDim, borderBottom: `1px solid ${theme.border}` }}><td colSpan={9} className="px-3 py-2 text-xs font-semibold" style={{ color: theme.accent }}>{collapsedGroups[group.key] ? "▶" : "▼"} {group.label} <span style={{ color: theme.muted }}>({group.models.length})</span></td></tr>}
-                      {!collapsedGroups[group.key] && group.models.map((m) => {
-                        const inMods = parseMods(m.input_modalities);
-                        const outMods = parseMods(m.output_modalities);
-                        const reasoning = parseReasoning(m.reasoning);
-                        return (
-                          <tr key={m.id} onClick={() => setSelectedModelDetail(m)} className="cursor-pointer transition" style={{ borderBottom: `1px solid ${theme.border}` }} onMouseEnter={(e) => { e.currentTarget.style.background = theme.surfaceHover; }} onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}>
-                            <td className="px-3 py-2"><div className="font-mono text-xs" style={{ color: theme.fg }}>{m.model_id}</div>{m.friendly_name && <div className="text-xs" style={{ color: theme.dim }}>{m.friendly_name}</div>}</td>
-                            <td className="px-3 py-2 text-xs" style={{ color: theme.muted }}>{m.provider_name || "—"}</td>
-                            <td className="px-3 py-2 text-xs" style={{ color: theme.muted }}>{m.owned_by || "—"}</td>
-                            <td className="px-3 py-2 text-right font-mono text-xs" style={{ color: theme.blue }}>{fmtNum(m.context_window)}</td>
-                            <td className="px-3 py-2 text-right font-mono text-xs whitespace-nowrap" style={{ color: theme.muted }}>{m.released_at ? new Date(m.released_at).toLocaleDateString("en-CA", { year: "numeric", month: "short", day: "2-digit", timeZone: "UTC" }) : "—"}</td>
-                            <td className="px-3 py-2 text-center">{inMods.join(", ") || "—"}</td>
-                            <td className="px-3 py-2 text-center">{outMods.join(", ") || "—"}</td>
-                            <td className="px-3 py-2 text-center">{reasoning ? <Brain className="size-3.5 mx-auto" style={{ color: theme.accent }} /> : <span style={{ color: theme.dim }}>—</span>}</td>
-                            <td className="px-3 py-2"><ChevronRight className="size-4" style={{ color: theme.dim }} /></td>
-                          </tr>
-                        );
-                      })}
-                    </Fragment>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Pagination */}
-          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3" style={{ borderTop: `1px solid ${theme.border}` }}>
-            <div className="flex flex-wrap items-center gap-1" aria-label="Models per page">
-              <span className="mr-1 text-xs" style={{ color: theme.muted }}>Per page</span>
-              {[25, 50, 100, 250, 500].map((size) => (
-                <button
-                  key={size}
-                  type="button"
-                  aria-pressed={limit === size}
-                  onClick={() => { setLimit(size); setOffset(0); }}
-                  className="rounded-md px-2 py-1.5 text-xs font-medium transition"
-                  style={{
-                    background: limit === size ? theme.accentDim : theme.surface,
-                    color: limit === size ? theme.accent : theme.muted,
-                    border: `1px solid ${limit === size ? theme.borderActive : theme.border}`,
-                  }}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-            {totalPages > 1 && (
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setOffset(Math.max(0, offset - limit))}
-                  disabled={offset === 0}
-                  className="rounded-md px-3 py-1 text-xs disabled:opacity-30"
-                  style={{ background: theme.surface, border: `1px solid ${theme.border}`, color: theme.fg }}
-                >
-                  ← Prev
-                </button>
-                <button
-                  onClick={() => setOffset(offset + limit)}
-                  disabled={offset + limit >= total}
-                  className="rounded-md px-3 py-1 text-xs disabled:opacity-30"
-                  style={{ background: theme.surface, border: `1px solid ${theme.border}`, color: theme.fg }}
-                >
-                  Next →
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Detail panel */}
-        {selectedModel && <ModelDetail model={selectedModel} providers={providers} onClose={() => setSelectedModel(null)} />}
-        {selectedModelDetail && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true" aria-labelledby="model-details-title" onClick={() => setSelectedModelDetail(null)}>
-            <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl p-5" style={{ background: theme.surface, border: `1px solid ${theme.border}` }} onClick={(e) => e.stopPropagation()}>
-              <div className="mb-4 flex items-start justify-between"><div><h2 id="model-details-title" className="text-xl font-bold" style={{ color: theme.fg }}>{selectedModelDetail.friendly_name}</h2><p className="mt-1 font-mono text-xs" style={{ color: theme.muted }}>{selectedModelDetail.model_id}</p></div><button type="button" onClick={() => setSelectedModelDetail(null)} aria-label="Close">×</button></div>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {[["Model ID", selectedModelDetail.model_id], ["Friendly name", selectedModelDetail.friendly_name], ["LLM provider", selectedModelDetail.owned_by || "—"], ["Context window", selectedModelDetail.context_window ? selectedModelDetail.context_window.toLocaleString() : "—"], ["Max output", selectedModelDetail.max_completion_tokens ? selectedModelDetail.max_completion_tokens.toLocaleString() : "—"], ["Input modalities", selectedModelDetail.input_modalities || "—"], ["Output modalities", selectedModelDetail.output_modalities || "—"], ["Base URL", selectedModelDetail.provider_base_url], ["Zo Secret API Name", selectedModelDetail.provider_secret_name], ["First seen", selectedModelDetail.first_seen], ["Last seen", selectedModelDetail.last_seen]].map(([label, value]) => {
-                  const copyable = label === "Model ID" || label === "Friendly name" || label === "Base URL";
-                  return (
-                    <div key={label} className="rounded-lg p-3" style={{ background: theme.bg, border: `1px solid ${theme.border}` }}>
-                      <div className="text-[10px] uppercase tracking-wider" style={{ color: theme.dim }}>{label}</div>
-                      <div className="mt-1 flex items-start gap-2">
-                        <div className="min-w-0 flex-1 break-words font-mono text-xs" style={{ color: theme.fg }}>{value}</div>
-                        {copyable && <CopyValue value={String(value)} label={label} />}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <details className="mt-4 rounded-lg p-3" style={{ background: theme.bg, border: `1px solid ${theme.border}` }}><summary className="cursor-pointer text-sm font-medium" style={{ color: theme.muted }}>Reasoning parameters</summary><pre className="mt-3 overflow-x-auto whitespace-pre-wrap text-xs" style={{ color: theme.dim }}>{JSON.stringify(parseReasoning(selectedModelDetail.reasoning), null, 2)}</pre></details>
-              <details className="mt-3 rounded-lg p-3" style={{ background: theme.bg, border: `1px solid ${theme.border}` }}><summary className="cursor-pointer text-sm font-medium" style={{ color: theme.muted }}>Raw API metadata</summary><pre className="mt-3 overflow-x-auto whitespace-pre-wrap text-xs" style={{ color: theme.dim }}>{JSON.stringify(selectedModelDetail.raw_metadata, null, 2)}</pre></details>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ─── Model Detail Panel ──────────────────────────────────────────────
-function ModelDetail({ model, providers, onClose }: { model: Model; providers: Provider[]; onClose: () => void }) {
-  const inMods = parseMods(model.input_modalities);
-  const outMods = parseMods(model.output_modalities);
-  const reasoning = parseReasoning(model.reasoning);
-  let raw: any = {};
-  try { raw = JSON.parse(model.raw_metadata); } catch {}
-
-  const provider = providers.find((p) => p.id === model.provider_id);
-
-  return (
-    <div className="mt-4 rounded-xl p-5 space-y-4" style={{ background: theme.surface, border: `1px solid ${theme.borderActive}` }}>
-      <div className="flex items-start justify-between">
-        <div className="min-w-0">
-          <div className="flex items-center gap-1">
-            <h3 className="truncate font-mono text-sm font-bold" style={{ color: theme.fg }}>{model.model_id}</h3>
-            <CopyValue value={model.model_id} label={model.model_id} />
-          </div>
-          {model.friendly_name && <div className="flex items-center gap-1"><p className="truncate text-sm" style={{ color: theme.muted }}>{model.friendly_name}</p><CopyValue value={model.friendly_name} label={model.friendly_name} /></div>}
-        </div>
-        <button onClick={onClose} className="rounded-md p-1 hover:opacity-70" style={{ color: theme.dim }}>
-          <X className="size-4" />
-        </button>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <DetailItem label="BYOK Provider" value={provider?.name || "—"} />
-        <DetailItem label="LLM Provider" value={model.owned_by || "—"} />
-        <DetailItem label="Context Window" value={fmtNum(model.context_window)} />
-        <DetailItem label="Max Output" value={fmtNum(model.max_completion_tokens)} />
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <span className="text-xs font-medium" style={{ color: theme.muted }}>Input Modalities</span>
-          <div className="mt-1 flex flex-wrap gap-1">
-            {inMods.length ? inMods.map((m) => (
-              <span key={m} className="rounded px-2 py-0.5 text-xs" style={{ background: theme.accentDim, color: theme.accent }}>{m}</span>
-            )) : <span className="text-xs" style={{ color: theme.dim }}>—</span>}
-          </div>
-        </div>
-        <div>
-          <span className="text-xs font-medium" style={{ color: theme.muted }}>Output Modalities</span>
-          <div className="mt-1 flex flex-wrap gap-1">
-            {outMods.length ? outMods.map((m) => (
-              <span key={m} className="rounded px-2 py-0.5 text-xs" style={{ background: "rgba(125,174,163,0.15)", color: theme.blue }}>{m}</span>
-            )) : <span className="text-xs" style={{ color: theme.dim }}>—</span>}
-          </div>
-        </div>
-      </div>
-
-      {reasoning && (
-        <div className="rounded-lg p-3" style={{ background: theme.bg, border: `1px solid ${theme.border}` }}>
-          <span className="flex items-center gap-1.5 text-xs font-semibold" style={{ color: theme.accent }}>
-            <Brain className="size-3.5" /> Reasoning Capabilities
-          </span>
-          <div className="mt-2 space-y-1 text-xs" style={{ color: theme.muted }}>
-            {reasoning.supported_efforts && <div>Efforts: {reasoning.supported_efforts.join(", ")}</div>}
-            {reasoning.default_effort && <div>Default: {reasoning.default_effort}</div>}
-            {reasoning.mandatory !== undefined && <div>Mandatory: {String(reasoning.mandatory)}</div>}
-            {reasoning.default_enabled !== undefined && <div>Default enabled: {String(reasoning.default_enabled)}</div>}
-            {reasoning.supports_max_tokens !== undefined && <div>Supports max_tokens: {String(reasoning.supports_max_tokens)}</div>}
-          </div>
-        </div>
-      )}
-
-      {/* Raw metadata */}
-      <details className="rounded-lg" style={{ background: theme.bg, border: `1px solid ${theme.border}` }}>
-        <summary className="cursor-pointer px-3 py-2 text-xs font-medium" style={{ color: theme.muted }}>
-          Raw API metadata
-        </summary>
-        <pre className="overflow-x-auto p-3 text-xs font-mono" style={{ color: theme.dim }}>
-          {JSON.stringify(raw, null, 2)}
-        </pre>
-      </details>
-    </div>
-  );
-}
-
-function DetailItem({ label, value, copyable = false }: { label: string; value: string; copyable?: boolean }) {
-  return (
-    <div className="rounded-lg p-2.5" style={{ background: theme.bg, border: `1px solid ${theme.border}` }}>
-      <div className="text-[10px] uppercase tracking-wider" style={{ color: theme.dim }}>{label}</div>
-      <div className="mt-0.5 flex items-center gap-1 text-sm font-medium" style={{ color: theme.fg }}><span className="min-w-0 break-all">{value}</span>{copyable && value !== "—" && <CopyValue value={value} label={value} />}</div>
-    </div>
-  );
-}
-
-function CopyValue({ value, label }: { value: string; label: string }) {
-  const [copied, setCopied] = useState(false);
-  return (
-    <button
-      type="button"
-      onClick={async () => { await navigator.clipboard.writeText(value); setCopied(true); window.setTimeout(() => setCopied(false), 1200); }}
-      className="inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium transition hover:opacity-80"
-      style={{ color: copied ? theme.accent : theme.fg, background: theme.surface, border: `1px solid ${copied ? theme.accent : theme.border}` }}
-      aria-label={`Copy ${label}`}
-      title={`Copy ${label}`}
-    >
-      <Copy className="size-3.5" />
-      <span>{copied ? "Copied" : "Copy"}</span>
-    </button>
-  );
-}
-
-// ─── Providers Manager ───────────────────────────────────────────────
-function ProvidersManager() {
-  const [providers, setProviders] = useState<Provider[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [syncingId, setSyncingId] = useState<number | null>(null);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [secretDraft, setSecretDraft] = useState("");
-  const [savingId, setSavingId] = useState<number | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState<Provider | null>(null);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
-
-  const loadProviders = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const response = await fetch("/api/model-explorer/providers", { headers: { Accept: "application/json" } });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || `Provider request failed (${response.status})`);
-      setProviders(data.providers || []);
-    } catch (err: any) {
-      setError(err.message || "Could not load providers");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => { loadProviders(); }, [loadProviders]);
-
-  const syncProvider = async (provider: Provider) => {
-    setSyncingId(provider.id);
-    setError("");
-    try {
-      const response = await fetch("/api/model-explorer/sync", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ provider_id: provider.id, provider_prefix: provider.prefix }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || data.stderr || "Provider sync failed");
-      await loadProviders();
-    } catch (err: any) {
-      setError(`${provider.name}: ${err.message || "Provider sync failed"}`);
-      await loadProviders();
-    } finally {
-      setSyncingId(null);
-    }
-  };
-
-  const saveSecretName = async (provider: Provider) => {
-    const nextName = secretDraft.trim();
-    if (!/^[A-Z][A-Z0-9_]*$/.test(nextName)) {
-      setError("Zo Secret Name must use uppercase letters, numbers, and underscores, and start with a letter.");
-      return;
-    }
-    if (nextName === provider.secret_name) {
-      setEditingId(null);
-      return;
-    }
-    if (!window.confirm(`Overwrite ${provider.name}'s Zo Secret Name from ${provider.secret_name || "(empty)"} to ${nextName}?`)) return;
-
-    setSavingId(provider.id);
-    setError("");
-    try {
-      const response = await fetch("/api/model-explorer/providers", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ id: provider.id, secret_name: nextName }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Secret name update failed");
-      setProviders((current) => current.map((item) => item.id === provider.id ? data.provider : item));
-      setEditingId(null);
-    } catch (err: any) {
-      setError(`${provider.name}: ${err.message || "Secret name update failed"}`);
-    } finally {
-      setSavingId(null);
-    }
-  };
-
-  const deleteProvider = async (provider: Provider) => {
-    setDeletingId(provider.id);
-    setError("");
-    try {
-      const response = await fetch("/api/model-explorer/providers", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ id: provider.id }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Provider deletion failed");
-      setProviders((current) => current.filter((item) => item.id !== provider.id));
-      setConfirmDelete(null);
-    } catch (err: any) {
-      setError(`${provider.name}: ${err.message || "Provider deletion failed"}`);
-    } finally {
-      setDeletingId(null);
-    }
-  };
-
-  return (
-    <section className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h2 className="text-xl font-semibold">Providers</h2>
-          <p className="mt-1 text-sm" style={{ color: theme.muted }}>
-            Review endpoints and metadata, correct Zo Secret names, or sync one provider at a time.
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={loadProviders}
-          disabled={loading}
-          className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium disabled:opacity-50"
-          style={{ background: theme.surface2, border: `1px solid ${theme.border}`, color: theme.fg }}
-        >
-          <RefreshCw className={`size-4 ${loading ? "animate-spin" : ""}`} /> Refresh
-        </button>
-      </div>
-
-      {error && (
-        <div className="rounded-lg px-3 py-2 text-sm" style={{ background: "rgba(205,92,92,0.12)", border: "1px solid rgba(205,92,92,0.35)", color: theme.red }}>
-          {error}
-        </div>
-      )}
-
-      {loading && !providers.length ? (
-        <div className="flex items-center gap-2 rounded-xl p-5 text-sm" style={{ background: theme.surface, border: `1px solid ${theme.border}`, color: theme.muted }}>
-          <Loader2 className="size-4 animate-spin" /> Loading providers…
-        </div>
-      ) : (
-        <div className="grid gap-3 xl:grid-cols-2">
-          {providers.map((provider) => {
-            const isEditing = editingId === provider.id;
-            const isSyncing = syncingId === provider.id;
-            return (
-              <article key={provider.id} className="rounded-xl p-4" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-semibold">{provider.name}</h3>
-                      <span className="rounded px-1.5 py-0.5 font-mono text-[11px]" style={{ background: theme.surface2, color: theme.muted }}>{provider.prefix}</span>
-                    </div>
-                    <p className="mt-1 text-xs" style={{ color: theme.muted }}>{provider.model_count.toLocaleString()} models</p>
-                  </div>
-                  <div className="flex shrink-0 gap-1">
-                    <button
-                      type="button"
-                      onClick={() => syncProvider(provider)}
-                      disabled={syncingId !== null || savingId !== null || deletingId !== null}
-                      aria-label={`Sync ${provider.name}`}
-                      title={`Sync ${provider.name}`}
-                      className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg transition hover:opacity-80 disabled:opacity-50"
-                      style={{ background: theme.surface2, border: `1px solid ${theme.border}` }}
-                    >
-                      {isSyncing ? <Loader2 className="size-4 animate-spin" style={{ color: theme.accent }} /> : statusIcon(provider.sync_status)}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setConfirmDelete(provider)}
-                      disabled={syncingId !== null || savingId !== null || deletingId !== null}
-                      aria-label={`Delete ${provider.name}`}
-                      title={`Delete ${provider.name}`}
-                      className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg transition hover:opacity-80 disabled:opacity-50"
-                      style={{ background: "rgba(234,105,98,0.08)", border: `1px solid rgba(234,105,98,0.3)` }}
-                    >
-                      <Trash2 className="size-4" style={{ color: theme.red }} />
-                    </button>
-                  </div>
-                </div>
-
-                <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-                  <div className="sm:col-span-2">
-                    <dt className="text-xs" style={{ color: theme.dim }}>Base URL</dt>
-                    <dd className="mt-1 break-all font-mono text-xs">{provider.base_url}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-xs" style={{ color: theme.dim }}>Sync status</dt>
-                    <dd className="mt-1 capitalize">{provider.sync_status.replaceAll("_", " ")}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-xs" style={{ color: theme.dim }}>Last synced</dt>
-                    <dd className="mt-1">{provider.last_synced_at ? new Date(provider.last_synced_at.replace(" ", "T") + "Z").toLocaleString("en-CA") : "Never"}</dd>
-                  </div>
-                  <div className="sm:col-span-2">
-                    <dt className="text-xs" style={{ color: theme.dim }}>Zo Secret Name</dt>
-                    {isEditing ? (
-                      <div className="mt-1 flex flex-col gap-2 sm:flex-row">
-                        <input
-                          value={secretDraft}
-                          onChange={(event) => setSecretDraft(event.target.value.toUpperCase())}
-                          className="min-w-0 flex-1 rounded-lg px-3 py-2 font-mono text-sm outline-none"
-                          style={{ background: theme.bg, border: `1px solid ${theme.border}`, color: theme.fg }}
-                          aria-label={`Zo Secret Name for ${provider.name}`}
-                        />
-                        <div className="flex gap-2">
-                          <button type="button" onClick={() => saveSecretName(provider)} disabled={savingId === provider.id} className="rounded-lg px-3 py-2 text-xs font-medium disabled:opacity-50" style={{ background: theme.accent, color: theme.bg }}>
-                            {savingId === provider.id ? "Saving…" : "Save"}
-                          </button>
-                          <button type="button" onClick={() => setEditingId(null)} className="rounded-lg px-3 py-2 text-xs" style={{ border: `1px solid ${theme.border}`, color: theme.muted }}>Cancel</button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="mt-1 flex items-center justify-between gap-3 rounded-lg px-3 py-2" style={{ background: theme.bg, border: `1px solid ${theme.border}` }}>
-                        <code className="min-w-0 break-all text-xs">{provider.secret_name || "Not configured"}</code>
-                        <button type="button" onClick={() => { setEditingId(provider.id); setSecretDraft(provider.secret_name || ""); setError(""); }} className="shrink-0 text-xs font-medium underline underline-offset-2" style={{ color: theme.accent }}>
-                          Overwrite
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </dl>
-
-                {provider.last_error && (
-                  <div className="mt-3 rounded-lg px-3 py-2 text-xs" style={{ background: "rgba(205,92,92,0.08)", color: theme.red }}>
-                    {provider.last_error}
-                  </div>
-                )}
-              </article>
-            );
-          })}
-        </div>
-      )}
-
-      {confirmDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true" aria-labelledby="delete-provider-title" onClick={() => deletingId === null && setConfirmDelete(null)}>
-          <div className="w-full max-w-md rounded-2xl p-5" style={{ background: theme.surface, border: `1px solid ${theme.border}` }} onClick={(e) => e.stopPropagation()}>
-            <div className="mb-2 flex items-center gap-2">
-              <AlertCircle className="size-5" style={{ color: theme.red }} />
-              <h2 id="delete-provider-title" className="text-lg font-bold" style={{ color: theme.fg }}>Delete Provider</h2>
-            </div>
-            <p className="text-sm" style={{ color: theme.muted }}>
-              This will permanently delete <strong style={{ color: theme.fg }}>{confirmDelete.name}</strong> and its <strong style={{ color: theme.fg }}>{confirmDelete.model_count.toLocaleString()}</strong> models from the database. This cannot be undone.
-            </p>
-            <div className="mt-4 flex justify-end gap-2">
-              <button type="button" onClick={() => setConfirmDelete(null)} disabled={deletingId !== null} className="rounded-lg px-3 py-2 text-sm" style={{ border: `1px solid ${theme.border}`, color: theme.muted }}>Cancel</button>
-              <button type="button" onClick={() => deleteProvider(confirmDelete)} disabled={deletingId !== null} className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold" style={{ background: theme.red, color: "#fff" }}>
-                {deletingId !== null ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
-                {deletingId !== null ? "Deleting..." : "Delete"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </section>
-  );
-}
-
-// ─── Prompt Workbench ────────────────────────────────────────────────
-function PromptWorkbench() {
-  const [providers, setProviders] = useState<Provider[]>([]);
-  const [providerModalOpen, setProviderModalOpen] = useState(false);
-  const [omniModalOpen, setOmniModalOpen] = useState(false);
-  const [omniProviders, setOmniProviders] = useState<OmniImportProvider[]>([]);
-  const [omniSelections, setOmniSelections] = useState<Record<string, string>>({});
-  const [omniSelected, setOmniSelected] = useState<Record<string, boolean>>({});
-  const [omniLoading, setOmniLoading] = useState(false);
-  const [omniImporting, setOmniImporting] = useState(false);
-  const [omniMode, setOmniMode] = useState<"providers_only" | "providers_and_models">("providers_only");
-  const [omniError, setOmniError] = useState("");
-  const [providerForm, setProviderForm] = useState({ name: "", prefix: "", base_url: "", secret_name: "" });
-  const [providerSaving, setProviderSaving] = useState(false);
-  const [providerModels, setProviderModels] = useState<Model[]>([]);
-  const [mode, setMode] = useState<"stored" | "custom">("stored");
-
-  // Stored provider fields
-  const [selectedProviderId, setSelectedProviderId] = useState<number | "">("");
-  const [selectedModel, setSelectedModel] = useState("");
-
-  // Custom fields
-  const [customBaseUrl, setCustomBaseUrl] = useState("");
-  const [customApiKey, setCustomApiKey] = useState("");
-  const [customModel, setCustomModel] = useState("");
-
-  // Prompt fields
-  const [systemPrompt, setSystemPrompt] = useState("");
-  const [userMessage, setUserMessage] = useState("");
-  const [temperature, setTemperature] = useState(0.7);
-  const [maxTokens, setMaxTokens] = useState(1024);
-  const [stream, setStream] = useState(false);
-
-  // Result
-  const [result, setResult] = useState<WorkbenchResult | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const fetchProviders = useCallback(async () => {
-    const r = await fetch("/api/model-explorer/providers", { credentials: "same-origin", headers: { Accept: "application/json" } });
-    const d = await r.json();
-    if (!r.ok) throw new Error(d.error || `Provider request failed (${r.status})`);
-    setProviders(d.providers || []);
-  }, []);
-
-  const addProvider = async () => {
-    setProviderSaving(true);
-    try {
-      const r = await fetch("/api/model-explorer/providers", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(providerForm) });
-      const d = await r.json();
-      if (!r.ok) throw new Error(d.error || `Provider save failed (${r.status})`);
-      await fetchProviders();
-      setProviderModalOpen(false);
-      setProviderForm({ name: "", prefix: "", base_url: "", secret_name: "" });
-    } catch (e: any) {
-      window.alert(e.message);
-    } finally {
-      setProviderSaving(false);
-    }
-  };
-
-  const loadOmniPreview = async (openModal = false) => {
-    if (openModal) setOmniModalOpen(true);
-    setOmniLoading(true);
-    setOmniError("");
-    try {
-      const response = await fetch(`/api/model-explorer/import-omniroute?refresh=${Date.now()}`, {
-        credentials: "same-origin",
-        cache: "no-store",
-        headers: { Accept: "application/json", "Cache-Control": "no-cache" },
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || `OmniRoute preview failed (${response.status})`);
-      const rows = (data.providers || []) as OmniImportProvider[];
-      setOmniProviders(rows);
-      setOmniSelections(Object.fromEntries(rows.map((row) => [row.prefix, row.suggested_secret_name || row.current_secret_name || ""])));
-      setOmniSelected(Object.fromEntries(rows.map((row) => [row.prefix, row.action === "create"])));
-    } catch (error: any) {
-      setOmniError(error.message || "Could not load OmniRoute providers");
-    } finally {
-      setOmniLoading(false);
-    }
-  };
-
-  const openOmniImport = () => loadOmniPreview(true);
-
-  const selectAllNewOmniProviders = () => {
-    setOmniSelected(Object.fromEntries(omniProviders.map((row) => [row.prefix, row.action === "create"])));
-  };
-
-  const deselectAllOmniProviders = () => {
-    setOmniSelected(Object.fromEntries(omniProviders.map((row) => [row.prefix, false])));
-  };
-
-  const retryOmniSecretMatch = async (prefix: string) => {
-    const previousRows = omniProviders;
-    setOmniLoading(true);
-    setOmniError("");
-    try {
-      const response = await fetch(`/api/model-explorer/import-omniroute?refresh=${Date.now()}`, {
-        credentials: "same-origin",
-        cache: "no-store",
-        headers: { Accept: "application/json", "Cache-Control": "no-cache" },
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || `Secret match refresh failed (${response.status})`);
-      const rows = (data.providers || []) as OmniImportProvider[];
-      const refreshed = rows.find((row) => row.prefix === prefix);
-      setOmniProviders(rows);
-      if (refreshed) {
-        const match = refreshed.suggested_secret_name || refreshed.current_secret_name || "";
-        setOmniSelections((current) => ({ ...current, [prefix]: match }));
-      }
-    } catch (error: any) {
-      setOmniProviders(previousRows);
-      setOmniError(error.message || "Could not refresh Zo Secret matches");
-    } finally {
-      setOmniLoading(false);
-    }
-  };
-
-  const importOmniProviders = async () => {
-    setOmniImporting(true);
-    setOmniError("");
-    try {
-      const prefixes = omniProviders.filter((row) => omniSelected[row.prefix]).map((row) => row.prefix);
-      const response = await fetch("/api/model-explorer/import-omniroute", {
-        method: "POST",
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ mode: omniMode, prefixes, selections: omniSelections }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || `OmniRoute import failed (${response.status})`);
-      await fetchProviders();
-      setOmniModalOpen(false);
-    } catch (error: any) {
-      setOmniError(error.message || "OmniRoute import failed");
-    } finally {
-      setOmniImporting(false);
-    }
-  };
-
-  // Fetch providers
-  useEffect(() => {
-    fetch("/api/model-explorer/providers", { headers: { Accept: "application/json" } })
-      .then((r) => r.json())
-      .then((d) => {
-        const ps = d.providers || [];
-        setProviders(ps);
-        const firstActive = ps.find((p) => p.sync_status === "success" && p.model_count > 0);
-        if (firstActive) setSelectedProviderId(firstActive.id);
-      })
-      .catch(() => {});
-  }, []);
-
-  // Fetch models for selected provider
-  useEffect(() => {
-    if (selectedProviderId === "") { setProviderModels([]); return; }
-    fetch(`/api/model-explorer/models?provider_id=${selectedProviderId}&limit=500&sort_by=model_id&sort_dir=asc`, {
-      credentials: "same-origin",
-      headers: { Accept: "application/json" },
-    })
-      .then(async (r) => {
-        const data = await r.json().catch(() => ({}));
-        if (!r.ok) throw new Error(data.error || `Model request failed (${r.status})`);
-        return data;
-      })
-      .then((d: ModelsResponse) => {
-        setProviderModels(d.models || []);
-        setSelectedModel("");
-      })
-      .catch(() => setProviderModels([]));
-  }, [selectedProviderId]);
-
-  const handleSend = async () => {
-    setLoading(true);
-    setResult(null);
-    try {
-      const body: any = {
-        messages: [
-          ...(systemPrompt ? [{ role: "system", content: systemPrompt }] : []),
-          { role: "user", content: userMessage },
-        ],
-        temperature,
-        max_tokens: maxTokens,
-        stream,
-      };
-      if (mode === "stored") {
-        body.provider_id = selectedProviderId;
-        body.model = selectedModel;
-      } else {
-        body.base_url = customBaseUrl;
-        body.api_key = customApiKey;
-        body.model = customModel;
-      }
-      const r = await fetch("/api/model-explorer/workbench", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: stream ? "text/event-stream" : "application/json" },
-        body: JSON.stringify(body),
-      });
-      if (stream) {
-        if (!r.ok || !r.body) {
-          const detail = await r.text();
-          setResult({ error: `HTTP ${r.status}`, detail });
-        } else {
-          const startedAt = Date.now();
-          const reader = r.body.getReader();
-          const decoder = new TextDecoder();
-          let buffer = "";
-          let content = "";
-          let usage: any = null;
-          while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split("\n");
-            buffer = lines.pop() || "";
-            for (const line of lines) {
-              if (!line.startsWith("data:")) continue;
-              const payload = line.slice(5).trim();
-              if (!payload || payload === "[DONE]") continue;
-              try {
-                const chunk = JSON.parse(payload);
-                content += chunk.choices?.[0]?.delta?.content || "";
-                if (chunk.usage) usage = chunk.usage;
-                setResult({
-                  response: { choices: [{ message: { content } }], usage },
-                  elapsed_ms: Date.now() - startedAt,
-                });
-              } catch {}
-            }
-          }
-        }
-      } else {
-        const d: WorkbenchResult = await r.json();
-        setResult(d);
-      }
-    } catch (e: any) {
-      setResult({ error: e.message });
-    }
-    setLoading(false);
-  };
-
-  const canSend = mode === "stored"
-    ? selectedProviderId !== "" && selectedModel && userMessage.trim()
-    : customBaseUrl.trim() && customModel.trim() && userMessage.trim();
-
-  return (
-    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[400px_1fr]" style={{ minHeight: "calc(100vh - 120px)" }}>
-      {/* Config Panel */}
-      <div className="space-y-4">
-        {/* Mode toggle */}
-        <div className="flex gap-1 rounded-lg p-1" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
-          <button
-            onClick={() => setMode("stored")}
-            className="flex-1 rounded-md px-3 py-2 text-sm font-medium transition"
-            style={{ background: mode === "stored" ? theme.accentDim : "transparent", color: mode === "stored" ? theme.accent : theme.muted }}
-          >
-            <Database className="size-3.5 inline mr-1" /> Stored Provider
-          </button>
-          <button
-            onClick={() => setMode("custom")}
-            className="flex-1 rounded-md px-3 py-2 text-sm font-medium transition"
-            style={{ background: mode === "custom" ? theme.accentDim : "transparent", color: mode === "custom" ? theme.accent : theme.muted }}
-          >
-            <Settings2 className="size-3.5 inline mr-1" /> Custom Endpoint
-          </button>
-        </div>
-
-        {/* Provider config */}
-        <div className="rounded-xl p-4 space-y-3" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
-          {mode === "stored" ? (
-            <>
-              <div>
-                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.muted }}>BYOK Provider</label>
-                <select
-                  value={selectedProviderId}
-                  onChange={(e) => setSelectedProviderId(e.target.value === "" ? "" : Number(e.target.value))}
-                  className="w-full rounded-lg px-3 py-2 text-sm outline-none"
-                  style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
-                >
-                  <option value="">Select a provider...</option>
-                  {providers.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name} {p.sync_status === "success" ? "✓" : "○"} ({p.model_count})
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.muted }}>Model</label>
-                <select
-                  value={selectedModel}
-                  onChange={(e) => setSelectedModel(e.target.value)}
-                  className="w-full rounded-lg px-3 py-2 text-sm font-mono outline-none"
-                  style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
-                >
-                  <option value="">Select a model...</option>
-                  {providerModels.map((m) => (
-                    <option key={m.id} value={m.model_id}>{m.model_id}</option>
-                  ))}
-                </select>
-              </div>
-            </>
-          ) : (
-            <>
-              <div>
-                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.muted }}>Base URL</label>
-                <input
-                  type="text"
-                  value={customBaseUrl}
-                  onChange={(e) => setCustomBaseUrl(e.target.value)}
-                  placeholder="https://api.example.com/v1"
-                  className="w-full rounded-lg px-3 py-2 text-sm font-mono outline-none"
-                  style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
-                />
-              </div>
-              <div>
-                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.muted }}>API Key</label>
-                <input
-                  type="password"
-                  value={customApiKey}
-                  onChange={(e) => setCustomApiKey(e.target.value)}
-                  placeholder="sk-... or your provider key"
-                  className="w-full rounded-lg px-3 py-2 text-sm font-mono outline-none"
-                  style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
-                />
-              </div>
-              <div>
-                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.muted }}>Model ID</label>
-                <input
-                  type="text"
-                  value={customModel}
-                  onChange={(e) => setCustomModel(e.target.value)}
-                  placeholder="gpt-4o, claude-3-opus, etc."
-                  className="w-full rounded-lg px-3 py-2 text-sm font-mono outline-none"
-                  style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
-                />
-              </div>
-            </>
-          )}
-
-          {/* Parameters */}
-          <div className="grid grid-cols-2 gap-3 pt-1">
-            <div>
-              <label className="text-xs font-medium mb-1 block" style={{ color: theme.muted }}>
-                Temperature: {temperature.toFixed(1)}
-              </label>
-              <input
-                type="range" min="0" max="2" step="0.1"
-                value={temperature}
-                onChange={(e) => setTemperature(Number(e.target.value))}
-                className="w-full"
-                style={{ accentColor: theme.accent }}
-              />
-            </div>
-            <div>
-              <label className="text-xs font-medium mb-1 block" style={{ color: theme.muted }}>Max Tokens</label>
-              <input
-                type="number"
-                value={maxTokens}
-                onChange={(e) => setMaxTokens(Number(e.target.value))}
-                className="w-full rounded-lg px-3 py-1.5 text-sm outline-none"
-                style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
-              />
-            </div>
-          </div>
-          <button
-            type="button"
-            aria-pressed={stream}
-            onClick={() => setStream(!stream)}
-            className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm"
-            style={{ background: stream ? theme.accentDim : "transparent", border: `1px solid ${stream ? theme.borderActive : theme.border}` }}
-          >
-            <span style={{ color: stream ? theme.accent : theme.muted }}>Stream response</span>
-            {stream ? <ToggleRight className="size-5" style={{ color: theme.accent }} /> : <ToggleLeft className="size-5" style={{ color: theme.dim }} />}
-          </button>
-          <button type="button" onClick={() => setProviderModalOpen(true)} className="rounded-lg px-3 py-2 text-xs font-semibold" style={{ background: theme.accentDim, color: theme.accent, border: `1px solid ${theme.borderActive}` }}>
-            <Plus className="mr-1 inline size-3.5" /> Add Provider
-          </button>
-          <button type="button" onClick={openOmniImport} className="rounded-lg px-3 py-2 text-xs font-semibold" style={{ color: theme.blue, border: `1px solid ${theme.border}` }}>
-            <Database className="mr-1 inline size-3.5" /> Import from OmniRoute
-          </button>
-        </div>
-
-        {/* Send button */}
-        <button
-          onClick={handleSend}
-          disabled={!canSend || loading}
-          className="flex w-full items-center justify-center gap-2 rounded-lg py-3 text-sm font-bold transition disabled:opacity-40"
-          style={{ background: theme.accent, color: "#1a1a18" }}
-        >
-          {loading ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
-          {loading ? "Generating..." : "Send Prompt"}
-        </button>
-      </div>
-
-      {/* Prompt + Response Panel */}
-      <div className="space-y-4">
-        {/* System prompt */}
-        <div className="rounded-xl p-4" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
-          <label className="text-xs font-medium mb-2 block" style={{ color: theme.muted }}>System Prompt (optional)</label>
-          <textarea
-            value={systemPrompt}
-            onChange={(e) => setSystemPrompt(e.target.value)}
-            placeholder="You are a helpful assistant..."
-            rows={2}
-            className="w-full resize-y rounded-lg p-3 text-sm outline-none"
-            style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
-          />
-        </div>
-
-        {/* User message */}
-        <div className="rounded-xl p-4" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
-          <label className="text-xs font-medium mb-2 block" style={{ color: theme.muted }}>User Message</label>
-          <textarea
-            value={userMessage}
-            onChange={(e) => setUserMessage(e.target.value)}
-            placeholder="Type your prompt here..."
-            rows={6}
-            className="w-full resize-y rounded-lg p-3 text-sm outline-none"
-            style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
-          />
-        </div>
-
-        {/* Response */}
-        <div className="rounded-xl p-4 min-h-[200px]" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: theme.muted }}>Response</span>
-            {result?.elapsed_ms && (
-              <span className="flex items-center gap-1 text-xs" style={{ color: theme.dim }}>
-                <Clock className="size-3" /> {result.elapsed_ms}ms
-              </span>
-            )}
-          </div>
-          {!result && !loading && (
-            <div className="flex flex-col items-center justify-center py-12" style={{ color: theme.dim }}>
-              <Zap className="size-6 mb-2 opacity-40" />
-              <span className="text-sm">Send a prompt to see the response here.</span>
-            </div>
-          )}
-          {loading && (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="size-5 animate-spin" style={{ color: theme.accent }} />
-            </div>
-          )}
-          {result?.error && (
-            <div className="rounded-lg p-3" style={{ background: "rgba(234,105,98,0.1)", border: `1px solid ${theme.red}` }}>
-              <div className="flex items-center gap-1.5 text-sm font-medium" style={{ color: theme.red }}>
-                <AlertCircle className="size-4" /> Error
-              </div>
-              <pre className="mt-2 text-xs whitespace-pre-wrap" style={{ color: theme.muted }}>{result.detail || result.error}</pre>
-            </div>
-          )}
-          {result?.response && (
-            <div className="space-y-3">
-              {/* Content */}
-              {result.response.choices?.[0]?.message?.content && (
-                <div className="rounded-lg p-3 text-sm" style={{ background: theme.bg, border: `1px solid ${theme.border}`, color: theme.fg }}>
-                  {result.response.choices[0].message.content}
-                </div>
-              )}
-              {/* Usage */}
-              {result.response.usage && (
-                <div className="flex flex-wrap gap-3 text-xs" style={{ color: theme.dim }}>
-                  <span>Prompt: {result.response.usage.prompt_tokens} tok</span>
-                  <span>Completion: {result.response.usage.completion_tokens} tok</span>
-                  <span>Total: {result.response.usage.total_tokens} tok</span>
-                  {result.response.model && <span>Model: {result.response.model}</span>}
-                </div>
-              )}
-              {/* Raw JSON */}
-              <details className="rounded-lg" style={{ background: theme.bg, border: `1px solid ${theme.border}` }}>
-                <summary className="cursor-pointer px-3 py-2 text-xs font-medium" style={{ color: theme.muted }}>
-                  Raw response JSON
-                </summary>
-                <pre className="overflow-x-auto p-3 text-xs font-mono" style={{ color: theme.dim }}>
-                  {JSON.stringify(result.response, null, 2)}
-                </pre>
-              </details>
-            </div>
-          )}
-        </div>
-        {providerModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true" aria-labelledby="add-provider-title">
-            <div className="w-full max-w-lg rounded-2xl p-5" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
-              <div className="mb-4 flex items-center justify-between"><h2 id="add-provider-title" className="text-lg font-bold" style={{ color: theme.fg }}>Add Provider</h2><button type="button" onClick={() => setProviderModalOpen(false)} aria-label="Close">×</button></div>
-              <div className="space-y-3">
-                {([["name", "Provider name", "OpenRouter"], ["prefix", "Provider prefix", "openrouter"], ["base_url", "Base URL", "https://api.example.com/v1"], ["secret_name", "Zo Secret API Name", "MY_PROVIDER_API_KEY"]] as const).map(([key, label, placeholder]) => <label key={key} className="block text-xs font-medium" style={{ color: theme.muted }}>{label}<input value={providerForm[key]} onChange={(e) => setProviderForm({ ...providerForm, [key]: e.target.value })} placeholder={placeholder} className="mt-1 w-full rounded-lg px-3 py-2 text-sm outline-none" style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }} /></label>)}
-                <p className="text-xs" style={{ color: theme.dim }}>Save the API key separately in Zo Secrets under this exact name. Model Explorer stores only the name.</p>
-                <button type="button" disabled={providerSaving || !providerForm.name || !providerForm.prefix || !providerForm.base_url || !providerForm.secret_name} onClick={addProvider} className="w-full rounded-lg py-2.5 text-sm font-bold disabled:opacity-40" style={{ background: theme.accent, color: "#1a1a18" }}>{providerSaving ? "Saving…" : "Add and Sync Provider"}</button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {omniModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true" aria-labelledby="omniroute-import-title" onClick={() => !omniImporting && setOmniModalOpen(false)}>
-            <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl p-5" style={{ background: theme.surface, border: `1px solid ${theme.border}` }} onClick={(event) => event.stopPropagation()}>
-              <div className="mb-4 flex items-start justify-between gap-4">
-                <div><h2 id="omniroute-import-title" className="text-lg font-bold" style={{ color: theme.fg }}>Import from OmniRoute</h2><p className="mt-1 text-xs" style={{ color: theme.muted }}>Dry-run preview. API-key values are never copied. Model Explorer stores only Zo Secret names.</p></div>
-                <button type="button" onClick={() => setOmniModalOpen(false)} aria-label="Close OmniRoute import" disabled={omniImporting}><X className="size-4" /></button>
-              </div>
-              <div className="mb-4 flex flex-wrap items-center gap-3">
-                <label className="text-xs" style={{ color: theme.muted }}>Import mode
-                  <select value={omniMode} onChange={(event) => setOmniMode(event.target.value as typeof omniMode)} className="ml-2 rounded-md px-2 py-1.5" style={{ background: theme.bg, border: `1px solid ${theme.border}` }}>
-                    <option value="providers_only">Providers only</option>
-                    <option value="providers_and_models">Providers and sync models</option>
-                  </select>
-                </label>
-                <button type="button" onClick={selectAllNewOmniProviders} disabled={omniLoading || omniImporting} className="rounded-md px-2.5 py-1.5 text-xs" style={{ border: `1px solid ${theme.border}` }}>Select all new</button>
-                <button type="button" onClick={deselectAllOmniProviders} disabled={omniLoading || omniImporting} className="rounded-md px-2.5 py-1.5 text-xs" style={{ border: `1px solid ${theme.border}` }}>Deselect all</button>
-                <button type="button" onClick={() => loadOmniPreview(false)} disabled={omniLoading || omniImporting} className="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs" style={{ border: `1px solid ${theme.border}` }}><RefreshCw className={`size-3 ${omniLoading ? "animate-spin" : ""}`} /> Refresh matches</button>
-                <span className="text-xs" style={{ color: theme.dim }}>{omniProviders.filter((row) => omniSelected[row.prefix]).length} selected</span>
-              </div>
-              {omniLoading ? <div className="py-12 text-center"><Loader2 className="mx-auto size-5 animate-spin" /></div> : (
-                <div className="space-y-2">
-                  {omniProviders.map((row) => (
-                    <div key={row.omni_id} className="grid gap-3 rounded-lg p-3 md:grid-cols-[auto_1.2fr_1.5fr_1.4fr]" style={{ background: theme.bg, border: `1px solid ${theme.border}` }}>
-                      <input type="checkbox" checked={Boolean(omniSelected[row.prefix])} onChange={(event) => setOmniSelected((current) => ({ ...current, [row.prefix]: event.target.checked }))} aria-label={`Import ${row.name}`} />
-                      <div><div className="flex flex-wrap items-center gap-2 text-sm font-semibold">{row.name}{row.action === "update" && <span className="rounded-full px-1.5 py-0.5 text-[10px] font-medium" style={{ color: theme.warn, background: theme.warnDim }}>Already imported</span>}</div><div className="text-[11px]" style={{ color: theme.dim }}>{row.action} · {row.prefix}</div></div>
-                      <div className="min-w-0"><div className="truncate text-xs font-mono" title={row.base_url}>{row.base_url}</div><div className="mt-1 text-[11px]" style={{ color: theme.dim }}>{row.models_path || "/models"}</div></div>
-                      <label className="text-[11px]" style={{ color: theme.muted }}>Zo Secret API Name
-                        <input value={omniSelections[row.prefix] || ""} onChange={(event) => setOmniSelections((current) => ({ ...current, [row.prefix]: event.target.value }))} placeholder="e.g. OPENROUTER_API_KEY" className="mt-1 w-full rounded-md px-2 py-1.5 text-xs" style={{ background: theme.surface, border: `1px solid ${row.secret_status === "missing" ? theme.warn : theme.border}` }} />
-                        {row.secret_candidates.length > 0 && <div className="mt-1 flex flex-wrap gap-1">{row.secret_candidates.slice(0, 4).map((name) => <button type="button" key={name} onClick={() => setOmniSelections((current) => ({ ...current, [row.prefix]: name }))} className="rounded px-1.5 py-0.5 text-[10px]" style={{ color: theme.accent, background: theme.accentDim }}>{name}</button>)}</div>}
-                        <span className="mt-1 flex flex-wrap items-center gap-2" style={{ color: row.secret_status === "matched" ? theme.success : row.secret_status === "needs_selection" ? theme.warn : theme.dim }}>{row.secret_status === "matched" ? "Matched" : row.secret_status === "needs_selection" ? "Needs secret selection" : "No logical Zo Secret match"}<button type="button" onClick={() => retryOmniSecretMatch(row.prefix)} disabled={omniLoading || omniImporting} className="underline underline-offset-2 disabled:opacity-50">Try match</button></span>
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {omniError && <div className="mt-4 rounded-lg p-3 text-xs" style={{ color: theme.danger, background: theme.dangerDim }}>{omniError}</div>}
-              <div className="mt-5 flex justify-end gap-2"><button type="button" onClick={() => setOmniModalOpen(false)} disabled={omniImporting} className="rounded-md px-3 py-2 text-xs" style={{ border: `1px solid ${theme.border}` }}>Cancel</button><button type="button" onClick={importOmniProviders} disabled={omniLoading || omniImporting || !omniProviders.some((row) => omniSelected[row.prefix])} className="rounded-md px-3 py-2 text-xs font-semibold disabled:opacity-50" style={{ background: theme.accent, color: "#071019" }}>{omniImporting ? "Importing…" : "Import selected"}</button></div>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 ```
 
-### `/openclaw/dashboard` (page, private)
+### `/openclaw-dashboard` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -16894,10 +15780,9 @@ export default function OpenClawDashboard() {
 }
 ```
 
-### `/press` (page, private)
+### `/press` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect } from "react";
 
 export default function PressPage() {
@@ -17089,13 +15974,13 @@ const PR_CSS = [
   ".pr-foot{text-align:center;padding:40px 0 20px;border-top:1px solid rgba(232,224,212,0.08)}",
   ".pr-foot-note{font-size:11px;color:#6b6b78;margin-top:16px;letter-spacing:0.5px}",
   "@media (max-width:640px){.pr{padding:32px 16px}.pr-hero{padding:24px 0 40px;margin-bottom:40px}.pr-section{margin-bottom:40px}.pr-route{padding:14px}}",
-].join("\n");
+].join("\
+");
 ```
 
-### `/profile` (page, private)
+### `/profile` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useRef } from "react";
 import { MapPin, ExternalLink, Github, ChevronUp, ArrowUpRight, Layers, Cpu, Bot, Puzzle, Zap, Rss, BookOpen, FolderKanban, LayoutGrid, Clock, Tag, Heart, MessageCircle, Menu, X, Lock, PenLine, Palette, Settings, Share2, Briefcase, LayoutDashboard, Sparkles } from "lucide-react";
 
@@ -17667,10 +16552,9 @@ function GlobalNav({ links = [] }: { links?: any[] }) {
 }
 ```
 
-### `/receipts` (page, private)
+### `/receipts` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   Upload, Search, Image as ImageIcon, Loader2, Lock, ArrowUpDown, ArrowUp, ArrowDown, CheckCircle2, RefreshCw, AlertCircle, X, ZoomIn, ZoomOut, RotateCw, Maximize2, Minimize2, Receipt, ArrowLeft, Menu,
@@ -18317,7 +17201,6 @@ export default function RetailReceiptTracker() {
 ### `/repurpose` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useMemo, useState } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Copy, Check, Lock, Sparkles, Globe, Clock3, Shield } from "lucide-react";
@@ -18627,10 +17510,9 @@ export default function ContentRepurposer() {
 }
 ```
 
-### `/s/:id` (page, private)
+### `/s/:id` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 // @zo-theme: web3 | applied: 2026-03-02T07:00:00Z
 import { useState, useEffect, useRef } from "react";
 import { Download, Check, Zap, Menu, X, Lock } from "lucide-react";
@@ -18989,10 +17871,9 @@ function GlobalNav() {
 }
 ```
 
-### `/secret` (page, private)
+### `/secret` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect } from "react";
 
 export default function SecretPage() {
@@ -19105,13 +17986,13 @@ const SEC_CSS = [
   ".sec-links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}",
   ".sec-link{padding:10px 20px;border-radius:8px;border:1px solid rgba(232,224,212,0.1);background:rgba(232,224,212,0.03);color:#e8e0d4;text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:12px;transition:all 0.2s}",
   ".sec-link:hover{border-color:#c08b5c;background:rgba(192,139,92,0.08);color:#c08b5c}",
-].join("\n");
+].join("\
+");
 ```
 
 ### `/share` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useRef } from "react";
 import { FolderIcon, FileIcon, ChevronLeft, ChevronRight, Copy, Check, Trash2, Link, Download, Users, ExternalLink, Menu, X, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -19653,10 +18534,9 @@ export default function SharePage() {
 }
 ```
 
-### `/skills/gallery` (page, private)
+### `/skills-gallery` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Search, Loader2, X, Tag, FolderOpen, ChevronRight, Menu, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -20071,10 +18951,9 @@ export default function SkillsGallery() {
 }
 ```
 
-### `/speech/game` (page, private)
+### `/speech-game` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useCallback } from "react";
 import { Lock, Loader2 } from "lucide-react";
 
@@ -20694,10 +19573,9 @@ export default function SpeechGame() {
 }
 ```
 
-### `/speech/game/manifest.json` (api, public)
+### `/speech-game-manifest.json` (api, public)
 
 ```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -20726,10 +19604,66 @@ export default (c: Context) => {
 };
 ```
 
-### `/speech/game/stats` (page, private)
+### `/speech-game-sw.js` (api, public)
+
+```typescript
+import type { Context } from "hono";
+
+const SW_CODE = `
+const CACHE_NAME = "sblend-v1";
+const PRECACHE = [
+  "/speech-game",
+  "/speech-game/stickers",
+  "/icons/speech-game-192.png",
+  "/icons/speech-game-512.png",
+];
+
+self.addEventListener("install", (e) => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE)).then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener("activate", (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+    ).then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener("fetch", (e) => {
+  const url = new URL(e.request.url);
+  if (url.pathname.startsWith("/api/")) return;
+  if (e.request.method !== "GET") return;
+  e.respondWith(
+    fetch(e.request)
+      .then((res) => {
+        if (res.ok) {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+        }
+        return res;
+      })
+      .catch(() => caches.match(e.request))
+  );
+});
+`;
+
+export default (c: Context) => {
+  return new Response(SW_CODE.trim(), {
+    headers: {
+      "Content-Type": "application/javascript",
+      "Service-Worker-Allowed": "/",
+      "Cache-Control": "no-cache",
+    },
+  });
+};
+```
+
+### `/speech-game/stats` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect } from "react";
 import { Lock, Loader2 } from "lucide-react";
 
@@ -21197,10 +20131,9 @@ export default function StatsPage() {
 }
 ```
 
-### `/speech/game/stickers` (page, private)
+### `/speech-game/stickers` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect } from "react";
 import { Lock, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -21510,68 +20443,9 @@ export default function Stickers() {
 }
 ```
 
-### `/speech/game/sw.js` (api, public)
-
-```typescript
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
-import type { Context } from "hono";
-
-const SW_CODE = `
-const CACHE_NAME = "sblend-v1";
-const PRECACHE = [
-  "/speech-game",
-  "/speech-game/stickers",
-  "/icons/speech-game-192.png",
-  "/icons/speech-game-512.png",
-];
-
-self.addEventListener("install", (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE)).then(() => self.skipWaiting())
-  );
-});
-
-self.addEventListener("activate", (e) => {
-  e.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    ).then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener("fetch", (e) => {
-  const url = new URL(e.request.url);
-  if (url.pathname.startsWith("/api/")) return;
-  if (e.request.method !== "GET") return;
-  e.respondWith(
-    fetch(e.request)
-      .then((res) => {
-        if (res.ok) {
-          const clone = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
-        }
-        return res;
-      })
-      .catch(() => caches.match(e.request))
-  );
-});
-`;
-
-export default (c: Context) => {
-  return new Response(SW_CODE.trim(), {
-    headers: {
-      "Content-Type": "application/javascript",
-      "Service-Worker-Allowed": "/",
-      "Cache-Control": "no-cache",
-    },
-  });
-};
-```
-
 ### `/telemetry` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, ArrowLeft, Activity, RefreshCw, Terminal, Users, Zap, TrendingUp, Lock, ExternalLink, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -21885,7 +20759,6 @@ export default function TelemetryDashboard() {
 ### `/temporal` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useEffect, useState, useRef } from "react";
 
 const COLORS = {
@@ -22155,10 +21028,9 @@ export default function TemporalDashboard() {
 }
 ```
 
-### `/trivia` (page, private)
+### `/trivia` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useRef } from "react";
 import { 
   Trophy, Calendar, Shuffle, ChevronLeft, CheckCircle, XCircle, 
@@ -23043,7 +21915,6 @@ export default function TriviaQuiz() {
 ### `/trivia/archive` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useRef } from "react";
 import { 
   Calendar, ChevronLeft, ChevronRight, Clock, 
@@ -23378,7 +22249,6 @@ export default function TriviaArchive() {
 ### `/trivia/leaderboard` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useRef } from "react";
 import { 
   Trophy, Medal, Users, ArrowLeft, ArrowRight, 
@@ -23625,7 +22495,8 @@ export default function TriviaLeaderboard() {
             {userStats && (
               <div className="p-6 rounded-2xl border flex items-center gap-6" style={{ background: COLORS.card, borderColor: COLORS.border }}>
                 <div className="text-center">
-                  <p className="text-[10px] font-mono uppercase tracking-widest mb-1" style={{ color: COLORS.dimmed }}>Streak</p>\n                  <p className="text-2xl font-bold font-heading" style={{ color: "#fb923c" }}>🔥 {userStats.best_streak || 0}</p>
+                  <p className="text-[10px] font-mono uppercase tracking-widest mb-1" style={{ color: COLORS.dimmed }}>Streak</p>\
+                  <p className="text-2xl font-bold font-heading" style={{ color: "#fb923c" }}>🔥 {userStats.best_streak || 0}</p>
                 </div>
                 <div className="w-px h-10 bg-white/10" />
                 <div className="text-center">
@@ -23728,7 +22599,8 @@ export default function TriviaLeaderboard() {
                 <Calendar className="w-5 h-5" style={{ color: COLORS.indigo }} />
               </div>
               <h3 className="font-heading font-bold text-sm">View Archive</h3>
-              <p className="text-[10px]" style={{ color: COLORS.muted }}>Browse past questions and stats.</p>\n            </a>
+              <p className="text-[10px]" style={{ color: COLORS.muted }}>Browse past questions and stats.</p>\
+            </a>
             <div className="p-6 rounded-2xl border flex flex-col items-center text-center gap-3" style={{ background: COLORS.card, borderColor: COLORS.border }}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.05)", border: `1px solid ${COLORS.border}` }}>
                 <Users className="w-5 h-5" style={{ color: COLORS.muted }} />
@@ -23750,10 +22622,9 @@ export default function TriviaLeaderboard() {
 }
 ```
 
-### `/zo/city` (page, private)
+### `/zo-city` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 
 const TW = 16, TH = 8;
@@ -24388,10 +23259,9 @@ export default function ZoCity() {
 }
 ```
 
-### `/zo/city/three/test` (page, private)
+### `/zo-city-three-test` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useEffect, useRef, useState } from "react";
 
 export default function Page() {
@@ -24464,10 +23334,9 @@ export default function Page() {
 }
 ```
 
-### `/zo/control/deck` (page, private)
+### `/zo-control-deck` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Activity, Server, Bot, CreditCard, Shield, AlertTriangle, FileText, Globe, Menu, X, ChevronDown, ChevronRight, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -25390,10 +24259,9 @@ function StatCard({ label, value, sub, onClick, accent }: { label: string; value
 }
 ```
 
-### `/zo/space/theme/gallery` (page, private)
+### `/zo-space-theme-gallery` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { 
   Search, SunMedium, Moon, Filter, ChevronRight, Palette, Copy, Check, Eye, X, Menu, Lock,
@@ -26015,10 +24883,9 @@ export default function ThemeGallery() {
 }
 ```
 
-### `/zo/space/theme/gallery/:id` (page, private)
+### `/zo-space-theme-gallery/:id` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useEffect, useMemo, useState, useRef } from "react";
 import { ArrowLeft, Copy, Palette, Check, SunMedium, Moon, Eye, X } from "lucide-react";
 import { marked } from "marked";
@@ -26302,10 +25169,9 @@ export default function ThemeDetail() {
 }
 ```
 
-### `/zo/status` (page, private)
+### `/zo-status` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { 
@@ -27006,7 +25872,6 @@ function GlobalNav() {
 ### `/zoboard` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect } from "react";
 import { Layout, AlertCircle, Loader2 } from "lucide-react";
 
@@ -27111,7 +25976,6 @@ export default function ZoBoard() {
 ### `/zoboard/:slug` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
@@ -27745,908 +26609,12 @@ function CardDrawer({
 ### `/zos` (page, private)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
-const BOOT_LINES: [string, number][] = [
-  ["ZOS v1.0.0 — ZenOS Personal Edition", 0],["", 200],
-  ["a personal site rebuilt as an operating system.", 350],["", 420],
-  ["Initializing kernel...", 400],["Loading personality matrix.......... OK", 800],
-  ["Mounting creative drive............ OK", 1400],["Initializing caffeine module....... OK", 2000],
-  ["Connecting Zo integrations......... OK", 2600],["Starting window manager........... OK", 3200],
-  ["", 3600],["All systems nominal.", 3800],["Welcome to ZOS.", 4200],
-];
-const ROLES = [["visitor","Visitor","Browsing - casual explore mode"],["recruiter","Recruiter","Evaluating - see skills & experience first"],["collaborator","Collaborator","Building - looking for project synergies"],["curious","Curious Human","Exploring - show me the easter eggs"]] as [string,string,string][];
-const APPS: [string,string,string][] = [["about","About Me","📂"],["projects","Projects","💼"],["voi","Voi-ZOS","🧠"],["command","Command Centre","📊"],["lab","Lab","🧪"],["mail","X Feed","📧"],["calendar","Book Time","📅"],["store","App Store","🛒"],["games","Games","🎮"],["terminal","Terminal","⬛"],["settings","Settings","⚙️"]];
-const konamiSeq = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
-const SIGNALS = [["konami","🥚","Konami Code","Try the classic cheat code on the desktop",100],["terminal","💻","Terminal Secret","Type cat .hidden in the terminal",50],["bsod","💀","BSOD","Try sudo rm -rf / in the terminal",75],["watermark","🎵","Hidden Watermark","Click the ZOS watermark 5 times",50],["route","🔒","Secret Route","Open the hidden /secret page from the lab",75],["palette","🧠","AI Easter Egg","Ask the command palette for a secret",50]] as const;
-const ZOS_LOGO_SRC = "/images/ZOS/zos-logo-black.png";
-const ZOS_WATERMARK_LOGO_SRC = "/images/ZOS/zos-logo-transparent.png";
-type WS = { id:string; title:string; icon:string; x:number; y:number; w:number; h:number; z:number; min:boolean; max:boolean };
-
-type HelpOverlayProps = { onClose: () => void };
-
-function HelpOverlay({ onClose }: HelpOverlayProps) {
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" || e.key === "?" || e.key === "F1") {
-        e.preventDefault();
-        onClose();
-      }
-    };
-    addEventListener("keydown", onKey);
-    return () => removeEventListener("keydown", onKey);
-  }, [onClose]);
-
-  return (
-    <>
-      <div className="zov" onClick={onClose} />
-      <div className="zhelp" role="dialog" aria-modal="true" aria-label="ZOS keyboard shortcuts">
-        <div className="zhelp-hdr">
-          <div>
-            <div className="zhelp-title">Keyboard shortcuts</div>
-            <div className="zhelp-sub">A few ways to move faster inside ZOS.</div>
-          </div>
-          <button className="zhelp-close" onClick={onClose}>✕</button>
-        </div>
-        <div className="zhelp-grid">
-          <div className="zhelp-row"><kbd>?</kbd><span>Open or close this help overlay</span></div>
-          <div className="zhelp-row"><kbd>F1</kbd><span>Open or close this help overlay</span></div>
-          <div className="zhelp-row"><kbd>⌘K</kbd><span>Open Command Centre</span></div>
-          <div className="zhelp-row"><kbd>Ctrl+K</kbd><span>Open Command Centre</span></div>
-          <div className="zhelp-row"><kbd>Esc</kbd><span>Close the focused window or overlay</span></div>
-          <div className="zhelp-row"><kbd>/</kbd><span>Open Command Centre when not typing</span></div>
-          <div className="zhelp-row"><kbd>Double-click title bar</kbd><span>Maximize or restore a window</span></div>
-          <div className="zhelp-row"><kbd>Hint</kbd><span>There is a signal hiding behind the classic Konami code</span></div>
-        </div>
-      </div>
-    </>
-  );
-}
-
-function BootScreen(p:{onDone:(role:string)=>void}) {
-  const [lines,setLines]=useState<string[]>([]);
-  const [blink,setBlink]=useState(true);
-  const [showRoles,setShowRoles]=useState(false);
-  const ref=useRef<HTMLDivElement>(null);
-  useEffect(()=>{
-    BOOT_LINES.forEach(([text,delay])=>{setTimeout(()=>{setLines(prev=>[...prev,text]);if(ref.current)ref.current.scrollTop=ref.current.scrollHeight;},delay);});
-    setTimeout(()=>setShowRoles(true),4600);
-    const iv=setInterval(()=>setBlink(v=>!v),530);return()=>clearInterval(iv);
-  },[]);
-  return(
-    <div className="zb"><div className="zb-scan"/><div className="zb-vig"/>
-      <div ref={ref} className="zb-body">
-        <div className="zb-logo-wrap"><img src={ZOS_LOGO_SRC} alt="ZOS" className="zb-logo"/></div>
-        {lines.map((l,i)=><div key={i} className="zb-line">{l}</div>)}
-        {showRoles&&(<div className="zb-roles"><div className="zb-prompt">Select access mode:</div>
-          {ROLES.map(([id,label,desc])=>(<button key={id} className="zb-role" onClick={()=>p.onDone(id)}><span className="zb-role-label">{"[ "}{label}{" ]"}</span><span className="zb-role-desc">{desc}</span></button>))}
-        </div>)}
-        {!showRoles&&<span className="zb-cursor" style={blink?undefined:{opacity:0}}>█</span>}
-      </div>
-    </div>
-  );
-}
-
-function Particles(){
-  const ref=useRef<HTMLCanvasElement>(null);
-  useEffect(()=>{
-    const c=ref.current;if(!c)return;const ctx=c.getContext("2d");if(!ctx)return;
-    let anim=0,mx=-1e3,my=-1e3,bx=0,by=0;
-    let blackHoleActive=false,explosionAt=0;
-    const pts:{x:number;y:number;vx:number;vy:number;r:number;br:number}[]=[];
-    const resize=()=>{c.width=innerWidth;c.height=innerHeight;};
-    const onMove=(e:MouseEvent)=>{mx=e.clientX;my=e.clientY;if(blackHoleActive){bx=e.clientX;by=e.clientY;}};
-    const onDown=(e:MouseEvent)=>{if(e.button!==0)return;blackHoleActive=true;bx=e.clientX;by=e.clientY;mx=e.clientX;my=e.clientY;explosionAt=0;};
-    const onUp=(e:MouseEvent)=>{
-      if(e.button!==0||!blackHoleActive)return;
-      blackHoleActive=false;bx=e.clientX;by=e.clientY;mx=e.clientX;my=e.clientY;explosionAt=performance.now();
-      for(const q of pts){
-        const dx=q.x-bx,dy=q.y-by;const d=Math.max(6,Math.sqrt(dx*dx+dy*dy));
-        if(d<320){const force=(1-d/320)*8.5+0.6;q.vx+=dx/d*force+(Math.random()-0.5)*0.6;q.vy+=dy/d*force+(Math.random()-0.5)*0.6;q.r=q.br;}
-      }
-    };
-    const onLeave=()=>{if(blackHoleActive){blackHoleActive=false;explosionAt=performance.now();}};
-    resize();
-    addEventListener("resize",resize);
-    addEventListener("mousemove",onMove);
-    addEventListener("mousedown",onDown);
-    addEventListener("mouseup",onUp);
-    addEventListener("blur",onLeave);
-    for(let i=0;i<160;i++){const br=Math.random()*1.5+0.5;pts.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,r:br,br});}
-    const draw=()=>{
-      const now=performance.now();
-      ctx.clearRect(0,0,c.width,c.height);
-      for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
-        const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
-        if(d<150){ctx.beginPath();ctx.strokeStyle="rgba(200,172,140,"+(0.06*(1-d/150))+")";ctx.lineWidth=0.5;ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke();}
-      }
-      for(const q of pts){
-        if(blackHoleActive){
-          const dx=bx-q.x,dy=by-q.y,d=Math.max(4,Math.sqrt(dx*dx+dy*dy));
-          if(d<300){
-            const pull=(1-d/300)*1.45+0.08;
-            q.vx+=dx/d*pull;
-            q.vy+=dy/d*pull;
-            const swirl=(1-d/300)*0.012;
-            q.vx+=(-dy/d)*swirl*28;
-            q.vy+=(dx/d)*swirl*28;
-          }
-          if(d<42){
-            q.x+=dx*0.22;
-            q.y+=dy*0.22;
-            q.vx*=0.76;
-            q.vy*=0.76;
-            q.r=Math.max(0.12,q.r*0.95);
-          }else{
-            q.r+=(q.br-q.r)*0.08;
-          }
-          if(d<10){
-            q.x=bx+(Math.random()-0.5)*2;
-            q.y=by+(Math.random()-0.5)*2;
-            q.vx*=0.5;
-            q.vy*=0.5;
-            q.r=0.1;
-          }
-        }else{
-          const dx=q.x-mx,dy=q.y-my,d=Math.sqrt(dx*dx+dy*dy);
-          if(d<120&&d>0){q.vx+=dx/d*0.15;q.vy+=dy/d*0.15;}
-          q.r+=(q.br-q.r)*0.06;
-        }
-        q.vx*=blackHoleActive?0.94:0.99;
-        q.vy*=blackHoleActive?0.94:0.99;
-        q.x+=q.vx;
-        q.y+=q.vy;
-        if(q.x<0)q.x=c.width;if(q.x>c.width)q.x=0;if(q.y<0)q.y=c.height;if(q.y>c.height)q.y=0;
-        if(q.r>0.08){ctx.beginPath();ctx.arc(q.x,q.y,q.r,0,Math.PI*2);ctx.fillStyle=blackHoleActive?"rgba(232,224,212,0.8)":"rgba(200,172,140,0.35)";ctx.fill();}
-      }
-      if(blackHoleActive){
-        const outer=44+Math.sin(now/140)*6;
-        const grad=ctx.createRadialGradient(bx,by,2,bx,by,outer);
-        grad.addColorStop(0,"rgba(0,0,0,1)");
-        grad.addColorStop(0.35,"rgba(4,4,6,0.95)");
-        grad.addColorStop(0.72,"rgba(192,139,92,0.3)");
-        grad.addColorStop(1,"rgba(192,139,92,0)");
-        ctx.beginPath();ctx.fillStyle=grad;ctx.arc(bx,by,outer,0,Math.PI*2);ctx.fill();
-        ctx.beginPath();ctx.strokeStyle="rgba(232,224,212,0.18)";ctx.lineWidth=1.5;ctx.arc(bx,by,outer+10,0,Math.PI*2);ctx.stroke();
-      }else if(explosionAt&&now-explosionAt<520){
-        const t=(now-explosionAt)/520;const radius=18+t*240;
-        ctx.beginPath();ctx.strokeStyle="rgba(232,224,212,"+(0.45*(1-t))+")";ctx.lineWidth=3*(1-t)+0.5;ctx.arc(bx,by,radius,0,Math.PI*2);ctx.stroke();
-        ctx.beginPath();ctx.strokeStyle="rgba(192,139,92,"+(0.5*(1-t))+")";ctx.lineWidth=10*(1-t)+1;ctx.arc(bx,by,Math.max(6,radius-16),0,Math.PI*2);ctx.stroke();
-      }
-      anim=requestAnimationFrame(draw);
-    };
-    draw();
-    return()=>{cancelAnimationFrame(anim);removeEventListener("resize",resize);removeEventListener("mousemove",onMove);removeEventListener("mousedown",onDown);removeEventListener("mouseup",onUp);removeEventListener("blur",onLeave);};
-  },[]);
-  return <canvas ref={ref} className="zp-canvas"/>;
-}
-
-function CursorHalo(){const ref=useRef<HTMLDivElement>(null);useEffect(()=>{const move=(e:MouseEvent)=>{if(ref.current){ref.current.style.left=e.clientX+"px";ref.current.style.top=e.clientY+"px";}};addEventListener("mousemove",move);return()=>removeEventListener("mousemove",move);},[]);return <div ref={ref} className="zc-halo"/>;}
-
-function Taskbar(p:{wins:WS[];active:string|null;onWinClick:(id:string)=>void;onStart:()=>void;startOpen:boolean;role:string;onLogoSecret:()=>void}){
-  const [time,setTime]=useState("");
-  const logoClicks = useRef(0);
-  const logoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(()=>{const t=()=>setTime(new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"}));t();const iv=setInterval(t,10000);return()=>clearInterval(iv);},[]);
-  const handleStartClick = () => {
-    logoClicks.current += 1;
-    if (logoTimer.current) clearTimeout(logoTimer.current);
-    logoTimer.current = setTimeout(() => { logoClicks.current = 0; }, 2200);
-    if (logoClicks.current >= 7) {
-      logoClicks.current = 0;
-      p.onLogoSecret();
-    }
-    p.onStart();
-  };
-  return(<div className="zt">
-    <button className={"zt-start"+(p.startOpen?" open":"")} onClick={handleStartClick}><img src={ZOS_LOGO_SRC} alt="" className="zt-logo"/> ZOS</button><div className="zt-div"/>
-    <div className="zt-tabs">{p.wins.map(w=><button key={w.id} className={"zt-tab"+(p.active===w.id?" active":"")+(w.min?" dim":"")} onClick={()=>p.onWinClick(w.id)}>{w.icon} {w.title}</button>)}</div>
-    <div className="zt-tray"><span className="zt-role">{p.role}</span><span className="zt-time">{time}</span></div>
-  </div>);
-}
-
-function Win(p:{s:WS;active:boolean;onFocus:()=>void;onClose:()=>void;onMin:()=>void;onMax:()=>void;onMove:(x:number,y:number)=>void;onResize:(w:number,h:number)=>void;children:React.ReactNode}){
-  const dr=useRef<{sx:number;sy:number;ox:number;oy:number}|null>(null);
-  const rr=useRef<{sx:number;sy:number;ow:number;oh:number}|null>(null);
-  const onDrag=(e:React.MouseEvent)=>{if(p.s.max)return;e.preventDefault();p.onFocus();dr.current={sx:e.clientX,sy:e.clientY,ox:p.s.x,oy:p.s.y};const mv=(ev:MouseEvent)=>{if(!dr.current)return;p.onMove(dr.current.ox+ev.clientX-dr.current.sx,dr.current.oy+ev.clientY-dr.current.sy);};const up=()=>{dr.current=null;removeEventListener("mousemove",mv);removeEventListener("mouseup",up);};addEventListener("mousemove",mv);addEventListener("mouseup",up);};
-  const onRes=(e:React.MouseEvent)=>{if(p.s.max)return;e.preventDefault();e.stopPropagation();p.onFocus();rr.current={sx:e.clientX,sy:e.clientY,ow:p.s.w,oh:p.s.h};const mv=(ev:MouseEvent)=>{if(!rr.current)return;p.onResize(Math.max(320,rr.current.ow+ev.clientX-rr.current.sx),Math.max(200,rr.current.oh+ev.clientY-rr.current.sy));};const up=()=>{rr.current=null;removeEventListener("mousemove",mv);removeEventListener("mouseup",up);};addEventListener("mousemove",mv);addEventListener("mouseup",up);};
-  if(p.s.min)return null;
-  const pos:React.CSSProperties=p.s.max?{position:"fixed",top:0,left:0,width:"100vw",height:"calc(100vh - 48px)",zIndex:p.s.z,borderRadius:0}:{position:"fixed",top:p.s.y,left:p.s.x,width:p.s.w,height:p.s.h,zIndex:p.s.z,borderRadius:10};
-  return(<div onMouseDown={p.onFocus} className={"zw"+(p.active?" active":"")} style={pos}>
-    <div className="zw-hdr" onMouseDown={onDrag} onDoubleClick={p.onMax}><span className="zw-icon">{p.s.icon}</span><span className="zw-title">{p.s.title}</span>
-      <div className="zw-btns"><button className="zw-b min" onClick={e=>{e.stopPropagation();p.onMin();}}/><button className="zw-b max" onClick={e=>{e.stopPropagation();p.onMax();}}/><button className="zw-b cls" onClick={e=>{e.stopPropagation();p.onClose();}}/></div>
-    </div><div className="zw-body">{p.children}</div>{!p.s.max&&<div className="zw-rsz" onMouseDown={onRes}/>}</div>);
-}
-
-function DIcon(p:{icon:string;name:string;onOpen:()=>void}){return <div className="zd" onDoubleClick={p.onOpen}><span className="zd-ico">{p.icon}</span><span className="zd-lbl">{p.name}</span></div>;}
-
-function AboutApp(p:{role:string}){
-  const [activeFile,setActiveFile]=useState("readme");
-  const roleMsg:Record<string,string>={recruiter:"Welcome, recruiter. Here’s the executive summary - skills, experience, and links.",collaborator:"Hey, fellow builder. Let’s see what synergies we can find.",curious:"You found the good stuff. Explore freely - easter eggs await.",visitor:"Welcome to my corner of the internet. Look around."};
-  const files:[ string,string,string][]=[["📄","README.md","readme"],["📁","skills/","skills"],["📝","principles.txt","principles"],["📧","contact.json","contact"],["🎯","experience/","experience"],["🔐","secret/","secret"]];
-  const fileContent=()=>{
-    if(activeFile==="skills")return(<><div className="za-cmd">$ ls skills/</div><div className="za-skill-grid">{[["Languages",["Python","SQL","TypeScript","React","JavaScript"]],["Data & Analytics",["Data Modeling","Visualization","ETL/ELT","dbt","Power BI"]],["AI & ML",["LLM Agents","RAG","Prompt Engineering","Automation","NLP"]],["Platforms",["Zo Computer","AWS","GCP","Vercel","Docker"]],["Tools",["Git","Notion","Figma","Jira","VS Code"]]].map(([cat,items])=>(<div key={cat as string} className="za-skill-cat"><div className="za-skill-cat-name">{cat}</div><div className="za-skill-tags">{(items as string[]).map(s=><span key={s} className="za-skill-tag">{s}</span>)}</div></div>))}</div></>);
-    if(activeFile==="principles")return(<><div className="za-cmd">$ cat principles.txt</div><ul className="za-principles"><li>Build systems, not just features</li><li>Automate the boring, humanize the interesting</li><li>Ship fast, iterate faster</li><li>Every tool should feel like leverage</li><li>Documentation is a love letter to your future self</li><li>The best code is the code you don't have to write</li></ul></>);
-    if(activeFile==="contact")return(<><div className="za-cmd">$ cat contact.json</div><div className="za-json"><div className="za-json-line">{'{'}</div><div className="za-json-line">{'  '}<span className="za-json-key">"github"</span>: <a href="https://github.com/Zenlyte" target="_blank" rel="noopener" className="za-json-val">"github.com/Zenlyte"</a>,</div><div className="za-json-line">{'  '}<span className="za-json-key">"x"</span>: <a href="https://x.com/z3nlyte" target="_blank" rel="noopener" className="za-json-val">"x.com/z3nlyte"</a>,</div><div className="za-json-line">{'  '}<span className="za-json-key">"email"</span>: <a href="mailto:info@zenlytics.net" className="za-json-val">"info@zenlytics.net"</a>,</div><div className="za-json-line">{'  '}<span className="za-json-key">"site"</span>: <a href="https://{{HANDLE}}.zo.space" target="_blank" rel="noopener" className="za-json-val">"curtastrophe.zo.space"</a></div><div className="za-json-line">{'}'}</div></div></>);
-    if(activeFile==="experience")return(<><div className="za-cmd">$ ls experience/</div><div className="za-timeline">{[["Data & Analytics Professional","Building data pipelines, dashboards, and analytics solutions"],["AI Builder","Developing LLM agents, automation workflows, and AI-powered tools"],["Zo Computer Creator","Building interactive experiences and personal projects on Zo"],["Open Source Contributor","Contributing to tools that make developers more productive"]].map(([title,desc],i)=>(<div key={i} className="za-timeline-item"><div className="za-timeline-dot"/><div className="za-timeline-content"><div className="za-timeline-title">{title}</div><div className="za-timeline-desc">{desc}</div></div></div>))}</div></>);
-    if(activeFile==="secret")return(<><div className="za-cmd">$ ls secret/</div><div className="za-secret">🔒 ACCESS DENIED</div><div className="za-secret-sub">Try the Konami code on the desktop to unlock...</div><div className="za-secret-hint">(↑↑↓↓←→←→BA)</div></>);
-    return(<><div className="za-cmd">$ cat README.md</div><p className="za-hi">Hey, I’m <span className="za-name">Zenlyte</span> (Zenlyte).</p><p className="za-desc">Data & Analytics professional by trade. AI builder, automation tinkerer, and systems thinker by obsession.</p><p className="za-desc">I turn raw data into decisions and explore the frontier of AI agents, automation, and tool-building on Zo Computer.</p></>);
-  };
-  return(<div className="za"><div className="za-path">📂 /home/zenlyte/{activeFile==="readme"?"":activeFile}</div><div className="za-role-msg">{roleMsg[p.role]||roleMsg.visitor}</div>
-    <div className="za-files">{files.map(([ic,nm,id])=>(<div key={id} className={"za-file"+(activeFile===id?" active":"")} onClick={()=>setActiveFile(id)}><span>{ic}</span><span>{nm}</span></div>))}</div>
-    <div className="za-readme">{fileContent()}</div></div>);
-}
-
-function TerminalApp(p:{onSignal?:(id:string)=>void;onNavigate?:(id:string)=>void}){
-  const [hist,setHist]=useState(["ZOS Terminal v1.0","Type 'help' for available commands.",""]);
-  const [inp,setInp]=useState("");const endRef=useRef<HTMLDivElement>(null);
-  useEffect(()=>{endRef.current?.scrollIntoView();},[hist]);
-  const exec=(cmd:string)=>{
-    const c=cmd.trim().toLowerCase();const o=[...hist,"zenlyte@zos:~$ "+cmd];
-    if(c==="help")o.push("Available commands:","  about      - About Zenlyte","  skills     - List skills","  contact    - Contact info","  projects   - Show projects","  voi        - Launch Voi-ZOS assistant","  neofetch   - System info","  date       - Current date/time","  uptime     - System uptime","  whoami     - Current user","  pwd        - Working directory","  ls         - List files","  cat <file> - Read a file","  uname -a   - Kernel and version info","  fortune    - Random fortune","  cowsay     - Wisdom from a cow","  matrix     - Enter the matrix","  hack       - Hack the planet","  clear      - Clear terminal","  exit       - Exit terminal","  sudo rm -rf /  - Try it ;)","  sudo make me a sandwich - Ask nicely");
-    else if(c==="about")o.push("Zenlyte","Data & Analytics | AI Builder | Zo Computer");
-    else if(c==="skills")o.push("┌ Languages: Python, SQL, TypeScript, React","├ Data: Analytics, ML, Visualization","├ AI: Agents, Automation, LLMs, RAG","└ Platform: Zo Computer, Vercel, AWS");
-    else if(c==="contact")o.push("GitHub: github.com/Zenlyte","X: x.com/z3nlyte","Email: info@zenlytics.net");
-    else if(c==="projects")o.push("─ Zo Trivia: Daily trivia engine","─ Speech Game: Voice-powered game","─ Career Ops: AI job pipeline","─ Icon Configurator: AI logo tool","─ Knowledge Graph: Personal memory");else if(c==="voi"||c==="assistant"){p.onNavigate?.("voi");o.push("Launching Voi-ZOS...","Ask it about ZOS, standout projects, fit, or booking.");}
-    else if(c==="neofetch")o.push("","  ████  ZOS (ZenOS) v1.0.0","  █  █  Host: curtastrophe.zo.space","  ████  Kernel: Zo Computer","  █  █  Shell: React/TSX","  ████  Uptime: since 2026","         Apps: 11","         Theme: Oxidized Future","");
-    else if(c==="uname -a")o.push("ZOS curtastrophe.zo.space 1.0.0 Zo-Computer zenos-x86_64 creative-kernel");
-    else if(c==="date")o.push(new Date().toString());
-    else if(c==="uptime")o.push("up "+Math.floor((Date.now()-new Date("2026-01-01").getTime())/86400000)+" days, ZOS kernel stable");
-    else if(c==="whoami")o.push("visitor@zos (guest access)");
-    else if(c==="pwd")o.push("/home/zenlyte/zos");
-    else if(c==="ls")o.push("README.md  skills/  principles.txt  contact.json  experience/  secret/  .hidden");
-    else if(c==="cat readme.md"||c==="cat readme")o.push("# ZOS (ZenOS)","A desktop operating system built on Zo Computer.","Author: Zenlyte");
-    else if(c==="cat .hidden"){p.onSignal?.("terminal");o.push("🥚 You found a hidden file!","Signal Hunt progress updated.","Password hint: zen + flow state");}
-    else if(c.startsWith("cat "))o.push("cat: "+c.slice(4)+": Permission denied");
-    else if(c==="fortune"){const fortunes=["The best code is the code you don't write.","Ship fast, iterate faster.","Every tool should feel like leverage.","Data tells stories. AI writes sequels.","The terminal is mightier than the GUI.","404: Motivation not found. Shipping anyway.","Automate the boring, humanize the interesting."];o.push("🥠 "+fortunes[Math.floor(Math.random()*fortunes.length)]);}
-    else if(c==="cowsay"||c.startsWith("cowsay ")){const msg=c==="cowsay"?"Moo. Build more things.":c.slice(7);o.push(" "+"_".repeat(msg.length+2),"< "+msg+" >"," "+"-".repeat(msg.length+2),"        \\   ^__^","         \\  (oo)\\_______","            (__)\\       )\\/\\","                ||----w |","                ||     ||");}
-    else if(c==="matrix")o.push("💊 You take the copper pill...","","Wake up, visitor.","The ZOS has you.","Follow the white cursor.","");
-    else if(c==="hack"||c==="hack the planet")o.push("█ Accessing mainframe...","█ Bypassing firewall......... OK","█ Decrypting protocols....... OK","█ Downloading the internet... FAILED","","Just kidding. But you do have good taste in movies.");
-    else if(c==="exit")o.push("👋 Goodbye! (You can close this window)");
-    else if(c==="clear"){setHist([]);setInp("");return;}
-    else if(c==="sudo make me a sandwich")o.push("Okay.","🥪 Here is a virtual sandwich. It is mostly JSX and optimism.");
-    else if(c==="sudo rm -rf /"){p.onSignal?.("bsod");o.push("","💀 CRITICAL SYSTEM FAILURE","█████████████████████████","█ KERNEL PANIC - NOT SYNCING █","█████████████████████████","","...just kidding. This isn't a real OS.","(But nice try. 🥚 Signal Hunt: BSOD unlocked!)","");}
-    else if(c==="sudo"||c.startsWith("sudo "))o.push("visitor is not in the sudoers file. This incident will be reported.");
-    else if(c==="vim"||c==="nano"||c==="emacs")o.push("Error: "+c+" not installed. Use VS Code like a normal person.");
-    else if(c.startsWith("echo "))o.push(c.slice(5));
-    else if(c.startsWith("ping "))o.push("PING "+c.slice(5)+": 64 bytes, time=0.001ms (client-side)");
-    else if(c)o.push("zos: command not found: "+cmd+". Try 'help'.");
-    setHist(o);setInp("");
-  };
-  return(<div className="zterm"><div className="zterm-scroll">{hist.map((l,i)=><div key={i} className="zterm-line">{l}</div>)}<div ref={endRef}/></div>
-    <div className="zterm-in"><span className="zterm-prompt">zenlyte@zos:~$</span><input value={inp} onChange={e=>setInp(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")exec(inp);}} className="zterm-inp" autoFocus/></div></div>);
-}
-
-function ProjectsApp(){
-  const [projects,setProjects]=useState<any[]>([]);const [loading,setLoading]=useState(true);const [selected,setSelected]=useState<any>(null);const [filter,setFilter]=useState("all");
-  useEffect(()=>{fetch("/api/projects",{headers:{Accept:"application/json"},credentials:"include"}).then(r=>r.json()).then(d=>{setProjects(Array.isArray(d)?d:d.projects||[]);}).catch(()=>{}).finally(()=>setLoading(false));},[]);
-  const filtered=filter==="all"?projects:projects.filter(p=>p.status===filter);
-  const statusCls=(s:string)=>s==="completed"?"st-done":s==="in-progress"?"st-wip":"st-plan";
-  if(selected)return(<div className="zproj"><button className="zproj-back" onClick={()=>setSelected(null)}>{"←"} Back to files</button><div className="zproj-detail"><div className="zproj-detail-hdr"><div className={"zproj-status "+statusCls(selected.status)}>{selected.status}</div></div><h2 className="zproj-detail-title">{selected.name}</h2><p className="zproj-detail-desc">{selected.desc||selected.description}</p><div className="zproj-detail-section"><div className="zproj-detail-label">TECH STACK</div><div className="zproj-tags">{(selected.tags||selected.tech||[]).map((t:string)=><span key={t} className="zproj-tag">{t}</span>)}</div></div>{(selected.link||selected.url)&&(<div className="zproj-detail-section"><div className="zproj-detail-label">LINK</div><a href={selected.link||selected.url} target="_blank" rel="noopener" className="zproj-link">{selected.link||selected.url} {"↗"}</a></div>)}</div></div>);
-  return(<div className="zproj"><div className="zproj-path">{"💼"} /home/zenlyte/projects/</div><div className="zproj-filters">{["all","completed","in-progress","planned"].map(f=>(<button key={f} className={"zproj-fbtn"+(filter===f?" active":"")} onClick={()=>setFilter(f)}>{f==="all"?"*.":"."}{f}</button>))}</div>{loading?<div className="zproj-loading">Loading case files...</div>:filtered.length===0?<div className="zproj-loading">No files matching filter.</div>:(<div className="zproj-grid">{filtered.map((p:any,i:number)=>(<div key={p.name||i} className="zproj-card" onClick={()=>setSelected(p)}><div className="zproj-card-top"><span className="zproj-card-id">CASE-{String(i+1).padStart(3,"0")}</span><span className={"zproj-card-status "+statusCls(p.status)}>{p.status}</span></div><div className="zproj-card-name">{p.name}</div><div className="zproj-card-desc">{p.desc||p.description}</div><div className="zproj-tags">{(p.tags||p.tech||[]).slice(0,3).map((t:string)=><span key={t} className="zproj-tag">{t}</span>)}</div></div>))}</div>)}</div>);
-}
-
-function SnakeGame(){
-  const canvasRef=useRef<HTMLCanvasElement>(null);const [score,setScore]=useState(0);const [gameOver,setGameOver]=useState(false);const [started,setStarted]=useState(false);
-  const dirRef=useRef({dx:1,dy:0});const stateRef=useRef({snake:[{x:5,y:5}],food:{x:10,y:10},running:false});const GRID=20,CELL=16;
-  const reset=()=>{stateRef.current={snake:[{x:5,y:5}],food:{x:Math.floor(Math.random()*GRID),y:Math.floor(Math.random()*GRID)},running:true};dirRef.current={dx:1,dy:0};setScore(0);setGameOver(false);setStarted(true);};
-  useEffect(()=>{if(!started)return;const canvas=canvasRef.current;if(!canvas)return;const ctx=canvas.getContext("2d");if(!ctx)return;
-    const handleKey=(e:KeyboardEvent)=>{const d=dirRef.current;if((e.key==="ArrowUp"||e.key==="w")&&d.dy!==1)dirRef.current={dx:0,dy:-1};if((e.key==="ArrowDown"||e.key==="s")&&d.dy!==-1)dirRef.current={dx:0,dy:1};if((e.key==="ArrowLeft"||e.key==="a")&&d.dx!==1)dirRef.current={dx:-1,dy:0};if((e.key==="ArrowRight"||e.key==="d")&&d.dx!==-1)dirRef.current={dx:1,dy:0};};
-    addEventListener("keydown",handleKey);
-    const iv=setInterval(()=>{const st=stateRef.current;if(!st.running)return;const head=st.snake[0],nx=head.x+dirRef.current.dx,ny=head.y+dirRef.current.dy;if(nx<0||nx>=GRID||ny<0||ny>=GRID||st.snake.some(s=>s.x===nx&&s.y===ny)){st.running=false;setGameOver(true);return;}st.snake.unshift({x:nx,y:ny});if(nx===st.food.x&&ny===st.food.y){setScore(s=>s+10);st.food={x:Math.floor(Math.random()*GRID),y:Math.floor(Math.random()*GRID)};}else{st.snake.pop();}ctx.fillStyle="#080808";ctx.fillRect(0,0,GRID*CELL,GRID*CELL);ctx.fillStyle="#c08b5c";ctx.shadowColor="#c08b5c";ctx.shadowBlur=8;ctx.fillRect(st.food.x*CELL+2,st.food.y*CELL+2,CELL-4,CELL-4);ctx.shadowBlur=0;st.snake.forEach((s,i)=>{ctx.fillStyle=i===0?"#e8e0d4":"rgba(232,224,212,"+(0.8-i*0.03)+")";ctx.fillRect(s.x*CELL+1,s.y*CELL+1,CELL-2,CELL-2);});},120);
-    return()=>{clearInterval(iv);removeEventListener("keydown",handleKey);};},[started]);
-  return(<div className="zsnake"><div className="zsnake-hud"><span className="zsnake-score">SCORE: {score}</span>{gameOver&&<span className="zsnake-over">GAME OVER</span>}</div>{!started?(<div className="zsnake-start"><div className="zsnake-title">{"🐍"} SNAKE</div><div className="zsnake-sub">Arrow keys or WASD to move</div><button className="zsnake-btn" onClick={reset}>Start Game</button></div>):(<><canvas ref={canvasRef} width={GRID*CELL} height={GRID*CELL} className="zsnake-canvas"/>{gameOver&&<button className="zsnake-btn zsnake-retry" onClick={reset}>Play Again</button>}</>)}</div>);
-}
-
-function GamesHub(){
-  const [active,setActive]=useState<"menu"|"snake"|"trivia"|"zocity">("menu");
-  const backS:React.CSSProperties={background:"var(--hdr)",border:"1px solid rgba(232,224,212,0.1)",color:"var(--bone)",padding:"6px 14px",borderRadius:"6px",cursor:"pointer",fontSize:"12px",marginBottom:"12px"};
-  const ifrS:React.CSSProperties={width:"100%",height:"calc(100% - 44px)",border:"none",borderRadius:"6px",background:"#000"};
-  const menuS:React.CSSProperties={display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:"12px",padding:"16px"};
-  const cardS:React.CSSProperties={background:"var(--card)",border:"1px solid rgba(232,224,212,0.08)",borderRadius:"8px",padding:"20px",cursor:"pointer",textAlign:"center"};
-  const wrapS:React.CSSProperties={padding:"12px",height:"100%",display:"flex",flexDirection:"column"};
-  const padS:React.CSSProperties={padding:"20px",height:"100%",overflow:"auto"};
-  const icoS:React.CSSProperties={fontSize:"32px"};
-  const nameS:React.CSSProperties={color:"var(--bone)",fontSize:"14px",fontWeight:600,marginTop:"8px"};
-  const descS:React.CSSProperties={color:"var(--dim)",fontSize:"11px",marginTop:"4px"};
-  if(active==="snake")return(<div style={wrapS}><button style={backS} onClick={()=>setActive("menu")}>{"←"} Back</button><SnakeGame/></div>);
-  if(active==="trivia")return(<div style={wrapS}><button style={backS} onClick={()=>setActive("menu")}>{"←"} Back</button><iframe src="/trivia" style={ifrS} title="Zo Trivia"/></div>);
-  if(active==="zocity")return(<div style={wrapS}><button style={backS} onClick={()=>setActive("menu")}>{"←"} Back</button><iframe src="/zo-city" style={ifrS} title="Zo City"/></div>);
-  return(<div style={padS}><div className="zlab-title">{"🎮"} Games</div><div style={menuS}><div style={cardS} onClick={()=>setActive("snake")}><div style={icoS}>{"🐍"}</div><div style={nameS}>Snake</div><div style={descS}>Classic snake game</div></div><div style={cardS} onClick={()=>setActive("trivia")}><div style={icoS}>{"🧠"}</div><div style={nameS}>Zo Trivia</div><div style={descS}>Test your Zo knowledge</div></div><div style={cardS} onClick={()=>setActive("zocity")}><div style={icoS}>{"🏙"}</div><div style={nameS}>Zo City</div><div style={descS}>Build your virtual city</div></div></div></div>);
-}
-
-function LabApp(p:{foundSignals:string[];totalPoints:number;onSignal:(id:string)=>void}){
-  const [input,setInput]=useState("");
-  const [decoded,setDecoded]=useState<string[]>([]);
-  const [mode,setMode]=useState<"decoder"|"signals"|"icons">("decoder");
-  const found = p.foundSignals;
-  const buzzwords:Record<string,string>={"synergy":"We need people who can work together.","rockstar":"We want one person to do the work of three.","ninja":"We need someone who can fix things at 2am.","fast-paced":"We are understaffed.","wear many hats":"No clear job description.","competitive salary":"We googled the median and subtracted 15%.","like a family":"Boundaries? Never heard of them.","self-starter":"We will not train you.","passionate":"We expect overtime but will not pay for it.","leverage":"Use. We mean use.","thought leader":"Blogs a lot on LinkedIn.","move fast":"Process is broken so improvise.","hit the ground running":"No onboarding is coming.","must thrive under pressure":"Chaos is a feature here.","high ownership":"You will inherit neglected systems.","growth mindset":"We want constant upskilling in your free time.","best-in-class":"The deck said it, so now it is true.","disrupt":"We renamed an ordinary workflow.","world-class":"The ambition is real; the budget may not be.","cross-functional":"You will translate for three teams.","dynamic environment":"Priorities change hourly.","mission-driven":"Compensation may be emotional.","startup energy":"Expect speed, ambiguity, and Slack at midnight.","scrappy":"There is no budget, but there are goals.","detail-oriented":"We will notice every typo, not every blocker.","strategic thinker":"Please do IC work and executive planning.","strong communicator":"You will chase stakeholders for answers.","data-driven":"Everyone has opinions; bring charts.","customer-obsessed":"Support tickets will shape the roadmap.","bias for action":"Please skip the committee meeting.","builder mentality":"You will create the process from scratch.","player-coach":"Do the work and manage the team.","operational excellence":"Please clean up old messes elegantly.","results-oriented":"Only the output counts.","entrepreneurial":"We want initiative without headcount.","excellent stakeholder management":"There are many opinions and few decisions.","culture add":"Be good at the job and pleasant at happy hour.","ownership mindset":"The pager may find you.","adaptable":"Scope will shift after kickoff.","resourceful":"Figure it out with limited tools.","innovative":"We want novelty without risk.","collaborative":"Convince people gently but repeatedly."};
-  const decode=()=>{const raw=input.toLowerCase();const results:string[]=[];Object.entries(buzzwords).forEach(([key,val])=>{if(raw.includes(key))results.push(`🔎 "${key}" → ${val}`);});if(results.length===0)results.push("✅ No corporate buzzwords detected.");setDecoded(results);};
-  const iframeS:React.CSSProperties={width:"100%",height:"calc(100% - 84px)",border:"1px solid rgba(232,224,212,0.08)",borderRadius:"8px",background:"#0b0b0d"};
-  const routeCardS:React.CSSProperties={display:"flex",alignItems:"center",justifyContent:"space-between",gap:"12px",padding:"14px 16px",border:"1px solid rgba(232,224,212,0.08)",borderRadius:"10px",background:"rgba(255,255,255,0.02)",marginTop:"14px"};
-  const routeBtnS:React.CSSProperties={background:"var(--copper)",color:"#111",border:"none",borderRadius:"8px",padding:"10px 14px",fontWeight:700,cursor:"pointer"};
-  const progressCardS:React.CSSProperties={marginBottom:"14px"};
-  const iconWrapS:React.CSSProperties={height:"100%"};
-  return(<div className="zlab"><div className="zlab-tabs"><button className={"zlab-tab"+(mode==="decoder"?" active":"")} onClick={()=>setMode("decoder")}>🔎 Recruiter Decoder</button><button className={"zlab-tab"+(mode==="signals"?" active":"")} onClick={()=>setMode("signals")}>🥚 Signal Hunt</button><button className={"zlab-tab"+(mode==="icons"?" active":"")} onClick={()=>setMode("icons")}>🎨 Icon Configurator</button></div>
-    {mode==="decoder"?(<div className="zlab-decoder"><div className="zlab-title">Recruiter Decoder Ring™</div><div className="zlab-desc">Paste a job posting to translate buzzwords into plain English.</div><textarea className="zlab-input" placeholder="Paste job posting here..." value={input} onChange={e=>setInput(e.target.value)} rows={7}/><button className="zlab-btn" onClick={decode}>🔎 Decode</button>{decoded.length>0&&<div className="zlab-results"><div className="zlab-results-label">ANALYSIS RESULTS</div>{decoded.map((d,i)=><div key={i} className="zlab-result">{d}</div>)}</div>}</div>):mode==="signals"?(<div className="zlab-signals"><div className="zlab-title">🥚 Signal Hunt</div><div className="zlab-desc">Track hidden easter eggs across ZOS and the routes around it.</div><div className="zlab-results" style={progressCardS}><div className="zlab-results-label">PROGRESS</div><div className="zlab-result">Signals found: {found.length}/{SIGNALS.length}</div><div className="zlab-result">Total points: {p.totalPoints}</div></div><div className="zlab-signal-grid">{SIGNALS.map(([id,icon,name,hint,points])=>(<div key={id} className={"zlab-signal"+(found.includes(id)?" found":"")}><span className="zlab-signal-icon">{icon}</span><div className="zlab-signal-info"><div className="zlab-signal-name">{found.includes(id)?name:"???"}</div><div className="zlab-signal-hint">{hint}</div><div className="zlab-signal-hint">{points} pts</div></div><span className="zlab-signal-check">{found.includes(id)?"✓":"○"}</span></div>))}</div><div style={routeCardS}><div><div className="zlab-signal-name">Launch hidden route</div><div className="zlab-signal-hint">Open /secret in a new tab and log the route signal.</div></div><button style={routeBtnS} onClick={()=>{p.onSignal("route");window.open("/secret","_blank","noopener");}}>Open /secret</button></div><div className="zlab-signal-count">{found.length}/{SIGNALS.length} signals found</div></div>):(<div className="zlab-decoder" style={iconWrapS}><div className="zlab-title">🎨 Icon Configurator</div><div className="zlab-desc">Live Zo app embedded directly inside the lab for fast icon iteration.</div><iframe src="/icon-configurator" style={iframeS} title="Icon Configurator"/></div>)}
-  </div>);
-}
-
-function VoiZosApp(p:{role:string;onNavigate:(id:string)=>void}){
-  const [messages,setMessages]=useState<Array<{role:"assistant"|"user";text:string;actions?:Array<{label:string;app:string}>}>>([{role:"assistant",text:"Voi-ZOS online. I can explain ZOS, summarize Zenlyte, point you to standout work, and route you to the right part of the system.",actions:[{label:"What is ZOS?",app:"voi"},{label:"Best projects",app:"projects"},{label:"Book time",app:"calendar"}]}]);
-  const [input,setInput]=useState("");
-  const endRef=useRef<HTMLDivElement>(null);
-  useEffect(()=>{endRef.current?.scrollIntoView({behavior:"smooth"});},[messages]);
-  const starters=useMemo(()=>{
-    const byRole:Record<string,string[]>={
-      recruiter:["Who is Zenlyte?","What are the strongest projects here?","Give me the judge demo route.","How can I contact or book time?"],
-      collaborator:["What are you experimenting with?","What kind of systems do you like building?","Show me your most interesting project.","Where should I explore next?"],
-      curious:["What is ZOS?","Show me something hidden.","Why build a website like this?","What can I click first?"],
-      visitor:["What is ZOS?","Who is Zenlyte?","Give me the judge demo route.","How can I get in touch?"]
-    };
-    return byRole[p.role]||byRole.visitor;
-  },[p.role]);
-  const respond=(question:string)=>{
-    const q=question.toLowerCase().trim();
-    if(!q)return null;
-    if(q.includes("what is zos")||q.includes("what can this site do")||q.includes("what is this")){
-      return {text:"ZOS is Zenlyte's personal website reimagined as a living operating system on Zo Computer. Instead of scrolling a portfolio, visitors boot into a desktop, open apps, explore projects, inspect easter eggs, and use real integrations like booking, feed surfaces, and payments.",actions:[{label:"Open Projects",app:"projects"},{label:"Open Lab",app:"lab"},{label:"Open Command Centre",app:"command"}]};
-    }
-    if(q.includes("who is zenlyte")||q.includes("who are you")||q.includes("about")){
-      return {text:"Zenlyte is a data, analytics, and AI-focused builder who likes turning systems into experiences. The through-line across the work here is leverage: automation, intelligent interfaces, usable data, and products that feel memorable instead of generic.",actions:[{label:"Open About Me",app:"about"},{label:"Open Projects",app:"projects"}]};
-    }
-    if(q.includes("best project")||q.includes("strongest project")||q.includes("show me your best")||q.includes("projects")){
-      return {text:"The strongest showcase is the combination of ZOS itself plus the supporting experiments around AI workflows, game-like interfaces, and utility tools. For a judge or recruiter, I'd start with the Projects window, then Command Centre, then the Lab to see the breadth from polished product thinking to playful experiments.",actions:[{label:"Open Projects",app:"projects"},{label:"Open Command Centre",app:"command"},{label:"Open Lab",app:"lab"}]};
-    }
-    if(q.includes("skills")||q.includes("good at")||q.includes("strengths")||q.includes("roles fit")){
-      return {text:"Best-fit strengths: analytics systems, AI-assisted workflows, product-minded technical builds, front-end storytelling, and fast prototyping on new platforms. In practical terms: data + AI + product UX is the sweet spot.",actions:[{label:"Open About Me",app:"about"},{label:"Open Terminal",app:"terminal"}]};
-    }
-    if(q.includes("why build")||q.includes("why zo")||q.includes("why a website like this")||q.includes("why zos")){
-      return {text:"Because a normal portfolio would hide the real point: Zenlyte builds systems, not just pages. ZOS turns the site itself into proof of taste, technical range, interaction design, and creative use of Zo Computer. It's both portfolio and artifact.",actions:[{label:"Open About the Build",app:"command"},{label:"Open Lab",app:"lab"}]};
-    }
-    if(q.includes("contact")||q.includes("hire")||q.includes("book")||q.includes("work together")){
-      return {text:"Fastest path: open Book Time to request a slot, or use the contact details surfaced throughout ZOS. If you want the most direct tour, view Projects first, then book once you know the fit.",actions:[{label:"Open Book Time",app:"calendar"},{label:"Open App Store",app:"store"},{label:"Open Projects",app:"projects"}]};
-    }
-    if(q.includes("hidden")||q.includes("secret")||q.includes("easter egg")){
-      return {text:"There are signals hidden across the OS: the Konami sequence, watermark clicks, terminal secrets, and a hidden route. If you want the cleanest starting point, open the Lab and switch to Signal Hunt.",actions:[{label:"Open Lab",app:"lab"},{label:"Open Terminal",app:"terminal"}]};
-    }
-    if(q==="42"||q.includes("meaning of life")){
-      return {text:"42, obviously. In ZOS terms: build interesting things, keep shipping, and leave a few secret doors for curious people.",actions:[{label:"Open Lab",app:"lab"},{label:"Open Command Centre",app:"command"}]};
-    }
-    if(q.includes("judge demo route")||q.includes("demo route")||q.includes("walkthrough")||q.includes("demo flow")){
-      return {text:"For the strongest contest walkthrough, use this order: 1) explain the boot and desktop metaphor, 2) open Projects to prove substance, 3) open Voi-ZOS to show the guided AI layer, 4) open Lab for creative depth and hidden systems, 5) open Book Time or App Store to prove real-world conversion flows. That sequence tells the clearest story: concept, proof, intelligence, originality, monetization.",actions:[{label:"Open Projects",app:"projects"},{label:"Open Voi-ZOS",app:"voi"},{label:"Open Lab",app:"lab"},{label:"Open Book Time",app:"calendar"}]};
-    }
-    if(q.includes("where should i start")||q.includes("explore next")||q.includes("what should i click first")){
-      return {text:"Recommended route: About Me for context, Projects for proof, Voi-ZOS for guided questions, Lab for the creative edge, then Book Time if you're here to collaborate or hire.",actions:[{label:"Open About Me",app:"about"},{label:"Open Projects",app:"projects"},{label:"Open Book Time",app:"calendar"}]};
-    }
-    return {text:"I can help with four things right now: explain ZOS, summarize Zenlyte, route you to the best projects, or point you to contact and booking. Try asking: 'What is ZOS?', 'Who is Zenlyte?', 'Best projects?', or 'How can I get in touch?'",actions:[{label:"What is ZOS?",app:"voi"},{label:"Best projects",app:"projects"},{label:"Book time",app:"calendar"}]};
-  };
-  const ask=(question:string)=>{
-    const trimmed=question.trim();
-    if(!trimmed)return;
-    const reply=respond(trimmed);
-    if(!reply)return;
-    setMessages(prev=>[...prev,{role:"user",text:trimmed},{role:"assistant",text:reply.text,actions:reply.actions}]);
-    setInput("");
-  };
-  const shellS:React.CSSProperties={height:"100%",display:"flex",flexDirection:"column",background:"linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0))"};
-  const headS:React.CSSProperties={padding:"18px 20px 14px",borderBottom:"1px solid rgba(232,224,212,0.08)",display:"flex",justifyContent:"space-between",alignItems:"center",gap:"12px"};
-  const badgeS:React.CSSProperties={fontSize:"11px",letterSpacing:"0.08em",textTransform:"uppercase",color:"var(--muted)"};
-  const titleS:React.CSSProperties={fontSize:"22px",fontWeight:700,color:"var(--bone)"};
-  const bodyS:React.CSSProperties={flex:1,overflow:"auto",padding:"18px 20px",display:"flex",flexDirection:"column",gap:"14px"};
-  const starterWrapS:React.CSSProperties={display:"flex",flexWrap:"wrap",gap:"8px"};
-  const starterS:React.CSSProperties={background:"rgba(192,139,92,0.12)",border:"1px solid rgba(192,139,92,0.24)",color:"var(--bone)",padding:"8px 12px",borderRadius:"999px",cursor:"pointer",fontSize:"12px"};
-  const msgS=(role:string):React.CSSProperties=>({alignSelf:role==="user"?"flex-end":"stretch",maxWidth:role==="user"?"75%":"100%",background:role==="user"?"rgba(192,139,92,0.16)":"rgba(255,255,255,0.03)",border:"1px solid "+(role==="user"?"rgba(192,139,92,0.26)":"rgba(232,224,212,0.08)"),borderRadius:"14px",padding:"14px 16px",color:"var(--bone)",fontSize:"14px",lineHeight:1.6});
-  const actWrapS:React.CSSProperties={display:"flex",flexWrap:"wrap",gap:"8px",marginTop:"10px"};
-  const labelS:React.CSSProperties={fontSize:"11px",textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--muted)",marginBottom:"6px"};
-  const actBtnS:React.CSSProperties={background:"var(--hdr)",border:"1px solid rgba(232,224,212,0.1)",color:"var(--bone)",padding:"8px 11px",borderRadius:"8px",cursor:"pointer",fontSize:"12px"};
-  const composerS:React.CSSProperties={borderTop:"1px solid rgba(232,224,212,0.08)",padding:"14px 16px",display:"flex",gap:"10px",alignItems:"center"};
-  const inputS:React.CSSProperties={flex:1,background:"rgba(255,255,255,0.03)",border:"1px solid rgba(232,224,212,0.08)",borderRadius:"10px",padding:"12px 14px",color:"var(--bone)",outline:"none",fontSize:"14px"};
-  const sendS:React.CSSProperties={background:"var(--copper)",border:"none",color:"#111",padding:"12px 16px",borderRadius:"10px",fontWeight:700,cursor:"pointer"};
-  return(<div style={shellS}><div style={headS}><div><div style={badgeS}>Guided assistant</div><div style={titleS}>Voi-ZOS</div></div><div style={badgeS}>Mode: {p.role}</div></div><div style={bodyS}><div style={starterWrapS}>{starters.map((s,i)=><button key={i} style={starterS} onClick={()=>ask(s)}>{s}</button>)}</div>{messages.map((m,i)=><div key={i} style={msgS(m.role)}><div style={labelS}>{m.role==="user"?"You":"Voi-ZOS"}</div><div>{m.text}</div>{m.actions&&m.actions.length>0&&<div style={actWrapS}>{m.actions.map((a,j)=><button key={j} style={actBtnS} onClick={()=>a.app==="voi"?ask(a.label):p.onNavigate(a.app)}>{a.label}</button>)}</div>}</div>)}<div ref={endRef}/></div><div style={composerS}><input style={inputS} value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")ask(input);}} placeholder="Ask Voi-ZOS about ZOS, projects, fit, or next steps..."/><button style={sendS} onClick={()=>ask(input)}>Ask</button></div></div>);
-}
-
-function SettingsApp(p:{theme:string;onTheme:(t:string)=>void;role:string;onRole:(r:string)=>void}){
-  const themes=[["oxidized","Oxidized Future","Warm copper & bone on midnight"],["signal","Signal Lab","Electric green on deep black"],["lunar","Lunar Archive","Cool silver & blue on slate"]];
-  return(<div className="zset"><div className="zset-section"><div className="zset-label">APPEARANCE</div><div className="zset-sub">Select a theme for ZOS</div><div className="zset-themes">{themes.map(([id,name,desc])=>(<button key={id} className={"zset-theme"+(p.theme===id?" active":"")} onClick={()=>p.onTheme(id)}><div className="zset-theme-preview"><div className="zset-theme-bg" data-theme={id}/><div className="zset-theme-accent" data-theme={id}/></div><div className="zset-theme-info"><div className="zset-theme-name">{name}</div><div className="zset-theme-desc">{desc}</div></div>{p.theme===id&&<span className="zset-check">{"✓"}</span>}</button>))}</div></div>
-    <div className="zset-section"><div className="zset-label">ACCESS MODE</div><div className="zset-sub">Change your current role</div><div className="zset-roles">{ROLES.map(([id,label,desc])=>(<button key={id} className={"zset-role"+(p.role===id?" active":"")} onClick={()=>p.onRole(id)}><span className="zset-role-name">{label}</span><span className="zset-role-desc">{desc}</span>{p.role===id&&<span className="zset-check">{"✓"}</span>}</button>))}</div></div>
-    <div className="zset-section"><div className="zset-label">SYSTEM</div><div className="zset-info-grid"><div className="zset-info-item"><span className="zset-info-key">Version</span><span className="zset-info-val">ZOS v1.0.0</span></div><div className="zset-info-item"><span className="zset-info-key">Kernel</span><span className="zset-info-val">Zo Computer</span></div><div className="zset-info-item"><span className="zset-info-key">Shell</span><span className="zset-info-val">React/TSX</span></div><div className="zset-info-item"><span className="zset-info-key">Author</span><span className="zset-info-val">Zenlyte</span></div></div></div></div>);
-}
-
-function CommandCentre(p:{role:string;windowCount:number}){
-  const [stats,setStats]=useState<any>(null);const [time,setTime]=useState(new Date());
-  useEffect(()=>{const iv=setInterval(()=>setTime(new Date()),10000);return()=>clearInterval(iv);},[]);
-  useEffect(()=>{Promise.all([fetch("/api/projects").then(r=>r.json()).catch(()=>[]),fetch("/api/blog").then(r=>r.json()).catch(()=>[])]).then(([proj,blog])=>{const projects=Array.isArray(proj)?proj:proj.projects||[];const posts=Array.isArray(blog)?blog:blog.posts||[];setStats({projectCount:projects.length,blogCount:posts.length,projects,posts});});},[]);
-  const uptime=Math.floor((Date.now()-new Date("2026-01-01").getTime())/86400000);
-  const linkS:React.CSSProperties={color:"var(--copper)",textDecoration:"none",fontSize:"11px",display:"block",padding:"4px 0",background:"none",border:"none",textAlign:"left",fontFamily:"inherit",cursor:"pointer"};
-  const linkBtnS:React.CSSProperties=linkS;
-  return(<div className="zcmd"><div className="zcmd-hdr"><span className="zcmd-title">{"📊"} Command Centre</span><span className="zcmd-time">{time.toLocaleTimeString()}</span></div>
-    <div className="zcmd-grid"><div className="zcmd-panel"><div className="zcmd-panel-label">SYSTEM STATUS</div><div className="zcmd-stat-row"><span className="zcmd-stat-dot green"/>All Systems Operational</div><div className="zcmd-stat-row"><span className="zcmd-stat-dot copper"/>Mode: {p.role}</div><div className="zcmd-stat-row"><span className="zcmd-stat-dot amber"/>{p.windowCount} Active Windows</div><div className="zcmd-stat-row"><span className="zcmd-stat-dot verd"/>Uptime: {uptime} days</div></div>
-    <div className="zcmd-panel"><div className="zcmd-panel-label">METRICS</div><div className="zcmd-metrics"><div className="zcmd-metric"><div className="zcmd-metric-val">{stats?stats.projectCount:"..."}</div><div className="zcmd-metric-lbl">Projects</div></div><div className="zcmd-metric"><div className="zcmd-metric-val">{stats?stats.blogCount:"..."}</div><div className="zcmd-metric-lbl">Blog Posts</div></div><div className="zcmd-metric"><div className="zcmd-metric-val">{APPS.length}</div><div className="zcmd-metric-lbl">ZOS Apps</div></div><div className="zcmd-metric"><div className="zcmd-metric-val">128</div><div className="zcmd-metric-lbl">Routes</div></div></div></div>
-    <div className="zcmd-panel"><div className="zcmd-panel-label">QUICK LINKS</div><a href="https://github.com/Zenlyte" target="_blank" rel="noopener" style={linkS}>{"💻"} GitHub</a><a href="https://x.com/z3nlyte" target="_blank" rel="noopener" style={linkS}>{"📧"} X / Twitter</a><a href="/about-the-build" target="_blank" rel="noopener" style={linkS}>{"📖"} About the Build</a><button style={linkBtnS} onClick={()=>window.dispatchEvent(new CustomEvent("zos-open-app",{detail:"voi"}))}>{"🧠"} Open Voi-ZOS</button><a href="mailto:info@zenlytics.net" style={linkS}>{"✉"} Contact</a></div>
-    <div className="zcmd-panel wide"><div className="zcmd-panel-label">RECENT PROJECTS</div><div className="zcmd-feed">{stats&&stats.projects.slice(0,5).map((pr:any,i:number)=>(<div key={i} className="zcmd-feed-item"><span className="zcmd-feed-id">CASE-{String(i+1).padStart(3,"0")}</span><span className="zcmd-feed-name">{pr.name}</span><span className={"zcmd-feed-status "+(pr.status==="completed"?"st-done":pr.status==="in-progress"?"st-wip":"st-plan")}>{pr.status}</span></div>))}{!stats&&<div className="zcmd-loading">Loading...</div>}</div></div>
-    <div className="zcmd-panel wide"><div className="zcmd-panel-label">ACTIVITY LOG</div><div className="zcmd-log"><div className="zcmd-log-line"><span className="zcmd-log-time">{time.toLocaleTimeString()}</span> System heartbeat - OK</div><div className="zcmd-log-line"><span className="zcmd-log-time">boot+0s</span> ZOS kernel initialized</div><div className="zcmd-log-line"><span className="zcmd-log-time">boot+3s</span> Window manager started</div><div className="zcmd-log-line"><span className="zcmd-log-time">boot+4s</span> Role selected: {p.role}</div></div></div></div></div>);
-}
-
-function XFeedApp(){
-  const [posts,setPosts]=useState<any[]>([]);const [loading,setLoading]=useState(true);const [error,setError]=useState("");
-  useEffect(()=>{fetch("/api/x-feed").then(r=>r.json()).then(d=>{const p=d.posts||d.tweets||[];setPosts(p);}).catch(()=>setError("Could not load feed")).finally(()=>setLoading(false));},[]);
-  const now=new Date();const greeting=now.getHours()<12?"Good morning":now.getHours()<18?"Good afternoon":"Good evening";
-  const fmtTime=(ts:string)=>{try{const d=new Date(ts);const diff=Date.now()-d.getTime();if(diff<3600000)return Math.floor(diff/60000)+"m ago";if(diff<86400000)return Math.floor(diff/3600000)+"h ago";return d.toLocaleDateString();}catch(e){return "";}};
-  return(<div className="zbrf"><div className="zbrf-header"><div className="zbrf-greeting">{greeting}, Zenlyte</div><div className="zbrf-date">{now.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"})}</div></div>
-    <div className="zbrf-section"><div className="zbrf-label">LATEST FROM X (@z3nlyte)</div>{loading?<div className="zbrf-item">Loading feed...</div>:error?<div className="zbrf-item">{error}</div>:posts.length===0?<div className="zbrf-item">No recent posts cached. Check back later.</div>:posts.slice(0,10).map((p:any,i:number)=>(<div key={i} className="zbrf-item"><div className="zbrf-tweet-text">{p.text||p.full_text||p.content||""}</div><div className="zbrf-tweet-meta">{fmtTime(p.created_at||p.date||p.date_string||"")} {p.likes?" ❤ "+p.likes:""} {p.retweets?" 🔁 "+p.retweets:""}</div></div>))}</div>
-    <div className="zbrf-footer">Powered by ZOS X Feed Engine • <a href="https://x.com/z3nlyte" target="_blank" rel="noopener">@z3nlyte on X</a></div></div>);
-}
-
-function BookTimeApp(){
-  const [selectedDate,setSelectedDate]=useState("");const [selectedSlot,setSelectedSlot]=useState("");const [name,setName]=useState("");const [email,setEmail]=useState("");const [message,setMessage]=useState("");const [sending,setSending]=useState(false);const [errMsg,setErrMsg]=useState("");const [done,setDone]=useState(false);
-  const getNext14=()=>{const days:string[]=[];const d=new Date();for(let i=1;days.length<14;i++){const nd=new Date();nd.setDate(d.getDate()+i);const dow=nd.getDay();if(dow!==0&&dow!==6)days.push(nd.toISOString().split("T")[0]);}return days;};
-  const dates=useMemo(()=>getNext14(),[]);
-  const slots=useMemo(()=>{const s:string[]=[];for(let h=9;h<=16;h++){s.push(h.toString().padStart(2,"0")+":00");if(h<16)s.push(h.toString().padStart(2,"0")+":30");}return s;},[]);
-  const fmtDate=(iso:string)=>{const d=new Date(iso+"T12:00:00");return d.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"});};
-  const fmtSlot=(s:string)=>{const [h,m]=s.split(":").map(Number);const ap=h>=12?"PM":"AM";return (h%12||12)+":"+m.toString().padStart(2,"0")+" "+ap;};
-  const submit=async()=>{if(!name||!email||!selectedDate||!selectedSlot)return;setSending(true);setErrMsg("");try{const payload={name:name.trim(),email:email.trim(),message:"Booking request: "+fmtDate(selectedDate)+" at "+fmtSlot(selectedSlot)+(message?" - "+message.trim():"")};const r=await fetch("/api/contact",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(payload)});const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data.error||"Failed to send");setDone(true);}catch(e:any){setErrMsg(e?.message||"Failed to send. Try info@zenlytics.net directly.");}finally{setSending(false);}};
-  const gridS:React.CSSProperties={display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(95px,1fr))",gap:"6px",marginTop:"8px"};
-  const slotGridS:React.CSSProperties={display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(85px,1fr))",gap:"6px",marginTop:"8px"};
-  if(done)return(<div className="zbrf"><div className="zbrf-confirmed"><div className="zbrf-confirmed-icon">{"✅"}</div><div className="zbrf-confirmed-title">Request Sent!</div><div className="zbrf-confirmed-detail">{fmtDate(selectedDate)} at {fmtSlot(selectedSlot)}</div><div className="zbrf-confirmed-sub">Zenlyte will confirm via email to {email}</div><button className="zbrf-reset" onClick={()=>{setDone(false);setSelectedDate("");setSelectedSlot("");setName("");setEmail("");setMessage("");}}>Book Another</button></div></div>);
-  return(<div className="zbrf"><div className="zbrf-header"><div className="zbrf-greeting">{"📅"} Book Time with Zenlyte</div><div className="zbrf-date">Select a date and time below (times in your local timezone)</div></div>
-    <div className="zbrf-section"><div className="zbrf-label">SELECT DATE</div><div style={gridS}>{dates.map(d=>(<button key={d} className={"zbrf-day"+(selectedDate===d?" active":"")} onClick={()=>{setSelectedDate(d);setSelectedSlot("");}}>{fmtDate(d)}</button>))}</div></div>
-    {selectedDate&&<div className="zbrf-section"><div className="zbrf-label">SELECT TIME</div><div style={slotGridS}>{slots.map(s=>(<button key={s} className={"zbrf-slot"+(selectedSlot===s?" active":"")} onClick={()=>setSelectedSlot(s)}>{fmtSlot(s)}</button>))}</div></div>}
-    {selectedSlot&&<div className="zbrf-section"><div className="zbrf-label">YOUR DETAILS</div><input className="zbrf-input" placeholder="Your name" value={name} onChange={e=>setName(e.target.value)}/><input className="zbrf-input" placeholder="Your email" value={email} onChange={e=>setEmail(e.target.value)}/><input className="zbrf-input" placeholder="Message (optional)" value={message} onChange={e=>setMessage(e.target.value)}/>{errMsg&&<div className="zbrf-error">{errMsg}</div>}<button className="zbrf-submit" disabled={!name||!email||sending} onClick={submit}>{sending?"Sending...":"Request Booking"}</button></div>}
-    <div className="zbrf-footer">Powered by ZOS Scheduling • <a href="mailto:info@zenlytics.net">Direct email</a></div></div>);
-}
-
-function AppStoreApp(){
-  const products=[
-    {name:"ZOS Theme Pack",price:"$2",amount:2,desc:"Unlock exclusive color themes for ZOS",icon:"🎨",tag:"digital",link:""},
-    {name:"Buy Zenlyte a Coffee",price:"$3",amount:3,desc:"Fuel the caffeine module that powers ZOS",icon:"☕",tag:"tip",link:"https://buy.stripe.com/8x23cvawPg5Yeu1fkl0ZW01"},
-    {name:"Fund the Lab",price:"$5",amount:5,desc:"Support ongoing experiments and creative builds",icon:"🧪",tag:"tip",link:"https://buy.stripe.com/cNi3cveN5dXQclT5JL0ZW00"},
-    {name:"Source Code Access",price:"$10",amount:10,desc:"Full annotated source code of ZOS",icon:"💻",tag:"digital",link:""},
-    {name:"Zo Consultation",price:"$50/hr",amount:50,desc:"1-on-1 data, AI, or automation consulting",icon:"💬",tag:"service",link:"https://buy.stripe.com/4gM00jcEX3jc1Hf1tv0ZW02"},
-    {name:"Custom Agent Build",price:"$200+",amount:200,desc:"Get a custom AI agent built for your workflow",icon:"🤖",tag:"service",link:""},
-  ];
-  const handleBuy=(p:any)=>{if(p.link)window.open(p.link,"_blank","noopener");else alert("Coming soon! This product is under development.");};
-  return(<div className="zstore"><div className="zstore-hdr"><span className="zstore-title">{"🛒"} App Store</span><span className="zstore-sub">Support the build. Get cool stuff.</span></div>
-    <div className="zstore-grid">{products.map((p,i)=>(<div key={i} className="zstore-card"><div className="zstore-card-icon">{p.icon}</div><div className="zstore-card-info"><div className="zstore-card-name">{p.name}</div><div className="zstore-card-desc">{p.desc}</div><div className="zstore-card-bottom"><span className="zstore-price">{p.price}</span><span className="zstore-tag">{p.tag}</span></div></div><button className="zstore-buy" onClick={()=>handleBuy(p)}>{p.link?"Buy":"Soon"}</button></div>))}</div><div className="zstore-note">{"🔒"} Payments securely processed via Stripe. Tips go directly to Zenlyte.</div></div>);
-}
-
-function ContextMenu(p:{x:number;y:number;onClose:()=>void;onAction:(a:string)=>void}){
-  const posRef=useRef<HTMLDivElement>(null);
-  useEffect(()=>{const h=()=>p.onClose();addEventListener("click",h);return()=>removeEventListener("click",h);},[p.onClose]);
-  useEffect(()=>{if(posRef.current){posRef.current.style.top=p.y+"px";posRef.current.style.left=p.x+"px";}},[p.x,p.y]);
-  const items=[["about","📂 Open About Me"],["terminal","⬛ Open Terminal"],["projects","💼 Open Projects"],["divider",""],["refresh","🔄 Refresh Desktop"],["source","💻 View Source"],["about-zos","⚡ About ZOS"]];
-  return(<div ref={posRef} className="zctx">{items.map(([id,label],i)=>id==="divider"?<div key={i} className="zctx-div"/>:<button key={id} className="zctx-item" onClick={()=>{p.onAction(id as string);p.onClose();}}>{label}</button>)}</div>);
-}
-
-function StartMenu(p:{onLaunch:(id:string)=>void;onClose:()=>void}){
-  return(<><div className="zov" onClick={p.onClose}/><div className="zsm"><div className="zsm-hdr">{"⚡"} ZOS - ZenOS</div>{APPS.map(([id,name,icon])=>(<button key={id} className="zsm-item" onClick={()=>{p.onLaunch(id);p.onClose();}}><span className="zsm-ico">{icon}</span><span>{name}</span></button>))}<div className="zsm-foot">⌘K for command palette</div></div></>);
-}
-
-function CmdPalette(p:{onClose:()=>void;onAction:(a:string)=>void}){
-  const [q,setQ]=useState("");
-  const actions=[["about","Open About Me"],["terminal","Open Terminal"],["projects","Open Projects"],["voi","Open Voi-ZOS"],["command","Open Command Centre"],["lab","Open Lab"],["games","Open Games"],["settings","Open Settings"],["mail","Open Briefings"],["calendar","Open Book Time"],["store","Open App Store"],["theme-oxidized","Theme: Oxidized Future"],["theme-signal","Theme: Signal Lab"],["theme-lunar","Theme: Lunar Archive"],["easter-egg","🥚 Secret Easter Egg"]];
-  const filtered=q?actions.filter(a=>a[1].toLowerCase().includes(q.toLowerCase())):actions;
-  useEffect(()=>{const esc=(e:KeyboardEvent)=>{if(e.key==="Escape")p.onClose();};addEventListener("keydown",esc);return()=>removeEventListener("keydown",esc);},[p.onClose]);
-  return(<><div className="zov" onClick={p.onClose}/><div className="zcp"><input className="zcp-input" placeholder="Type a command..." value={q} onChange={e=>setQ(e.target.value)} autoFocus/><div className="zcp-list">{filtered.map(([id,label])=>(<button key={id} className="zcp-item" onClick={()=>{p.onAction(id);p.onClose();}}>{label}</button>))}</div></div></>);
-}
-
-function Screensaver(p:{onDismiss:()=>void}){
-  const ref=useRef<HTMLCanvasElement>(null);
-  useEffect(()=>{const c=ref.current;if(!c)return;const ctx=c.getContext("2d");if(!ctx)return;
-    c.width=innerWidth;c.height=innerHeight;
-    const cols=Math.floor(c.width/14);const drops=Array(cols).fill(1);
-    const chars="ZOSZENLYTE0123456789";
-    let anim=0,lastStep=0;
-    const draw=(ts=0)=>{
-      if(ts-lastStep<32){anim=requestAnimationFrame(draw);return;}
-      lastStep=ts;
-      ctx.fillStyle="rgba(0,0,0,0.05)";ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle="#c08b5c";ctx.font="14px monospace";
-      for(let i=0;i<drops.length;i++){const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*14,drops[i]*14);if(drops[i]*14>c.height&&Math.random()>0.975)drops[i]=0;drops[i]++;}
-      anim=requestAnimationFrame(draw);
-    };
-    draw();
-    const dismiss=()=>p.onDismiss();
-    addEventListener("click",dismiss);addEventListener("mousemove",dismiss);addEventListener("keydown",dismiss);
-    return()=>{cancelAnimationFrame(anim);removeEventListener("click",dismiss);removeEventListener("mousemove",dismiss);removeEventListener("keydown",dismiss);};
-  },[p.onDismiss]);
-  return <canvas ref={ref} className="zss-canvas"/>;
-}
-
-function ToastContainer(p:{toasts:{id:number;msg:string;type:string}[];onRemove:(id:number)=>void}){
-  return(<div className="ztoast-container">{p.toasts.map(t=>(<div key={t.id} className={"ztoast ztoast-"+t.type}><span className="ztoast-msg">{t.msg}</span><button className="ztoast-close" onClick={()=>p.onRemove(t.id)}>✕</button></div>))}</div>);
-}
-
-function DesktopWatermark(p:{onEasterEgg?:()=>void}){
-  const clickRef=useRef(0);const timerRef=useRef<ReturnType<typeof setTimeout>|null>(null);
-  const handleClick=()=>{clickRef.current++;if(timerRef.current)clearTimeout(timerRef.current);timerRef.current=setTimeout(()=>{clickRef.current=0;},2000);if(clickRef.current>=5){clickRef.current=0;p.onEasterEgg?.();}};
-  return <div className="zos-watermark zos-wm-clickable" onClick={handleClick}><img src={ZOS_WATERMARK_LOGO_SRC} alt="ZOS" className="zos-wm-logo"/><div className="zos-wm-sub">ZenOS v1.0.0</div></div>;
-}
-function DesktopClock(){const [now,setNow]=useState(new Date());useEffect(()=>{const iv=setInterval(()=>setNow(new Date()),1000);return()=>clearInterval(iv);},[]);return <div className="zos-dclock"><div className="zos-dclock-time">{now.getHours().toString().padStart(2,"0")}:{now.getMinutes().toString().padStart(2,"0")}<span className="zos-dclock-sec">:{now.getSeconds().toString().padStart(2,"0")}</span></div><div className="zos-dclock-date">{now.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"})}</div></div>;}
-function DesktopStatus(p:{role:string;windowCount:number;foundCount:number;totalPoints:number}){return(<div className="zos-dstatus"><div className="zos-dstatus-row"><span className="zos-dstatus-dot green"/>System Online</div><div className="zos-dstatus-row"><span className="zos-dstatus-dot copper"/>Mode: {p.role}</div><div className="zos-dstatus-row"><span className="zos-dstatus-dot amber"/>{p.windowCount} window{p.windowCount!==1?"s":""} open</div><div className="zos-dstatus-row"><span className="zos-dstatus-dot verd"/>{p.totalPoints} signal points</div><div className="zos-dstatus-row"><span className="zos-dstatus-dot copper"/>{p.foundCount}/{SIGNALS.length} signals logged</div><div className="zos-dstatus-hint">Press ⌘K for command palette</div></div>);}
-
-export default function ZOS(){
-  const [phase,setPhase]=useState<"boot"|"desktop">("boot");
-  const [role,setRole]=useState("visitor");const [theme,setTheme]=useState("oxidized");
-  const [wins,setWins]=useState<WS[]>([]);const [active,setActive]=useState<string|null>(null);
-  const [startOpen,setStartOpen]=useState(false);const [cmdOpen,setCmdOpen]=useState(false);
-  const [helpOpen,setHelpOpen]=useState(false);
-  const [zC,setZC]=useState(100);const [ctxMenu,setCtxMenu]=useState<{x:number;y:number}|null>(null);
-  const [konamiIdx,setKonamiIdx]=useState(0);const [konamiActive,setKonamiActive]=useState(false);
-  const [foundSignals,setFoundSignals]=useState<string[]>([]);
-  const [screenSaver,setScreenSaver]=useState(false);const idleRef=useRef<ReturnType<typeof setTimeout>|null>(null);
-  const [toasts,setToasts]=useState<{id:number;msg:string;type:string}[]>([]);const toastId=useRef(0);
-  const addToast=useCallback((msg:string,type="info")=>{const id=++toastId.current;setToasts(t=>[...t,{id,msg,type}]);setTimeout(()=>setToasts(t=>t.filter(x=>x.id!==id)),4000);},[]);
-  const removeToast=useCallback((id:number)=>{setToasts(t=>t.filter(x=>x.id!==id));},[]);
-
-  useEffect(()=>{try{const st=localStorage.getItem("zos-theme");const sr=localStorage.getItem("zos-role");const ss=localStorage.getItem("zos-found-signals");if(st&&["oxidized","signal","lunar"].includes(st))setTheme(st);if(sr)setRole(sr);if(ss){const parsed=JSON.parse(ss);if(Array.isArray(parsed))setFoundSignals(parsed);}}catch(e){}},[]);
-  useEffect(()=>{try{localStorage.setItem("zos-theme",theme);}catch(e){}},[theme]);
-  useEffect(()=>{try{localStorage.setItem("zos-role",role);}catch(e){}},[role]);
-  useEffect(()=>{try{localStorage.setItem("zos-found-signals",JSON.stringify(foundSignals));}catch(e){}},[foundSignals]);
-
-  useEffect(()=>{if(phase!=="desktop")return;const resetIdle=()=>{if(idleRef.current)clearTimeout(idleRef.current);setScreenSaver(false);idleRef.current=setTimeout(()=>setScreenSaver(true),30000);};resetIdle();addEventListener("mousemove",resetIdle);addEventListener("keydown",resetIdle);addEventListener("click",resetIdle);return()=>{if(idleRef.current)clearTimeout(idleRef.current);removeEventListener("mousemove",resetIdle);removeEventListener("keydown",resetIdle);removeEventListener("click",resetIdle);};},[phase]);
-
-  const nz=useCallback(()=>{setZC(c=>c+1);return zC+1;},[zC]);
-  const triggerSignal=useCallback((id:string)=>{const match=SIGNALS.find(s=>s[0]===id);if(!match)return;const name=match[2];const points=match[4];setFoundSignals(prev=>{if(prev.includes(id))return prev;setTimeout(()=>addToast(name+" unlocked! +"+points+" signal points","egg"),0);return [...prev,id];});},[addToast]);
-  const totalPoints=useMemo(()=>foundSignals.reduce((sum,id)=>{const match=SIGNALS.find(s=>s[0]===id);return sum+(match?match[4]:0);},0),[foundSignals]);
-  const bootDone=useCallback((r:string)=>{setRole(r);setPhase("desktop");try{localStorage.setItem("zos-role",r);}catch(e){}setTimeout(()=>addToast("Welcome to ZOS. Press ⌘K for command palette.","success"),500);setTimeout(()=>addToast("Tip: press ? or F1 for shortcuts.","info"),1400);},[addToast]);
-  const handleContextMenu=useCallback((e:React.MouseEvent)=>{e.preventDefault();setCtxMenu({x:e.clientX,y:e.clientY});},[]);
-
-  useEffect(()=>{if(phase!=="desktop")return;const h=(e:KeyboardEvent)=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();setCmdOpen(v=>!v);setHelpOpen(false);}if(e.key==="/"&&!cmdOpen&&document.activeElement?.tagName!=="INPUT"&&document.activeElement?.tagName!=="TEXTAREA"){e.preventDefault();setCmdOpen(true);setHelpOpen(false);}if((e.key==="?"||e.key==="F1")&&document.activeElement?.tagName!=="INPUT"&&document.activeElement?.tagName!=="TEXTAREA"){e.preventDefault();setHelpOpen(v=>!v);setCmdOpen(false);}if(e.key==="Escape"){if(helpOpen){setHelpOpen(false);return;}if(cmdOpen){setCmdOpen(false);return;}const ordered=[...wins].filter(w=>!w.min).sort((a,b)=>b.z-a.z);if(ordered[0])close(ordered[0].id);}};addEventListener("keydown",h);return()=>removeEventListener("keydown",h);},[phase,cmdOpen,helpOpen,wins]);
-  useEffect(()=>{const h=(e:any)=>{if(e?.detail)open(e.detail);};window.addEventListener("zos-open-app",h);return()=>window.removeEventListener("zos-open-app",h);},[]);
-
-  useEffect(()=>{if(phase!=="desktop")return;const h=(e:KeyboardEvent)=>{if(e.key===konamiSeq[konamiIdx]){const next=konamiIdx+1;setKonamiIdx(next);if(next===konamiSeq.length){setKonamiActive(true);setKonamiIdx(0);setTimeout(()=>setKonamiActive(false),5000);triggerSignal("konami");}}else{setKonamiIdx(0);}};addEventListener("keydown",h);return()=>removeEventListener("keydown",h);},[phase,konamiIdx,triggerSignal]);
-
-  useEffect(()=>{const r=document.documentElement;const themes:Record<string,Record<string,string>>={oxidized:{"--bg":"#0e0e11","--card":"#151519","--hdr":"#1a1a20","--bone":"#e8e0d4","--copper":"#c08b5c","--verd":"#5daa96","--amber":"#d4a847","--dim":"#6b6b78","--muted":"#94938e"},signal:{"--bg":"#080c08","--card":"#0d120d","--hdr":"#111811","--bone":"#d4e8d4","--copper":"#00ff88","--verd":"#00cc6a","--amber":"#88ff00","--dim":"#5a7a5a","--muted":"#8aaa8a"},lunar:{"--bg":"#0e1117","--card":"#131820","--hdr":"#181d28","--bone":"#d4dce8","--copper":"#8eaadc","--verd":"#6b9fd4","--amber":"#a8c4e0","--dim":"#5a6a7a","--muted":"#8a9aaa"}};const t=themes[theme]||themes.oxidized;Object.entries(t).forEach(([k,v])=>r.style.setProperty(k,v));},[theme]);
-
-  const open=(appId:string)=>{const ex=wins.find(w=>w.id===appId);if(ex){setWins(ws=>ws.map(w=>w.id===appId?{...w,min:false,z:nz()}:w));setActive(appId);return;}const app=APPS.find(a=>a[0]===appId);if(!app)return;const wW=Math.min(innerWidth-80,Math.max(960,Math.floor(innerWidth*0.72)));const wH=Math.min(innerHeight-120,Math.max(680,Math.floor((innerHeight-48)*0.74)));const cx=Math.max(0,Math.floor((innerWidth-wW)/2));const cy=Math.max(0,Math.floor((innerHeight-48-wH)/2));const cascade=(wins.length%8)*30;setWins(ws=>[...ws,{id:appId,title:app[1],icon:app[2],x:cx+cascade,y:cy+cascade,w:wW,h:wH,z:nz(),min:false,max:false}]);setActive(appId);};
-  const close=(id:string)=>{setWins(ws=>ws.filter(w=>w.id!==id));if(active===id)setActive(null);};
-  const focus=(id:string)=>{setWins(ws=>ws.map(w=>w.id===id?{...w,z:nz()}:w));setActive(id);};
-  const togMin=(id:string)=>{const w=wins.find(w=>w.id===id);if(w&&!w.min&&active===id){setWins(ws=>ws.map(w=>w.id===id?{...w,min:true}:w));setActive(null);}else{setWins(ws=>ws.map(w=>w.id===id?{...w,min:false,z:nz()}:w));setActive(id);}};
-  const togMax=(id:string)=>{setWins(ws=>ws.map(w=>w.id===id?{...w,max:!w.max}:w));};
-  const mv=(id:string,x:number,y:number)=>{setWins(ws=>ws.map(w=>w.id===id?{...w,x,y}:w));};
-  const rsz=(id:string,nw:number,nh:number)=>{setWins(ws=>ws.map(w=>w.id===id?{...w,w:nw,h:nh}:w));};
-
-  const content=(id:string)=>{if(id==="about")return <AboutApp role={role}/>;if(id==="terminal")return <TerminalApp onSignal={triggerSignal} onNavigate={open}/>;if(id==="projects")return <ProjectsApp/>;if(id==="voi")return <VoiZosApp role={role} onNavigate={open}/>;if(id==="games")return <GamesHub/>;if(id==="settings")return <SettingsApp theme={theme} onTheme={setTheme} role={role} onRole={setRole}/>;if(id==="command")return <CommandCentre role={role} windowCount={wins.length}/>;if(id==="lab")return <LabApp foundSignals={foundSignals} totalPoints={totalPoints} onSignal={triggerSignal}/>;if(id==="mail")return <XFeedApp/>;if(id==="calendar")return <BookTimeApp/>;if(id==="store")return <AppStoreApp/>;return <div className="zph"><span className="zph-ico">{"🚧"}</span><span className="zph-name">{id}</span></div>;};
-  const tbClick=(id:string)=>{const w=wins.find(w=>w.id===id);if(!w)return;if(w.min){setWins(ws=>ws.map(w=>w.id===id?{...w,min:false,z:nz()}:w));setActive(id);}else if(active===id){setWins(ws=>ws.map(w=>w.id===id?{...w,min:true}:w));setActive(null);}else focus(id);};
-  const cmdAction=(a:string)=>{if(["about","terminal","projects","voi","command","lab","games","settings","mail","calendar","store"].includes(a))open(a);if(a==="theme-oxidized"){setTheme("oxidized");addToast("Theme: Oxidized Future","success");}if(a==="theme-signal"){setTheme("signal");addToast("Theme: Signal Lab","success");}if(a==="theme-lunar"){setTheme("lunar");addToast("Theme: Lunar Archive","success");}if(a==="easter-egg"){setKonamiActive(true);setTimeout(()=>setKonamiActive(false),5000);triggerSignal("palette");}if(a==="about-zos"){open("about");}};
-  const ctxAction=(a:string)=>{setCtxMenu(null);if(["about","terminal","projects"].includes(a))open(a);else if(a==="refresh")window.location.reload();else if(a==="source")window.open("https://github.com/Zenlyte","_blank");else if(a==="about-zos")open("about");};
-
-  return(<><style>{CSS_STYLES}</style>{phase==="boot"&&<BootScreen onDone={bootDone}/>}{phase==="desktop"&&(<div className="zos-desk" onContextMenu={handleContextMenu}><img src="/images/ZOS/zos-wallpaper.png" alt="" className="zos-wp"/><CursorHalo/><Particles/><DesktopWatermark onEasterEgg={()=>{setKonamiActive(true);setTimeout(()=>setKonamiActive(false),5000);triggerSignal("watermark");}}/><DesktopClock/><DesktopStatus role={role} windowCount={wins.length} foundCount={foundSignals.length} totalPoints={totalPoints}/>
-    <div className="zi">{APPS.map(([id,name,icon])=><DIcon key={id} icon={icon} name={name} onOpen={()=>open(id)}/>)}</div>
-    {wins.map(w=><Win key={w.id} s={w} active={active===w.id} onFocus={()=>focus(w.id)} onClose={()=>close(w.id)} onMin={()=>togMin(w.id)} onMax={()=>togMax(w.id)} onMove={(x,y)=>mv(w.id,x,y)} onResize={(nw,nh)=>rsz(w.id,nw,nh)}>{content(w.id)}</Win>)}
-    {startOpen&&<StartMenu onLaunch={open} onClose={()=>setStartOpen(false)}/>}
-    {cmdOpen&&<CmdPalette onClose={()=>setCmdOpen(false)} onAction={cmdAction}/>}
-    {helpOpen&&<HelpOverlay onClose={()=>setHelpOpen(false)} />}
-    {ctxMenu&&<ContextMenu x={ctxMenu.x} y={ctxMenu.y} onClose={()=>setCtxMenu(null)} onAction={ctxAction}/>}
-    {konamiActive&&<div className="zk-overlay"><div className="zk-text">{"🎉"} EASTER EGG FOUND! {"🎉"}</div><div className="zk-sub">Signal logged to the hunt. Keep exploring.</div></div>}
-    {screenSaver&&<Screensaver onDismiss={()=>setScreenSaver(false)}/>}
-    <ToastContainer toasts={toasts} onRemove={removeToast}/>
-    <Taskbar wins={wins} active={active} onWinClick={tbClick} onStart={()=>setStartOpen(s=>!s)} startOpen={startOpen} role={role} onLogoSecret={()=>{triggerSignal("palette");addToast("Persistent signal unlocked via taskbar logo.","egg");}}/>
-  </div>)}</>);
-}
-
-const CSS_STYLES = [
-  "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap');",
-  "*{box-sizing:border-box;margin:0;padding:0}",
-  ":root{--bg:#0e0e11;--card:#151519;--hdr:#1a1a20;--bone:#e8e0d4;--copper:#c08b5c;--verd:#5daa96;--amber:#d4a847;--dim:#6b6b78;--muted:#94938e;--bord:rgba(232,224,212,0.08);--bord2:rgba(232,224,212,0.15)}",
-  "body{overflow:hidden;background:var(--bg);font-family:'Inter',sans-serif;color:var(--bone);cursor:none}",
-  "::-webkit-scrollbar{width:6px},::-webkit-scrollbar-track{background:transparent},::-webkit-scrollbar-thumb{background:rgba(192,139,92,0.3);border-radius:3px},::-webkit-scrollbar-thumb:hover{background:rgba(192,139,92,0.4)}",
-  "::selection{background:rgba(192,139,92,0.3);color:white}",
-  ".zc-halo{position:fixed;width:24px;height:24px;border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);border:1.5px solid var(--copper);opacity:0.6;mix-blend-mode:screen;box-shadow:0 0 15px rgba(192,139,92,0.15)}",
-  ".zb{position:fixed;inset:0;background:#000;z-index:9999;display:flex;align-items:center;justify-content:center}",
-  ".zb-scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.15) 2px,rgba(0,0,0,0.15) 4px);pointer-events:none;z-index:2}",
-  ".zb-vig{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,0.7));pointer-events:none;z-index:2}",
-  ".zb-body{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--bone);width:70%;max-width:700px;max-height:80vh;overflow-y:auto;z-index:3;text-shadow:0 0 8px rgba(192,139,92,0.4);cursor:default}",
-  ".zb-logo-wrap{text-align:center;margin-bottom:24px}",
-  ".zb-logo{width:180px;height:auto;opacity:0;animation:zfade 0.8s 0.1s forwards;filter:drop-shadow(0 0 30px rgba(192,139,92,0.4))}",
-  ".zb-line{min-height:1.6em;opacity:0;animation:zfade 0.15s forwards}",".zb-cursor{color:var(--copper)}","@keyframes zfade{to{opacity:1;transform:translateX(0)}}",
-  ".zb-roles{margin-top:24px;display:flex;flex-direction:column;gap:8px}",
-  ".zb-prompt{color:var(--bone);font-size:13px;margin-bottom:8px;opacity:0;animation:zfade 0.3s 0.2s forwards}",
-  ".zb-role{display:flex;align-items:center;gap:16px;padding:10px 16px;border-radius:6px;border:1px solid var(--bord);background:transparent;color:var(--bone);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:13px;text-align:left;transition:all 0.2s;opacity:0;animation:zfade 0.3s forwards}",
-  ".zb-role:nth-child(2){animation-delay:0.3s}.zb-role:nth-child(3){animation-delay:0.4s}.zb-role:nth-child(4){animation-delay:0.5s}.zb-role:nth-child(5){animation-delay:0.6s}",
-  ".zb-role:hover{border-color:var(--copper);background:rgba(192,139,92,0.12);transform:translateX(4px)}",
-  ".zb-role-label{color:var(--copper);font-weight:700;min-width:160px}",".zb-role-desc{color:var(--muted);font-size:11px}",
-  ".zos-desk{position:fixed;inset:0;background:var(--bg)}",
-  ".zos-wp{position:fixed;inset:0;width:100vw;height:100vh;object-fit:cover;z-index:0;opacity:0.5;pointer-events:none}",
-  ".zp-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}",
-  ".zi{position:fixed;top:16px;left:16px;z-index:1;display:grid;grid-template-columns:80px 80px;gap:4px;padding:8px}",
-  ".zd{width:80px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;border-radius:8px;cursor:pointer;transition:background 0.15s;user-select:none}",
-  ".zd:hover{background:rgba(232,224,212,0.06)}",".zd-ico{font-size:32px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))}",
-  ".zd-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;text-align:center;color:var(--bone);text-shadow:0 1px 3px rgba(0,0,0,0.8);white-space:nowrap}",
-  ".zt{position:fixed;bottom:0;left:0;right:0;height:48px;background:rgba(14,14,17,0.92);backdrop-filter:blur(20px);border-top:1px solid var(--bord);z-index:1000;display:flex;align-items:center;padding:0 8px;font-family:'JetBrains Mono',monospace;font-size:12px}",
-  ".zt-start{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;border:none;background:transparent;color:var(--copper);cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:1px;transition:all 0.15s}",
-  ".zt-logo{width:18px;height:18px;object-fit:contain}",
-  ".zt-start.open,.zt-start:hover{background:rgba(192,139,92,0.15)}",".zt-div{width:1px;height:24px;background:var(--bord);margin:0 8px}",
-  ".zt-tabs{flex:1;display:flex;gap:2px;overflow-x:auto;align-items:center}",
-  ".zt-tab{padding:4px 12px;border-radius:4px;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--dim);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;white-space:nowrap;transition:all 0.15s}",
-  ".zt-tab.active{background:rgba(192,139,92,0.12);color:var(--bone);border-bottom-color:var(--copper)}",".zt-tab.dim{opacity:0.5}",
-  ".zt-tray{margin-left:auto;display:flex;align-items:center;gap:12px;padding:0 8px}",".zt-role{color:var(--verd);font-size:10px;text-transform:uppercase;letter-spacing:1px}",".zt-time{color:var(--muted);font-size:11px}",
-  ".zw{background:var(--card);border:1px solid var(--bord);display:flex;flex-direction:column;overflow:hidden;transition:box-shadow 0.2s,border-color 0.2s;animation:zwOpen 0.25s cubic-bezier(0.16,1,0.3,1)}",
-  "@keyframes zwOpen{from{opacity:0;transform:scale(0.92) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}",
-  ".zw.active{border-color:rgba(192,139,92,0.3);box-shadow:0 0 40px -10px rgba(192,139,92,0.15)}",
-  ".zw-hdr{height:38px;min-height:38px;background:var(--hdr);display:flex;align-items:center;padding:0 12px;cursor:grab;user-select:none;border-bottom:1px solid var(--bord)}",
-  ".zw-icon{margin-right:8px;font-size:14px}",".zw-title{flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".zw-btns{display:flex;gap:8px}",".zw-b{width:12px;height:12px;border-radius:50%;border:none;cursor:pointer;opacity:0.8;transition:opacity 0.15s}",".zw-b:hover{opacity:1}",
-  ".zw-b.min{background:var(--amber)}",".zw-b.max{background:var(--verd)}",".zw-b.cls{background:#e87171}",
-  ".zw-body{flex:1;overflow:auto;position:relative}",".zw-rsz{position:absolute;bottom:0;right:0;width:16px;height:16px;cursor:nwse-resize}",
-  ".zov{position:fixed;inset:0;z-index:998}",
-  ".zsm{position:fixed;bottom:56px;left:8px;width:260px;background:rgba(21,21,25,0.95);backdrop-filter:blur(20px);border:1px solid var(--bord);border-radius:12px;padding:8px 0;z-index:999;box-shadow:0 20px 60px rgba(0,0,0,0.6)}",
-  ".zsm-hdr{padding:8px 16px 12px;border-bottom:1px solid var(--bord);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--copper)}",
-  ".zsm-item{display:flex;align-items:center;gap:12px;width:100%;padding:10px 16px;border:none;background:transparent;color:var(--bone);cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;transition:background 0.15s;text-align:left}",
-  ".zsm-item:hover{background:rgba(192,139,92,0.08)}",".zsm-ico{font-size:18px;width:24px;text-align:center}",
-  ".zsm-foot{padding:8px 16px;border-top:1px solid var(--bord);font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);margin-top:4px}",
-  ".zcp{position:fixed;top:20%;left:50%;transform:translateX(-50%);width:480px;max-width:90vw;background:rgba(21,21,25,0.98);backdrop-filter:blur(20px);border:1px solid var(--bord2);border-radius:12px;z-index:9999;box-shadow:0 20px 60px rgba(0,0,0,0.6)}",
-  ".zcp-input{width:100%;padding:16px 20px;background:transparent;border:none;border-bottom:1px solid var(--bord);outline:none;color:var(--bone);font-family:'JetBrains Mono',monospace;font-size:14px;caret-color:var(--copper)}",
-  ".zcp-input::placeholder{color:var(--dim)}",".zcp-list{max-height:300px;overflow-y:auto;padding:8px 0}",
-  ".zcp-item{display:block;width:100%;padding:10px 20px;border:none;background:transparent;color:var(--bone);cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;text-align:left;transition:background 0.15s}",
-  ".zcp-item:hover{background:rgba(192,139,92,0.1)}",
-  ".zhelp{position:fixed;top:16%;left:50%;transform:translateX(-50%);width:min(620px,92vw);background:rgba(21,21,25,0.98);backdrop-filter:blur(20px);border:1px solid var(--bord2);border-radius:14px;z-index:10000;box-shadow:0 24px 80px rgba(0,0,0,0.65);padding:20px}",
-  ".zhelp-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}",
-  ".zhelp-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--bone)}",
-  ".zhelp-sub{font-family:'Inter',sans-serif;font-size:13px;color:var(--muted);margin-top:4px}",
-  ".zhelp-close{background:transparent;border:1px solid var(--bord);color:var(--bone);border-radius:8px;width:34px;height:34px;cursor:pointer}",
-  ".zhelp-grid{display:grid;grid-template-columns:1fr;gap:10px}",
-  ".zhelp-row{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:center;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.025);border:1px solid rgba(232,224,212,0.08)}",
-  ".zhelp-row kbd{display:inline-flex;align-items:center;justify-content:center;min-width:fit-content;width:max-content;padding:6px 10px;border-radius:8px;border:1px solid rgba(192,139,92,0.25);background:rgba(192,139,92,0.08);color:var(--bone);font-family:'JetBrains Mono',monospace;font-size:12px;box-shadow:inset 0 -2px 0 rgba(0,0,0,0.2)}",
-  ".zph{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px}",
-  ".zph-ico{font-size:48px;opacity:0.4}",".zph-name{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;color:var(--bone)}",
-  ".zos-watermark{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:0;pointer-events:none;text-align:center;user-select:none}",
-  ".zos-wm-clickable{pointer-events:auto;cursor:default}",
-  ".zos-wm-logo{width:clamp(200px,30vw,420px);height:auto;opacity:0.12;pointer-events:none;filter:drop-shadow(0 0 60px rgba(192,139,92,0.1))}",
-  ".zos-wm-sub{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--verd);margin-top:8px;letter-spacing:6px;text-transform:uppercase;opacity:0.6}",
-  ".zos-dclock{position:fixed;top:20px;right:20px;z-index:1;text-align:right;pointer-events:none;user-select:none;}",
-  ".zos-dclock-time{font-family:'Space Grotesk',sans-serif;font-size:48px;font-weight:700;color:rgba(232,224,212,0.12);line-height:1;letter-spacing:-1px}",
-  ".zos-dclock-sec{font-size:24px;opacity:0.5}",
-  ".zos-dclock-date{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--verd);margin-top:4px;letter-spacing:1px}",
-  ".zos-dstatus{position:fixed;bottom:60px;right:20px;z-index:1;text-align:right;pointer-events:none;user-select:none;display:flex;flex-direction:column;gap:6px}",
-  ".zos-dstatus-dot{width:6px;height:6px;border-radius:50%;display:inline-block}",
-  ".zos-dstatus-dot.green{background:var(--verd);box-shadow:0 0 6px var(--verd)}",".zos-dstatus-dot.copper{background:var(--copper);box-shadow:0 0 6px var(--copper)}",".zos-dstatus-dot.amber{background:var(--amber);box-shadow:0 0 6px var(--amber)}",
-  ".zos-dstatus-hint{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);margin-top:4px}",
-  ".za{padding:16px;font-family:'JetBrains Mono',monospace;font-size:13px}",
-  ".za-path{font-size:12px;color:var(--dim);margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--bord)}",
-  ".za-role-msg{font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--copper);margin-bottom:16px;padding:12px;border-left:2px solid var(--copper);border-radius:0 6px 6px 0}",
-  ".za-files{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}",
-  ".za-file{padding:8px 12px;border-radius:6px;display:flex;align-items:center;gap:10px;background:rgba(232,224,212,0.03);border:1px solid var(--bord);cursor:pointer;transition:all 0.15s;font-size:12px}",
-  ".za-file:hover{border-color:rgba(192,139,92,0.3);background:rgba(192,139,92,0.04)}",".za-file.active{border-color:var(--copper);background:rgba(192,139,92,0.08)}",
-  ".za-readme{padding:16px;border-radius:8px;background:rgba(192,139,92,0.04);border:1px solid rgba(192,139,92,0.15);line-height:1.7}",
-  ".za-cmd{color:var(--copper);font-size:11px;opacity:0.6;margin-bottom:8px}",
-  ".za-hi{color:var(--muted);margin-bottom:4px}",
-  ".za-name{color:var(--copper);font-weight:600}",
-  ".za-desc{color:var(--muted);margin-bottom:4px}",
-  ".za-principles{list-style:none;padding:0}",
-  ".za-principles li{padding:4px 0;color:var(--muted);font-size:12px}",
-  ".za-principles li::before{content:'▸ ';color:var(--copper)}",
-  ".za-skill-grid{display:flex;flex-direction:column;gap:12px;margin-top:8px}",
-  ".za-skill-cat{padding:10px;border-radius:6px;border:1px solid var(--bord);background:rgba(232,224,212,0.02)}",
-  ".za-skill-cat-name{font-size:11px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}",
-  ".za-skill-tags{display:flex;flex-wrap:wrap;gap:6px}",
-  ".za-skill-tag{font-size:11px;padding:3px 10px;border-radius:4px;background:rgba(192,139,92,0.08);border:1px solid rgba(192,139,92,0.15);color:var(--bone)}",
-  ".za-json{font-family:'JetBrains Mono',monospace;font-size:12px;margin-top:8px}",
-  ".za-json-line{padding:2px 0;color:var(--muted)}",
-  ".za-json-key{color:var(--copper)}",
-  ".za-json-val{color:var(--verd);text-decoration:none}",
-  ".za-json-val:hover{text-decoration:underline}",
-  ".za-timeline{display:flex;flex-direction:column;gap:0;margin-top:8px;padding-left:16px;border-left:2px solid var(--bord)}",
-  ".za-timeline-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;position:relative}",
-  ".za-timeline-dot{width:10px;height:10px;border-radius:50%;background:var(--copper);border:2px solid var(--card);position:absolute;left:-22px;top:14px;box-shadow:0 0 6px var(--copper)}",
-  ".za-timeline-content{padding-left:4px}",
-  ".za-timeline-title{font-size:13px;font-weight:600;color:var(--bone);margin-bottom:2px}",
-  ".za-timeline-desc{font-size:11px;color:var(--muted)}",
-  ".za-secret{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:#e87171;text-align:center;margin:24px 0 8px}",
-  ".za-secret-sub{text-align:center;font-size:12px;color:var(--muted);margin-bottom:4px}",
-  ".za-secret-hint{text-align:center;font-size:14px;color:var(--dim);letter-spacing:2px}",
-  ".zterm{display:flex;flex-direction:column;height:100%;background:#080808;font-family:'JetBrains Mono',monospace;font-size:13px}",
-  ".zterm-scroll{flex:1;overflow-y:auto;padding:12px}",
-  ".zterm-line{min-height:1.4em;color:var(--copper);opacity:0.9}",
-  ".zterm-in{display:flex;align-items:center;gap:8px;padding:8px 12px;border-top:1px solid var(--bord)}",
-  ".zterm-prompt{color:var(--copper);font-weight:600}",
-  ".zterm-inp{flex:1;background:transparent;border:none;outline:none;color:var(--bone);font-family:inherit;font-size:inherit;caret-color:var(--copper)}",
-  ".zproj{padding:16px;font-family:'JetBrains Mono',monospace;font-size:13px;height:100%;overflow-y:auto}",
-  ".zproj-path{font-size:12px;color:var(--dim);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bord)}",
-  ".zproj-filters{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}",
-  ".zproj-fbtn{padding:4px 12px;border-radius:4px;border:1px solid var(--bord);background:transparent;color:var(--dim);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;transition:all 0.15s}",
-  ".zproj-fbtn:hover{border-color:var(--copper);color:var(--bone)}",
-  ".zproj-fbtn.active{background:rgba(192,139,92,0.15);border-color:var(--copper);color:var(--copper)}",
-  ".zproj-loading{color:var(--dim);text-align:center;padding:40px}",
-  ".zproj-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}",
-  ".zproj-card{padding:16px;border-radius:8px;border:1px solid var(--bord);background:rgba(232,224,212,0.02);cursor:pointer;transition:all 0.2s}",
-  ".zproj-card:hover{border-color:rgba(192,139,92,0.3);background:rgba(192,139,92,0.04);transform:translateY(-2px)}",
-  ".zproj-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}",
-  ".zproj-card-id{font-size:10px;color:var(--dim);letter-spacing:1px}",
-  ".zproj-card-status{font-size:10px;padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:0.5px}",
-  ".st-done{background:rgba(93,170,150,0.15);color:var(--verd);border:1px solid rgba(93,170,150,0.3)}",
-  ".st-wip{background:rgba(192,139,92,0.15);color:var(--copper);border:1px solid rgba(192,139,92,0.3)}",
-  ".st-plan{background:rgba(212,168,71,0.15);color:var(--amber);border:1px solid rgba(212,168,71,0.3)}",
-  ".zproj-card-name{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;color:var(--bone);margin-bottom:6px}",
-  ".zproj-card-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}",
-  ".zproj-tags{display:flex;gap:6px;flex-wrap:wrap}",
-  ".zproj-tag{font-size:10px;padding:2px 8px;border-radius:3px;background:rgba(232,224,212,0.05);color:var(--dim);border:1px solid var(--bord)}",
-  ".zproj-back{padding:6px 12px;border-radius:4px;border:1px solid var(--bord);background:transparent;color:var(--copper);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;margin-bottom:16px;transition:all 0.15s}",
-  ".zproj-back:hover{background:rgba(192,139,92,0.1)}",
-  ".zproj-detail{padding:16px;border-radius:8px;border:1px solid var(--bord);background:rgba(232,224,212,0.02)}",
-  ".zproj-detail-hdr{margin-bottom:12px}",
-  ".zproj-status{display:inline-block;font-size:10px;padding:3px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:0.5px}",
-  ".zproj-detail-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--bone);margin-bottom:8px}",
-  ".zproj-detail-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px}",
-  ".zproj-detail-section{margin-bottom:16px}",
-  ".zproj-detail-label{font-size:10px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}",
-  ".zproj-link{color:var(--copper);text-decoration:none;font-size:12px}",
-  ".zproj-link:hover{opacity:0.7}",
-  ".zsnake{display:flex;flex-direction:column;align-items:center;height:100%;background:#080808;padding:16px}",
-  ".zsnake-hud{display:flex;justify-content:space-between;width:320px;margin-bottom:12px;font-family:'JetBrains Mono',monospace;font-size:12px}",
-  ".zsnake-score{color:var(--copper)}",
-  ".zsnake-over{color:#e87171;font-weight:700}",
-  ".zsnake-start{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:16px}",
-  ".zsnake-title{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;color:var(--bone)}",
-  ".zsnake-sub{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim)}",
-  ".zsnake-btn{padding:10px 24px;border-radius:6px;border:1px solid var(--copper);background:rgba(192,139,92,0.1);color:var(--copper);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;transition:all 0.2s}",
-  ".zsnake-btn:hover{background:rgba(192,139,92,0.2);transform:scale(1.05)}",
-  ".zsnake-canvas{border:1px solid var(--bord);border-radius:4px}",
-  ".zsnake-retry{margin-top:16px}",
-  ".zctx{position:fixed;z-index:9999;width:200px;background:rgba(21,21,25,0.96);backdrop-filter:blur(20px);border:1px solid var(--bord2);border-radius:8px;padding:4px 0;box-shadow:0 8px 30px rgba(0,0,0,0.5)}",
-  ".zctx-item{display:block;width:100%;padding:8px 14px;border:none;background:transparent;color:var(--bone);cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;text-align:left;transition:background 0.15s}",
-  ".zctx-item:hover{background:rgba(192,139,92,0.1)}",
-  ".zctx-div{height:1px;background:var(--bord);margin:4px 0}",
-  ".zset{padding:20px;font-family:'JetBrains Mono',monospace;font-size:13px;height:100%;overflow-y:auto}",
-  ".zset-section{margin-bottom:28px}",
-  ".zset-label{font-size:10px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px}",
-  ".zset-sub{font-size:12px;color:var(--dim);margin-bottom:14px}",
-  ".zset-themes{display:flex;flex-direction:column;gap:8px}",
-  ".zset-theme{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:8px;border:1px solid var(--bord);background:transparent;cursor:pointer;transition:all 0.2s;text-align:left;color:var(--bone);font-family:inherit}",
-  ".zset-theme:hover{border-color:rgba(192,139,92,0.3);background:rgba(192,139,92,0.04)}",
-  ".zset-theme.active{border-color:var(--copper);background:rgba(192,139,92,0.08)}",
-  ".zset-theme-preview{width:40px;height:28px;border-radius:4px;position:relative;overflow:hidden;flex-shrink:0}",
-  ".zset-theme-bg{position:absolute;inset:0;border-radius:4px}",
-  ".zset-theme-bg[data-theme=oxidized]{background:#0e0e11}",
-  ".zset-theme-bg[data-theme=signal]{background:#080c08}",
-  ".zset-theme-bg[data-theme=lunar]{background:#0e1117}",
-  ".zset-theme-accent{position:absolute;bottom:0;left:0;right:0;height:4px}",
-  ".zset-theme-accent[data-theme=oxidized]{background:#c08b5c}",
-  ".zset-theme-accent[data-theme=signal]{background:#00ff88}",
-  ".zset-theme-accent[data-theme=lunar]{background:#8eaadc}",
-  ".zset-theme-info{flex:1}",
-  ".zset-theme-name{font-size:13px;font-weight:600;color:var(--bone)}",
-  ".zset-theme-desc{font-size:11px;color:var(--dim);margin-top:2px}",
-  ".zset-check{color:var(--copper);font-size:16px;font-weight:700}",
-  ".zset-roles{display:flex;flex-direction:column;gap:6px}",
-  ".zset-role{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:6px;border:1px solid var(--bord);background:transparent;cursor:pointer;transition:all 0.15s;text-align:left;color:var(--bone);font-family:inherit}",
-  ".zset-role:hover{border-color:rgba(192,139,92,0.3)}",
-  ".zset-role.active{border-color:var(--copper);background:rgba(192,139,92,0.08)}",
-  ".zset-role-name{font-size:12px;font-weight:600;min-width:120px}",
-  ".zset-role-desc{font-size:11px;color:var(--dim);flex:1}",
-  ".zset-info-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}",
-  ".zset-info-item{padding:10px 12px;border-radius:6px;border:1px solid var(--bord);display:flex;flex-direction:column;gap:4px}",
-  ".zset-info-key{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}",
-  ".zset-info-val{font-size:12px;color:var(--bone)}",
-  ".zcmd{padding:16px;font-family:'JetBrains Mono',monospace;font-size:12px;height:100%;overflow-y:auto}",
-  ".zcmd-hdr{margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--bord)}",
-  ".zcmd-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:var(--bone)}",
-  ".zcmd-time{color:var(--dim);font-size:11px}",
-  ".zcmd-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}",
-  ".zcmd-panel{padding:14px;border-radius:8px;border:1px solid var(--bord);background:rgba(232,224,212,0.02)}",
-  ".zcmd-panel.wide{grid-column:1/-1}",
-  ".zcmd-panel-label{font-size:10px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}",
-  ".zcmd-stat-row{display:flex;align-items:center;gap:8px;padding:4px 0;color:var(--muted);font-size:12px}",
-  ".zcmd-stat-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}",
-  ".zcmd-stat-dot.green{background:var(--verd);box-shadow:0 0 6px var(--verd)}",
-  ".zcmd-stat-dot.copper{background:var(--copper);box-shadow:0 0 6px var(--copper)}",
-  ".zcmd-stat-dot.amber{background:var(--amber);box-shadow:0 0 6px var(--amber)}",
-  ".zcmd-stat-dot.verd{background:var(--verd);box-shadow:0 0 4px var(--verd)}",
-  ".zcmd-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}",
-  ".zcmd-metric{text-align:center;padding:10px 0}",
-  ".zcmd-metric-val{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--copper);line-height:1}",
-  ".zcmd-metric-lbl{font-size:10px;color:var(--dim);margin-top:4px;text-transform:uppercase;letter-spacing:1px}",
-  ".zcmd-feed{display:flex;flex-direction:column;gap:6px}",
-  ".zcmd-feed-item{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:4px;transition:background 0.15s}",
-  ".zcmd-feed-item:hover{background:rgba(232,224,212,0.03)}",
-  ".zcmd-feed-id{font-size:10px;color:var(--dim);min-width:60px}",
-  ".zcmd-feed-name{flex:1;color:var(--bone);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".zcmd-feed-status{font-size:9px;padding:2px 6px;border-radius:3px;text-transform:uppercase}",
-  ".zcmd-loading{color:var(--dim);text-align:center;padding:16px}",
-  ".zcmd-log{display:flex;flex-direction:column;gap:2px}",
-  ".zcmd-log-line{font-size:11px;color:var(--muted);padding:3px 0}",
-  ".zcmd-log-time{color:var(--copper);margin-right:8px;min-width:70px;display:inline-block}",
-  ".zlab{padding:20px;font-family:'JetBrains Mono',monospace;font-size:13px;height:100%;overflow-y:auto}",
-  ".zlab-tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--bord);padding-bottom:8px}",
-  ".zlab-tab{padding:8px 16px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--dim);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;transition:all 0.15s}",
-  ".zlab-tab:hover{color:var(--bone)}",
-  ".zlab-tab.active{background:rgba(192,139,92,0.12);border-color:var(--bord);color:var(--copper)}",
-  ".zlab-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--bone);margin-bottom:6px}",
-  ".zlab-desc{font-size:12px;color:var(--dim);margin-bottom:16px}",
-  ".zlab-input{width:100%;padding:12px;border-radius:6px;border:1px solid var(--bord);background:rgba(232,224,212,0.03);color:var(--bone);font-family:'JetBrains Mono',monospace;font-size:12px;resize:vertical;outline:none;transition:border-color 0.15s}",
-  ".zlab-input:focus{border-color:var(--copper)}",
-  ".zlab-input::placeholder{color:var(--dim)}",
-  ".zlab-btn{margin-top:10px;padding:8px 20px;border-radius:6px;border:1px solid var(--copper);background:rgba(192,139,92,0.15);color:var(--copper);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;transition:all 0.2s}",
-  ".zlab-btn:hover{background:rgba(192,139,92,0.25);transform:scale(1.05)}",
-  ".zlab-btn:disabled{opacity:0.4;cursor:not-allowed}",
-  ".zlab-results{margin-top:16px;padding:14px;border-radius:8px;border:1px solid rgba(192,139,92,0.2);background:rgba(192,139,92,0.04)}",
-  ".zlab-results-label{font-size:10px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}",
-  ".zlab-result{padding:6px 0;color:var(--muted);font-size:12px;line-height:1.5;border-bottom:1px solid var(--bord)}",
-  ".zlab-result:last-child{border-bottom:none}",
-  ".zlab-signal-grid{display:flex;flex-direction:column;gap:8px}",
-  ".zlab-signal{display:flex;align-items:center;gap:12px;padding:12px;border-radius:8px;border:1px solid var(--bord);background:rgba(232,224,212,0.02);transition:all 0.2s}",
-  ".zlab-signal.found{border-color:var(--verd);background:rgba(93,170,150,0.06)}",
-  ".zlab-signal-icon{font-size:24px;width:36px;text-align:center}",
-  ".zlab-signal-name{font-size:13px;font-weight:600;color:var(--bone);margin-bottom:2px}",
-  ".zlab-signal-hint{font-size:11px;color:var(--dim)}",
-  ".zlab-signal-check{font-size:16px;color:var(--dim)}",
-  ".zlab-signal.found .zlab-signal-check{color:var(--verd)}",
-  ".zlab-signal-count{margin-top:14px;text-align:center;font-size:12px;color:var(--dim)}",
-  ".zk-overlay{position:fixed;inset:0;z-index:99998;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px)}",
-  ".zk-text{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;color:var(--copper);text-shadow:0 0 30px var(--copper);animation:zpulse 1s infinite}",
-  "@keyframes zpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.8;transform:scale(1.05)}}",
-  ".zk-sub{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--verd);margin-top:12px}",
-  ".zbrf{padding:20px;font-family:'JetBrains Mono',monospace;font-size:13px;height:100%;overflow-y:auto}",
-  ".zbrf-header{margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--bord)}",
-  ".zbrf-greeting{font-family:'Playfair Display',serif;font-size:24px;color:var(--bone);margin-bottom:4px}",
-  ".zbrf-date{font-size:12px;color:var(--dim)}",
-  ".zbrf-section{margin-bottom:20px}",
-  ".zbrf-label{font-size:10px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}",
-  ".zbrf-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:6px;border:1px solid var(--bord);background:rgba(232,224,212,0.02);margin-bottom:6px;font-size:12px;color:var(--bone)}",
-  ".zbrf-days{display:flex;flex-wrap:wrap;gap:6px}",
-  ".zbrf-day{padding:8px 14px;border-radius:6px;border:1px solid var(--bord);background:transparent;color:var(--muted);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;transition:all 0.15s}",
-  ".zbrf-day:hover{border-color:var(--copper);color:var(--bone)}",
-  ".zbrf-day.active{background:rgba(192,139,92,0.15);border-color:var(--copper);color:var(--copper)}",
-  ".zbrf-slots{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}",
-  ".zbrf-slot{padding:10px;border-radius:6px;border:1px solid var(--bord);background:transparent;color:var(--bone);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;text-align:center;transition:all 0.15s}",
-  ".zbrf-slot:hover:not(:disabled){border-color:var(--copper);background:rgba(192,139,92,0.06)}",
-  ".zbrf-slot.active{background:rgba(192,139,92,0.15);border-color:var(--copper);color:var(--copper)}",
-  ".zbrf-slot.busy{opacity:0.35;cursor:not-allowed;text-decoration:line-through}",
-  ".zbrf-slot-time{font-size:10px;color:var(--dim)}",
-  ".zbrf-input{display:block;width:100%;padding:10px 14px;margin-bottom:8px;border-radius:6px;border:1px solid var(--bord);background:rgba(232,224,212,0.03);color:var(--bone);font-family:'JetBrains Mono',monospace;font-size:12px;outline:none;transition:border-color 0.15s}",
-  ".zbrf-input:focus{border-color:var(--copper)}",
-  ".zbrf-input::placeholder{color:var(--dim)}",
-  ".zbrf-submit{margin-top:8px;padding:10px 24px;border-radius:6px;border:1px solid var(--copper);background:rgba(192,139,92,0.15);color:var(--copper);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;transition:all 0.2s}",
-  ".zbrf-submit:hover{background:rgba(192,139,92,0.25)}",
-  ".zbrf-submit:disabled{opacity:0.4;cursor:not-allowed}",
-  ".zbrf-confirmed{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;text-align:center}",
-  ".zbrf-confirmed-icon{font-size:56px}",
-  ".zbrf-confirmed-title{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:var(--bone)}",
-  ".zbrf-confirmed-detail{font-size:14px;color:var(--copper)}",
-  ".zbrf-confirmed-sub{font-size:12px;color:var(--dim)}",
-  ".zbrf-reset{margin-top:12px;padding:8px 20px;border-radius:6px;border:1px solid var(--bord);background:transparent;color:var(--bone);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;transition:all 0.15s}",
-  ".zbrf-reset:hover{border-color:var(--copper)}",
-  ".zbrf-footer{margin-top:16px;text-align:center;font-size:10px;color:var(--dim);padding-top:12px;border-top:1px solid var(--bord)}",
-  ".zbrf-footer a{color:var(--copper);text-decoration:none}",
-  ".zbrf-footer a:hover{text-decoration:underline}",
-  ".zstore{padding:20px;font-family:'JetBrains Mono',monospace;font-size:13px;height:100%;overflow-y:auto}",
-  ".zstore-hdr{margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--bord)}",
-  ".zstore-title{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--bone)}",
-  ".zstore-sub{font-size:12px;color:var(--dim);margin-left:12px}",
-  ".zstore-grid{display:flex;flex-direction:column;gap:10px}",
-  ".zstore-card{display:flex;align-items:center;gap:16px;padding:16px;border-radius:8px;border:1px solid var(--bord);background:rgba(232,224,212,0.02);transition:all 0.2s}",
-  ".zstore-card:hover{border-color:rgba(192,139,92,0.3);background:rgba(192,139,92,0.04)}",
-  ".zstore-card-icon{font-size:32px;width:48px;text-align:center;flex-shrink:0}",
-  ".zstore-card-info{flex:1}",
-  ".zstore-card-name{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:var(--bone);margin-bottom:3px}",
-  ".zstore-card-desc{font-size:11px;color:var(--muted);margin-bottom:6px}",
-  ".zstore-card-bottom{display:flex;gap:10px;align-items:center}",
-  ".zstore-price{color:var(--copper);font-weight:700;font-size:14px}",
-  ".zstore-tag{font-size:9px;padding:2px 8px;border-radius:3px;background:rgba(232,224,212,0.05);color:var(--dim);border:1px solid var(--bord);text-transform:uppercase;letter-spacing:0.5px}",
-  ".zstore-buy{padding:8px 18px;border-radius:6px;border:1px solid var(--copper);background:rgba(192,139,92,0.12);color:var(--copper);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;transition:all 0.2s;flex-shrink:0}",
-  ".zstore-buy:hover{background:rgba(192,139,92,0.25);transform:scale(1.05)}",
-  ".zss-canvas{position:fixed;inset:0;z-index:99997;cursor:pointer}",
-  ".ztoast-container{position:fixed;top:12px;right:12px;z-index:99999;display:flex;flex-direction:column;gap:8px;pointer-events:none}",
-  ".ztoast{pointer-events:auto;display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:8px;background:rgba(21,21,25,0.95);backdrop-filter:blur(16px);border:1px solid var(--bord2);box-shadow:0 8px 24px rgba(0,0,0,0.4);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--bone);animation:ztoastIn 0.3s ease}",
-  "@keyframes ztoastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}",
-  ".ztoast-success{border-color:rgba(93,170,150,0.3)}",
-  ".ztoast-egg{border-color:rgba(192,139,92,0.4);background:rgba(30,25,20,0.95)}",
-  ".ztoast-msg{flex:1}",
-  ".ztoast-close{background:none;border:none;color:var(--dim);cursor:pointer;font-size:14px;padding:0 4px}",
-  "@media(max-width:768px){body{cursor:auto}.zc-halo{display:none}.zp-canvas{opacity:0.3}.zos-wm-logo{width:120px}.zos-dclock{top:12px;right:12px}.zos-dclock-time{font-size:28px}.zos-dstatus{display:none}.zi{position:fixed;top:60px;left:0;right:0;bottom:56px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:16px;align-content:start;overflow-y:auto}.zd{width:auto}.zw{position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:calc(100vh - 48px)!important;border-radius:0!important;z-index:500!important}.zw-rsz{display:none}.zt{height:52px;padding:0 4px}.zt-start{padding:6px 10px;font-size:11px}.zt-tabs{gap:1px}.zt-tab{padding:4px 8px;font-size:10px}.zt-tray{gap:8px;padding:0 4px}.zsm{width:calc(100vw - 16px);left:8px;bottom:60px;border-radius:16px}.zcp{width:calc(100vw - 16px);top:10%;left:8px;transform:none;border-radius:16px}.zhelp{top:8%;left:8px;transform:none;width:calc(100vw - 16px)}.zhelp-row{grid-template-columns:1fr;gap:8px}.zctx{display:none}.za-files{grid-template-columns:1fr 1fr}.zproj-grid{grid-template-columns:1fr}.zcmd-grid{grid-template-columns:1fr}.zcmd-panel.wide{grid-column:1}.zset-info-grid{grid-template-columns:1fr}.zbrf-slots{grid-template-columns:1fr}}",
-  "@media(max-width:480px){.zi{grid-template-columns:repeat(3,1fr)}.zd-ico{font-size:28px}.zd-lbl{font-size:9px}.za-files{grid-template-columns:1fr}.zcmd-metrics{grid-template-columns:1fr 1fr}.zset-info-grid{grid-template-columns:1fr}.zbrf-slots{grid-template-columns:1fr}}",
-  ".zbrf-tweet-text{color:var(--bone);font-size:12px;line-height:1.5;margin-bottom:4px}",
-  ".zbrf-tweet-meta{font-size:10px;color:var(--dim)}",
-  ".zstore-note{margin-top:16px;padding:12px;border-radius:6px;background:rgba(93,170,150,0.06);border:1px solid rgba(93,170,150,0.15);font-size:11px;color:var(--verd);text-align:center}",
-  ".zbrf-error{color:#e87171;font-size:12px;margin-top:6px;padding:8px;border-radius:4px;background:rgba(232,113,113,0.08)}",
-].join("\n");
 ```
 
-### `/zos/lite` (page, private)
+### `/zos-lite` (page, public)
 
 ```tsx
-// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useMemo } from "react";
 
 const CALENDLY_URL = "https://calendly.com/zenlytics/discovery-session";
@@ -29011,9 +26979,9 @@ const STYLES = `
 - `BUILDIN_CLIENT_ID`
 - `BUILDIN_CLIENT_SECRET`
 - `OMNIROUTE_ADMIN_API`
-- `COSTCO_APP_PASSCODE`
 - `TEABLE_API_KEY`
 - `RECEIPT_TRACKER_PASSCODE`
+- `COSTCO_APP_PASSCODE`
 - `SPEECH_GAME_PASSCODE`
 - `SENDFOX_ACCESS_TOKEN`
 - `VOI_LOCKDOWN`
