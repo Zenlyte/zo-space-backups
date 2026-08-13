@@ -11,9 +11,9 @@ exported: 2026-08-13
 
 ## Routes
 
-### `/model-explorer` (page, private)
+### `/model-explorer` (undefined, private)
 
-```tsx
+```typescript
 import { useState, useEffect, useMemo, useCallback, Fragment, type CSSProperties } from "react";
 import {
   Search, Filter, Database, Zap, ChevronDown, ChevronRight, X,
@@ -1644,7 +1644,7 @@ function PromptWorkbench() {
 }
 ```
 
-### `/api/agents` (api, public)
+### `/api/agents` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -1698,9 +1698,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/temporal` (page, private)
+### `/temporal` (undefined, private)
 
-```tsx
+```typescript
 import { useEffect, useState, useRef } from "react";
 
 const COLORS = {
@@ -1970,7 +1970,7 @@ export default function TemporalDashboard() {
 }
 ```
 
-### `/api/temporal-auth-check` (api, public)
+### `/api/temporal-auth-check` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -2011,7 +2011,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/temporal/*` (api, public)
+### `/api/temporal/*` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -2067,7 +2067,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/share/:id/download` (api, public)
+### `/api/share/:id/download` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -2148,7 +2148,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/flowpulse` (api, public)
+### `/api/flowpulse` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -2284,9 +2284,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/zo-space-theme-gallery/:id` (page, public)
+### `/zo-space-theme-gallery/:id` (undefined, public)
 
-```tsx
+```typescript
 import { useEffect, useMemo, useState, useRef } from "react";
 import { ArrowLeft, Copy, Palette, Check, SunMedium, Moon, Eye, X } from "lucide-react";
 import { marked } from "marked";
@@ -2570,9 +2570,9 @@ export default function ThemeDetail() {
 }
 ```
 
-### `/blog` (page, public)
+### `/blog` (undefined, public)
 
-```tsx
+```typescript
 import { useState, useEffect, useRef } from "react";
 import { ArrowRight, ArrowLeft, Clock, Tag, Search, Filter, X, Menu, Lock } from "lucide-react";
 
@@ -2967,7 +2967,7 @@ export default function Blog() {
 }
 ```
 
-### `/api/blog/:slug` (api, public)
+### `/api/blog/:slug` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -3056,9 +3056,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/Zo-Ops` (page, private)
+### `/Zo-Ops` (undefined, private)
 
-```tsx
+```typescript
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -3891,9 +3891,9 @@ function ProjectModal({ project, onClose, onSave, columns, priorityColumns, colo
 }
 ```
 
-### `/blog/:slug` (page, public)
+### `/blog/:slug` (undefined, public)
 
-```tsx
+```typescript
 import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Clock, Tag, Share2, ChevronUp } from "lucide-react";
 
@@ -4297,7 +4297,7 @@ export default function BlogPost() {
 }
 ```
 
-### `/api/career-ops/scan-history` (api, public)
+### `/api/career-ops/scan-history` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -4312,7 +4312,7 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/skills-gallery` (api, public)
+### `/api/skills-gallery` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -4653,9 +4653,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/skills-gallery` (page, private)
+### `/skills-gallery` (undefined, private)
 
-```tsx
+```typescript
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Search, Loader2, X, Tag, FolderOpen, ChevronRight, Menu, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -5070,7 +5070,7 @@ export default function SkillsGallery() {
 }
 ```
 
-### `/api/zo-space-theme-gallery/skill` (api, public)
+### `/api/zo-space-theme-gallery/skill` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -5097,7 +5097,7 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/zo-space-theme-gallery` (api, public)
+### `/api/zo-space-theme-gallery` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -5140,7 +5140,7 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/zo-space-theme-gallery/:id` (api, public)
+### `/api/zo-space-theme-gallery/:id` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -5190,9 +5190,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/icon-configurator` (page, public)
+### `/icon-configurator` (undefined, public)
 
-```tsx
+```typescript
 import { useState, useCallback, useEffect, useRef } from "react";
 import { 
   Download, Loader2, Wand2, ArrowLeft, Zap, Sparkles, Info, Menu, X, Lock,
@@ -5935,7 +5935,7 @@ export default function IconConfigurator() {
 }
 ```
 
-### `/api/logs` (api, public)
+### `/api/logs` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -6073,7 +6073,7 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/security` (api, public)
+### `/api/security` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -6227,7 +6227,7 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/failures` (api, public)
+### `/api/failures` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -6383,7 +6383,7 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/trivia/dates` (api, public)
+### `/api/trivia/dates` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -6415,7 +6415,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/calendar` (api, public)
+### `/api/calendar` (undefined, public)
 
 ```typescript
 /**
@@ -6628,7 +6628,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/extension-save` (api, public)
+### `/api/extension-save` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -6641,7 +6641,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/generate-icon` (api, public)
+### `/api/generate-icon` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -6925,9 +6925,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/share` (page, private)
+### `/share` (undefined, private)
 
-```tsx
+```typescript
 import { useState, useEffect, useRef } from "react";
 import { FolderIcon, FileIcon, ChevronLeft, ChevronRight, Copy, Check, Trash2, Link, Download, Users, ExternalLink, Menu, X, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -7469,7 +7469,7 @@ export default function SharePage() {
 }
 ```
 
-### `/api/test-write` (api, public)
+### `/api/test-write` (undefined, public)
 
 ```typescript
 import { promises as fs } from "node:fs";
@@ -7485,7 +7485,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/test-exec` (api, public)
+### `/api/test-exec` (undefined, public)
 
 ```typescript
 import { exec } from "node:child_process";
@@ -7504,9 +7504,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/zo-status` (page, public)
+### `/zo-status` (undefined, public)
 
-```tsx
+```typescript
 import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { 
@@ -8204,7 +8204,7 @@ function GlobalNav() {
 }
 ```
 
-### `/api/benchmarks/refresh` (api, public)
+### `/api/benchmarks/refresh` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -8226,7 +8226,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/billing` (api, public)
+### `/api/billing` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -8273,7 +8273,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/audit` (api, public)
+### `/api/audit` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -8322,7 +8322,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/test-env` (api, public)
+### `/api/test-env` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -8336,9 +8336,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/` (page, public)
+### `/` (undefined, public)
 
-```tsx
+```typescript
 import { useState, useEffect, useRef } from "react";
 import {
   ArrowRight, Github, Twitter, Linkedin, MessageSquare, Send, CheckCircle,
@@ -9093,9 +9093,9 @@ export default function Home() {
 }
 ```
 
-### `/receipts` (page, public)
+### `/receipts` (undefined, public)
 
-```tsx
+```typescript
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   Upload, Search, Image as ImageIcon, Loader2, Lock, ArrowUpDown, ArrowUp, ArrowDown, CheckCircle2, RefreshCw, AlertCircle, X, ZoomIn, ZoomOut, RotateCw, Maximize2, Minimize2, Receipt, ArrowLeft, Menu,
@@ -9739,7 +9739,7 @@ export default function RetailReceiptTracker() {
 }
 ```
 
-### `/api/diagnose` (api, public)
+### `/api/diagnose` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -9776,7 +9776,7 @@ Please diagnose the issue, attempt to repair it, and once you have finished, sen
 };
 ```
 
-### `/api/receipts` (api, public)
+### `/api/receipts` (undefined, public)
 
 ```typescript
 import { promises as fs } from 'node:fs';
@@ -10030,7 +10030,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model-explorer/workbench` (api, public)
+### `/api/model-explorer/workbench` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -10152,9 +10152,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/dashboard` (page, private)
+### `/dashboard` (undefined, private)
 
-```tsx
+```typescript
 /**
  * Family Butler Dashboard - Phase 3.3, 4.1 & 4.2
  * Updates: TwinMind Synthesis (3.3), Mobile PWA (4.1), Interactive Actions (4.2)
@@ -10664,7 +10664,7 @@ export default function FamilyDashboard() {
 }
 ```
 
-### `/api/twinmind` (api, public)
+### `/api/twinmind` (undefined, public)
 
 ```typescript
 /**
@@ -10763,7 +10763,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/datasets/start` (api, public)
+### `/api/datasets/start` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -10865,7 +10865,7 @@ EOF`
 };
 ```
 
-### `/docs` (api, public)
+### `/docs` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -10875,7 +10875,7 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/sites` (api, public)
+### `/api/sites` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -10927,7 +10927,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/my-models` (api, public)
+### `/api/my-models` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -10963,9 +10963,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/knowledge-graph` (page, private)
+### `/knowledge-graph` (undefined, private)
 
-```tsx
+```typescript
 import React, { useState, useEffect, useRef } from "react";
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -11812,7 +11812,7 @@ export default function KnowledgeGraph() {
 }
 ```
 
-### `/api/updates` (api, public)
+### `/api/updates` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -11961,7 +11961,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/blog` (api, public)
+### `/api/blog` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -12070,7 +12070,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg-search` (api, public)
+### `/kg-search` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -12096,7 +12096,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/share` (api, public)
+### `/api/share` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -12282,9 +12282,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/profile` (page, public)
+### `/profile` (undefined, public)
 
-```tsx
+```typescript
 import React, { useState, useEffect, useRef } from "react";
 import { MapPin, ExternalLink, Github, ChevronUp, ArrowUpRight, Layers, Cpu, Bot, Puzzle, Zap, Rss, BookOpen, FolderKanban, LayoutGrid, Clock, Tag, Heart, MessageCircle, Menu, X, Lock, PenLine, Palette, Settings, Share2, Briefcase, LayoutDashboard, Sparkles } from "lucide-react";
 
@@ -12856,7 +12856,7 @@ function GlobalNav({ links = [] }: { links?: any[] }) {
 }
 ```
 
-### `/kg-entity` (api, public)
+### `/kg-entity` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -12888,7 +12888,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/models` (api, public)
+### `/api/models` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -12920,7 +12920,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg-by-type` (api, public)
+### `/kg-by-type` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -12952,7 +12952,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg-stats` (api, public)
+### `/kg-stats` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -12972,7 +12972,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg-recall` (api, public)
+### `/kg-recall` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -12998,7 +12998,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg-browse` (api, public)
+### `/kg-browse` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -13058,7 +13058,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg-graph` (api, public)
+### `/kg-graph` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -13087,7 +13087,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/files` (api, public)
+### `/api/files` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -13176,7 +13176,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/services` (api, public)
+### `/api/services` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -13233,7 +13233,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/system-stats` (api, public)
+### `/api/system-stats` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -13272,7 +13272,7 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/credits` (api, public)
+### `/api/credits` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -13322,9 +13322,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/zo-space-theme-gallery` (page, public)
+### `/zo-space-theme-gallery` (undefined, public)
 
-```tsx
+```typescript
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { 
   Search, SunMedium, Moon, Filter, ChevronRight, Palette, Copy, Check, Eye, X, Menu, Lock,
@@ -13946,9 +13946,9 @@ export default function ThemeGallery() {
 }
 ```
 
-### `/zo-control-deck` (page, private)
+### `/zo-control-deck` (undefined, private)
 
-```tsx
+```typescript
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Activity, Server, Bot, CreditCard, Shield, AlertTriangle, FileText, Globe, Menu, X, ChevronDown, ChevronRight, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -14871,9 +14871,9 @@ function StatCard({ label, value, sub, onClick, accent }: { label: string; value
 }
 ```
 
-### `/job-ops` (page, private)
+### `/job-ops` (undefined, private)
 
-```tsx
+```typescript
 import React, { useState, useEffect, useRef } from "react";
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -15058,9 +15058,9 @@ export default function JobOps() {
 }
 ```
 
-### `/telemetry` (page, private)
+### `/telemetry` (undefined, private)
 
-```tsx
+```typescript
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, ArrowLeft, Activity, RefreshCw, Terminal, Users, Zap, TrendingUp, Lock, ExternalLink, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -15371,7 +15371,7 @@ export default function TelemetryDashboard() {
 }
 ```
 
-### `/api/trivia/leaderboard` (api, public)
+### `/api/trivia/leaderboard` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -15456,9 +15456,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/zo-city-three-test` (page, public)
+### `/zo-city-three-test` (undefined, public)
 
-```tsx
+```typescript
 import { useEffect, useRef, useState } from "react";
 
 export default function Page() {
@@ -15531,7 +15531,7 @@ export default function Page() {
 }
 ```
 
-### `/api/trivia/random` (api, public)
+### `/api/trivia/random` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -15616,7 +15616,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/trivia/by-date` (api, public)
+### `/api/trivia/by-date` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -15755,9 +15755,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/trivia` (page, public)
+### `/trivia` (undefined, public)
 
-```tsx
+```typescript
 import React, { useState, useEffect, useRef } from "react";
 import { 
   Trophy, Calendar, Shuffle, ChevronLeft, CheckCircle, XCircle, 
@@ -16639,9 +16639,9 @@ export default function TriviaQuiz() {
 }
 ```
 
-### `/repurpose` (page, private)
+### `/repurpose` (undefined, private)
 
-```tsx
+```typescript
 import { useMemo, useState } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Copy, Check, Lock, Sparkles, Globe, Clock3, Shield } from "lucide-react";
@@ -16951,7 +16951,7 @@ export default function ContentRepurposer() {
 }
 ```
 
-### `/api/datasets/proxy/*` (api, public)
+### `/api/datasets/proxy/*` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -17015,7 +17015,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/benchmarks` (api, public)
+### `/api/benchmarks` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -17164,7 +17164,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/career-ops/scan` (api, public)
+### `/api/career-ops/scan` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -17196,9 +17196,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/data/zo-trivia/` (page, private)
+### `/data/zo-trivia/` (undefined, private)
 
-```tsx
+```typescript
 import React, { useEffect, useState } from "react";
 import { 
   Bar, 
@@ -17511,9 +17511,9 @@ function StatCard({ title, value, icon, color }: { title: string, value: any, ic
 }
 ```
 
-### `/speech-game` (page, public)
+### `/speech-game` (undefined, public)
 
-```tsx
+```typescript
 import { useState, useEffect, useCallback } from "react";
 import { Lock, Loader2 } from "lucide-react";
 
@@ -18133,9 +18133,9 @@ export default function SpeechGame() {
 }
 ```
 
-### `/speech-game/stickers` (page, public)
+### `/speech-game/stickers` (undefined, public)
 
-```tsx
+```typescript
 import { useState, useEffect } from "react";
 import { Lock, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -18445,7 +18445,7 @@ export default function Stickers() {
 }
 ```
 
-### `/api/speech-game-auth` (api, public)
+### `/api/speech-game-auth` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -18459,7 +18459,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/career-ops/batch` (api, public)
+### `/api/career-ops/batch` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -18493,7 +18493,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/speech-game-manifest.json` (api, public)
+### `/speech-game-manifest.json` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -18524,7 +18524,7 @@ export default (c: Context) => {
 };
 ```
 
-### `/speech-game-sw.js` (api, public)
+### `/speech-game-sw.js` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -18581,7 +18581,7 @@ export default (c: Context) => {
 };
 ```
 
-### `/data/zo-trivia/api/query` (api, public)
+### `/data/zo-trivia/api/query` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -18670,9 +18670,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/buildin-auth` (page, private)
+### `/buildin-auth` (undefined, private)
 
-```tsx
+```typescript
 import { useState, useEffect } from "react";
 
 export default function BuildinAuth() {
@@ -18809,7 +18809,7 @@ export default function BuildinAuth() {
 }
 ```
 
-### `/api/buildin/disconnect` (api, public)
+### `/api/buildin/disconnect` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -18828,7 +18828,7 @@ export default async (c: Context) => {
 }
 ```
 
-### `/api/projects` (api, public)
+### `/api/projects` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -18934,7 +18934,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/test-deps` (api, public)
+### `/api/test-deps` (undefined, public)
 
 ```typescript
 export default async (c) => {
@@ -18950,7 +18950,7 @@ export default async (c) => {
 };
 ```
 
-### `/api/zos/now` (api, public)
+### `/api/zos/now` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -18979,7 +18979,7 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/zos/build-log` (api, public)
+### `/api/zos/build-log` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -19004,9 +19004,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/speech-game/stats` (page, public)
+### `/speech-game/stats` (undefined, public)
 
-```tsx
+```typescript
 import { useState, useEffect } from "react";
 import { Lock, Loader2 } from "lucide-react";
 
@@ -19474,7 +19474,7 @@ export default function StatsPage() {
 }
 ```
 
-### `/api/auth-status` (api, public)
+### `/api/auth-status` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -19494,9 +19494,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/zo-city` (page, public)
+### `/zo-city` (undefined, public)
 
-```tsx
+```typescript
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 
 const TW = 16, TH = 8;
@@ -20131,9 +20131,9 @@ export default function ZoCity() {
 }
 ```
 
-### `/about-the-build` (page, public)
+### `/about-the-build` (undefined, public)
 
-```tsx
+```typescript
 import { useState } from "react";
 
 export default function AboutTheBuild() {
@@ -20369,9 +20369,9 @@ const ATB_CSS = [
 ].join("\n");
 ```
 
-### `/404` (page, public)
+### `/404` (undefined, public)
 
-```tsx
+```typescript
 import { useState, useEffect } from "react";
 
 export default function NotFound() {
@@ -20467,7 +20467,7 @@ const NF_CSS = [
 ].join("\n");
 ```
 
-### `/api/zos/signals` (api, public)
+### `/api/zos/signals` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -20487,7 +20487,7 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/career-ops` (api, public)
+### `/api/career-ops` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -20560,9 +20560,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/career-ops` (page, private)
+### `/career-ops` (undefined, private)
 
-```tsx
+```typescript
 import { useState, useEffect, useCallback } from "react";
 import {
   Briefcase, FileText, TrendingUp, BarChart3, Plus,
@@ -20909,7 +20909,7 @@ export default function CareerOpsDashboard() {
 }
 ```
 
-### `/api/career-ops/pipeline` (api, public)
+### `/api/career-ops/pipeline` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -20927,7 +20927,7 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/career-ops/applications` (api, public)
+### `/api/career-ops/applications` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -20951,7 +20951,7 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/health-check` (api, public)
+### `/api/health-check` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -21175,7 +21175,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/speech-game-data` (api, public)
+### `/api/speech-game-data` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -21403,7 +21403,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/telemetry-data` (api, public)
+### `/api/telemetry-data` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -21514,9 +21514,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/model-advisor` (page, public)
+### `/model-advisor` (undefined, public)
 
-```tsx
+```typescript
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { Brain, Zap, DollarSign, Download, ChevronDown, ChevronUp, Sparkles, ArrowUpDown, Check, Info, Calculator, Trophy, Star, Target, MessageSquare, Code, BookOpen, Scale, Cpu, Sun, Moon, Bot, X, Filter, Search } from "lucide-react";
 
@@ -22067,7 +22067,7 @@ export default function ModelAdvisor() {
 }
 ```
 
-### `/api/buildin/callback` (api, public)
+### `/api/buildin/callback` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -22160,7 +22160,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/datasets/viewer` (api, public)
+### `/api/datasets/viewer` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -22260,9 +22260,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/data-explorer` (page, private)
+### `/data-explorer` (undefined, private)
 
-```tsx
+```typescript
 import { useEffect } from "react";
 
 export default function DataExplorerRedirect() {
@@ -22275,7 +22275,7 @@ export default function DataExplorerRedirect() {
 }
 ```
 
-### `/api/datasets/list` (api, public)
+### `/api/datasets/list` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -22350,9 +22350,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/puzzle-callback` (page, public)
+### `/api/puzzle-callback` (undefined, public)
 
-```tsx
+```typescript
 export default function PuzzleCallback() {
   return (
     <div className="min-h-screen bg-zinc-900 text-white flex items-center justify-center">
@@ -22400,7 +22400,7 @@ export default function PuzzleCallback() {
 }
 ```
 
-### `/api/nav-links` (api, public)
+### `/api/nav-links` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -22469,9 +22469,9 @@ export default (c: Context) => {
 };
 ```
 
-### `/s/:id` (page, public)
+### `/s/:id` (undefined, public)
 
-```tsx
+```typescript
 // @zo-theme: web3 | applied: 2026-03-02T07:00:00Z
 import { useState, useEffect, useRef } from "react";
 import { Download, Check, Zap, Menu, X, Lock } from "lucide-react";
@@ -22830,7 +22830,7 @@ function GlobalNav() {
 }
 ```
 
-### `/api/share/:id` (api, public)
+### `/api/share/:id` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -22941,7 +22941,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/trivia` (api, public)
+### `/api/trivia` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -23130,9 +23130,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/trivia/archive` (page, private)
+### `/trivia/archive` (undefined, private)
 
-```tsx
+```typescript
 import React, { useState, useEffect, useRef } from "react";
 import { 
   Calendar, ChevronLeft, ChevronRight, Clock, 
@@ -23464,7 +23464,7 @@ export default function TriviaArchive() {
 }
 ```
 
-### `/api/family-log` (api, public)
+### `/api/family-log` (undefined, public)
 
 ```typescript
 import { readFile, writeFile } from "node:fs/promises";
@@ -23630,9 +23630,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/trivia/leaderboard` (page, private)
+### `/trivia/leaderboard` (undefined, private)
 
-```tsx
+```typescript
 import React, { useState, useEffect, useRef } from "react";
 import { 
   Trophy, Medal, Users, ArrowLeft, ArrowRight, 
@@ -24004,7 +24004,7 @@ export default function TriviaLeaderboard() {
 }
 ```
 
-### `/api/trivia/user-stats` (api, public)
+### `/api/trivia/user-stats` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -24079,7 +24079,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/projects-conversations` (api, public)
+### `/api/projects-conversations` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -24125,7 +24125,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/receipt-images` (api, public)
+### `/api/receipt-images` (undefined, public)
 
 ```typescript
 import { promises as fs } from 'node:fs';
@@ -24171,7 +24171,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/buildin/status` (api, public)
+### `/api/buildin/status` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -24207,9 +24207,9 @@ export default async (c: Context) => {
 }
 ```
 
-### `/secret` (page, public)
+### `/secret` (undefined, public)
 
-```tsx
+```typescript
 import { useState, useEffect } from "react";
 
 export default function SecretPage() {
@@ -24325,7 +24325,7 @@ const SEC_CSS = [
 ].join("\n");
 ```
 
-### `/api/contact` (api, public)
+### `/api/contact` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -24384,7 +24384,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/x-feed` (api, public)
+### `/api/x-feed` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -24551,9 +24551,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/press` (page, public)
+### `/press` (undefined, public)
 
-```tsx
+```typescript
 import { useState, useEffect } from "react";
 
 export default function PressPage() {
@@ -24748,9 +24748,9 @@ const PR_CSS = [
 ].join("\n");
 ```
 
-### `/zos-lite` (page, public)
+### `/zos-lite` (undefined, public)
 
-```tsx
+```typescript
 import { useState, useEffect, useMemo } from "react";
 
 const CALENDLY_URL = "https://calendly.com/zenlytics/discovery-session";
@@ -25047,7 +25047,7 @@ const STYLES = `
 `;
 ```
 
-### `/api/zo-city-data` (api, public)
+### `/api/zo-city-data` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -25136,7 +25136,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/voi-zos` (api, public)
+### `/api/voi-zos` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -25500,9 +25500,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/zos` (page, public)
+### `/zos` (undefined, public)
 
-```tsx
+```typescript
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
 const BOOT_LINES: [string, number][] = [
@@ -26400,7 +26400,7 @@ const CSS_STYLES = [
 ].join("\n");
 ```
 
-### `/api/model-explorer/models` (api, public)
+### `/api/model-explorer/models` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -26506,7 +26506,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model-explorer/sync` (api, public)
+### `/api/model-explorer/sync` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -26560,7 +26560,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model-explorer/stats` (api, public)
+### `/api/model-explorer/stats` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -26635,9 +26635,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/zoboard` (page, private)
+### `/zoboard` (undefined, private)
 
-```tsx
+```typescript
 import { useState, useEffect } from "react";
 import { Layout, AlertCircle, Loader2 } from "lucide-react";
 
@@ -26739,7 +26739,7 @@ export default function ZoBoard() {
 }
 ```
 
-### `/api/zoboard/*` (api, public)
+### `/api/zoboard/*` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -27131,7 +27131,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model-explorer/import-omniroute` (api, public)
+### `/api/model-explorer/import-omniroute` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -27335,9 +27335,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/zoboard/:slug` (page, private)
+### `/zoboard/:slug` (undefined, private)
 
-```tsx
+```typescript
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
@@ -27968,7 +27968,7 @@ function CardDrawer({
 }
 ```
 
-### `/api/trivia/subscribe` (api, public)
+### `/api/trivia/subscribe` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -28092,7 +28092,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model-explorer/providers` (api, public)
+### `/api/model-explorer/providers` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -28214,7 +28214,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model-explorer/providers/delete` (api, public)
+### `/api/model-explorer/providers/delete` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -28338,9 +28338,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/openclaw-dashboard` (page, private)
+### `/openclaw-dashboard` (undefined, private)
 
-```tsx
+```typescript
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -28551,7 +28551,7 @@ export default function OpenClawDashboard() {
 }
 ```
 
-### `/api/byok-reference` (api, public)
+### `/api/byok-reference` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -28706,9 +28706,9 @@ export default async (c: Context) => {
 };
 ```
 
-### `/byok-reference` (page, private)
+### `/byok-reference` (undefined, private)
 
-```tsx
+```typescript
 import { useEffect, useMemo, useState } from "react";
 import { Copy, Check, RefreshCw, Database, Search, ExternalLink, AlertCircle, Clock } from "lucide-react";
 
@@ -29070,7 +29070,7 @@ export default function ByokReference() {
 }
 ```
 
-### `/api/twinmind-callback` (api, public)
+### `/api/twinmind-callback` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -29107,7 +29107,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/bydesign/callback` (api, public)
+### `/api/bydesign/callback` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -29167,7 +29167,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/trivia/unsubscribe` (api, public)
+### `/api/trivia/unsubscribe` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
@@ -29289,7 +29289,7 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/oauth-mcp/callback` (api, public)
+### `/api/oauth-mcp/callback` (undefined, public)
 
 ```typescript
 import type { Context } from "hono";
