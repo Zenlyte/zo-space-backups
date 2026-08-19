@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-08-19T11:34:55.139926+00:00",
+  "route_count": 144,
+  "asset_count": 57,
+  "routes_hash": "9c96a4db72d5362989ec64d13ebdee17b4fec3e2cdbc13540909fe66e9424734",
+  "assets_hash": "bfc7ae03ec6e785f3a328ad6ac414f28565c41379c61315b46e79d4e0afab7fb",
+  "snapshot": "zo-space-backup-20260819T113455Z.json",
+  "note": "Full code backup with change detection."
+}
