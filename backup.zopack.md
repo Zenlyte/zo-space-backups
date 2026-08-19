@@ -3,7 +3,7 @@ format: zopack
 version: "1.0"
 name: zo-space-backup
 author: curtastrophe.zo.computer
-routes: 144
+routes: 145
 exported: 2026-08-19
 ---
 
@@ -11,766 +11,16 @@ exported: 2026-08-19
 
 ## Routes
 
-### `/` (page, public)
+### `/` (page, private)
 
 ```tsx
-import { useState, useEffect, useRef } from "react";
-import {
-  ArrowRight, Github, Twitter, Linkedin, MessageSquare, Send, CheckCircle,
-  Database, Bot, Users, Wrench, ExternalLink, Gamepad2, Sparkles, Clock,
-  Tag, ChevronDown, Menu, X,
-  LayoutDashboard, Palette, Settings, Share2, Briefcase, PenLine, Lock
-} from "lucide-react";
 
-const COLORS = {
-  bg: "#0a0a0f",
-  card: "#0f1117",
-  cardHover: "#141420",
-  cyan: "#06b6d4",
-  cyanLight: "#22d3ee",
-  indigo: "#6366f1",
-  indigoLight: "#818cf8",
-  muted: "#94a3b8",
-  dimmed: "#64748b",
-  border: "rgba(255,255,255,0.08)",
-  borderHover: "rgba(6,182,212,0.4)",
-};
-
-const PROJECTS = [
-  { name: "Canadian Daycare Finder", desc: "A web service for Canadian parents to find, filter, and evaluate daycares using provincial data enriched with Google Maps and news.", status: "planned", tags: ["Web", "Data", "Maps"], link: null },
-  { name: "Theme Gallery", desc: "30+ design system themes for Zo Space with one-click application and live preview.", status: "completed", tags: ["Zo Space", "React", "Design"], link: "/zo-space-theme-gallery" },
-  { name: "MemWiki", desc: "Git-backed personal knowledge system and cognitive extension with consciousness continuity and multi-agent synthesis.", status: "completed", tags: ["TypeScript", "Git", "AI"], link: "/docs" },
-  { name: "Zo Icon Configurator", desc: "Custom Zo Computer logo generator with AI enhancement, theme presets, and canvas rendering.", status: "completed", tags: ["React", "AI", "Canvas"], link: "/icon-configurator" },
-  { name: "JobOps", desc: "Advanced job search orchestration platform with automated scraping, AI scoring, and resume tailoring.", status: "in-progress", tags: ["TypeScript", "AI", "Automation"], link: null },
-  { name: "Straico Rust Proxy", desc: "High-performance Rust-based proxy for Straico and Ollama model orchestration with streaming support.", status: "completed", tags: ["Rust", "API", "AI"], link: null },
-  { name: "Zo Discord Bot", desc: "Discord integration for Zo Computer with thread management, model overrides, and persistent memory.", status: "completed", tags: ["Python", "Discord", "AI"], link: null },
-  { name: "Temporal Dashboard", desc: "Temporal development server and workflow orchestration dashboard for complex distributed systems.", status: "in-progress", tags: ["Infra", "Workflow", "Orchestration"], link: null },
-  { name: "OpenClaw Dashboard", desc: "Management interface for OpenClaw multi-machine agent orchestration and distributed AI workloads.", status: "in-progress", tags: ["Python", "Agents", "Infra"], link: null },
-  { name: "Skill Gallery", desc: "Browsable gallery of Zo Computer skills with search, filtering, and easy installation.", status: "in-progress", tags: ["Zo Space", "Community"], link: null },
-  { name: "Zo Status", desc: "System health and service monitoring dashboard for tracking Zo Computer performance and availability.", status: "completed", tags: ["Monitoring", "Dashboard"], link: null },
-  { name: "Published Skills & PRs", desc: "Community contributions to the Zo skills ecosystem, open-source tools and integrations.", status: "completed", tags: ["TypeScript", "Open Source"], link: null },
-  { name: "Automations", desc: "Scheduled agents, notifications, digests, and workflow automation on Zo Computer.", status: "completed", tags: ["Agents", "Integrations"], link: null },
-  { name: "Receipts", desc: "Shared household expense tracker for tracking receipts and spending.", status: "completed", tags: ["Finance", "Zo Space"], link: null },
-  { name: "Family Butler Dashboard", desc: "Shared hub for schedules, tasks, and household information management.", status: "completed", tags: ["React", "Zo Space"], link: "/dashboard" },
-  { name: "Personal OS", desc: "Task management and personal productivity system built on Zo.", status: "in-progress", tags: ["Productivity", "Zo Space"], link: null },
-  { name: "Docs", desc: "Project documentation and knowledge base for the entire personal Zo ecosystem.", status: "in-progress", tags: ["Documentation", "Wiki"], link: "/docs" },
-  { name: "Prompt Gallery", desc: "Template library for curated and saved prompts across various AI use cases.", status: "in-progress", tags: ["Productivity", "AI"], link: null },
-  { name: "MCP Staging", desc: "Staging environment for developing and testing Model Context Protocol (MCP) servers.", status: "in-progress", tags: ["MCP", "Development"], link: null },
-];
-
-const SOCIAL_LINKS = [
-  { name: "X / Twitter", icon: Twitter, url: "https://x.com/curtastrophe_", color: "#1da1f2" },
-  { name: "LinkedIn", icon: Linkedin, url: "https://linkedin.com/in/curtischow", color: "#0a66c2" },
-  { name: "GitHub", icon: Github, url: "https://github.com/curtastrophe", color: "#f0f6fc" },
-  { name: "Reddit", icon: MessageSquare, url: "https://reddit.com/user/GoomiBare", color: "#ff4500" },
-];
-
-const NAV_ITEMS = ["About", "Projects", "Blog", "Social", "Contact"];
-
-const ZENNY_IDLE = "/pets/zenny-idle-v2.png";
-const ZENNY_RUN_RIGHT = "/pets/zenny-running-right-v2.png";
-const ZENNY_RUN_LEFT = "/pets/zenny-running-left-v2.png";
-
-const ZENNY_STATES = {
-  idle: { src: ZENNY_IDLE, frames: 6 },
-  left: { src: ZENNY_RUN_LEFT, frames: 8 },
-  right: { src: ZENNY_RUN_RIGHT, frames: 8 },
-} as const;
-
-function DraggableZenny() {
-  const [position, setPosition] = useState({ x: 24, y: 120 });
-  const [mode, setMode] = useState<keyof typeof ZENNY_STATES>("idle");
-  const [frame, setFrame] = useState(0);
-  const dragRef = useRef({ active: false, pointerId: -1, offsetX: 0, offsetY: 0, lastX: 0 });
-  const width = 96;
-  const height = 104;
-  const pet = ZENNY_STATES[mode];
-
-  useEffect(() => {
-    const placeZenny = () => {
-      setPosition({
-        x: Math.max(8, window.innerWidth - width - 32),
-        y: window.innerWidth < 768 ? 96 : 132,
-      });
-    };
-    placeZenny();
-    window.addEventListener("resize", placeZenny);
-    return () => window.removeEventListener("resize", placeZenny);
-  }, []);
-
-  useEffect(() => {
-    setFrame(0);
-    const id = window.setInterval(() => {
-      setFrame((current) => (current + 1) % ZENNY_STATES[mode].frames);
-    }, mode === "idle" ? 180 : 95);
-    return () => window.clearInterval(id);
-  }, [mode]);
-
-  const clamp = (x: number, y: number) => ({
-    x: Math.max(8, Math.min(window.innerWidth - width - 8, x)),
-    y: Math.max(84, Math.min(window.innerHeight - height - 8, y)),
-  });
-
-  const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    event.currentTarget.setPointerCapture(event.pointerId);
-    dragRef.current = {
-      active: true,
-      pointerId: event.pointerId,
-      offsetX: event.clientX - position.x,
-      offsetY: event.clientY - position.y,
-      lastX: event.clientX,
-    };
-  };
-
-  const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    const drag = dragRef.current;
-    if (!drag.active || drag.pointerId !== event.pointerId) return;
-    const dx = event.clientX - drag.lastX;
-    if (dx > 1) setMode("right");
-    if (dx < -1) setMode("left");
-    drag.lastX = event.clientX;
-    setPosition(clamp(event.clientX - drag.offsetX, event.clientY - drag.offsetY));
-  };
-
-  const stopDragging = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!dragRef.current.active || dragRef.current.pointerId !== event.pointerId) return;
-    dragRef.current.active = false;
-    setMode("idle");
-  };
-
-  return (
-    <div
-      role="button"
-      aria-label="Drag Zenny"
-      title="Drag Zenny"
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={stopDragging}
-      onPointerCancel={stopDragging}
-      className="fixed z-[60] cursor-grab active:cursor-grabbing select-none touch-none"
-      style={{
-        left: position.x,
-        top: position.y,
-        width,
-        height,
-        imageRendering: "pixelated",
-        backgroundImage: `url(${pet.src})`,
-        backgroundRepeat: "no-repeat",
-        backgroundSize: `${8 * width}px ${height}px`,
-        backgroundPosition: `-${frame * width}px 0px`,
-        filter: "drop-shadow(0 10px 18px rgba(0,0,0,0.35))",
-      }}
-    />
-  );
-}
-
-function HexAvatar({ size = 140 }: { size?: number }) {
-  const r = size / 2;
-  const points = Array.from({ length: 6 }, (_, i) => {
-    const angle = (Math.PI / 3) * i - Math.PI / 2;
-    return `${r + r * 0.92 * Math.cos(angle)},${r + r * 0.92 * Math.sin(angle)}`;
-  }).join(" ");
-  const outerPoints = Array.from({ length: 6 }, (_, i) => {
-    const angle = (Math.PI / 3) * i - Math.PI / 2;
-    return `${r + r * Math.cos(angle)},${r + r * Math.sin(angle)}`;
-  }).join(" ");
-
-  return (
-    <div className="relative" style={{ width: size, height: size }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <defs>
-          <linearGradient id="hex-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={COLORS.cyan} />
-            <stop offset="100%" stopColor={COLORS.indigo} />
-          </linearGradient>
-          <clipPath id="hex-clip">
-            <polygon points={points} />
-          </clipPath>
-        </defs>
-        <polygon points={outerPoints} fill="none" stroke="url(#hex-grad)" strokeWidth="2.5" />
-        <polygon points={points} fill={COLORS.card} />
-        <image
-          href="/images/avatar.png"
-          x="0"
-          y="0"
-          width={size}
-          height={size}
-          clipPath="url(#hex-clip)"
-          preserveAspectRatio="xMidYMid slice"
-        />
-      </svg>
-      <div className="absolute inset-0 opacity-30" style={{
-        background: `radial-gradient(circle at 30% 30%, ${COLORS.cyan}33, transparent 60%)`,
-        clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
-      }} />
-    </div>
-  );
-}
-
-function SectionHeader({ label, title, highlight }: { label: string; title: string; highlight: string }) {
-  return (
-    <div className="text-center mb-16">
-      <span className="text-xs font-mono tracking-widest uppercase" style={{ color: COLORS.cyan }}>{label}</span>
-      <h2 className="font-heading text-3xl md:text-5xl font-bold mt-3">
-        {title}{" "}
-        <span style={{
-          background: `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})`,
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-        }}>{highlight}</span>
-      </h2>
-    </div>
-  );
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const config: Record<string, { bg: string; text: string; label: string }> = {
-    completed: { bg: "rgba(34,197,94,0.15)", text: "#4ade80", label: "Completed" },
-    "in-progress": { bg: `${COLORS.cyan}20`, text: COLORS.cyanLight, label: "In Progress" },
-    planned: { bg: `${COLORS.indigo}20`, text: COLORS.indigoLight, label: "Planned" },
-  };
-  const c = config[status] || config.planned;
-  return (
-    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono tracking-wider uppercase"
-      style={{ background: c.bg, color: c.text, border: `1px solid ${c.text}30` }}>
-      {c.label}
-    </span>
-  );
-}
-
-interface PostMeta { slug: string; title: string; excerpt: string; date: string; tags: string[]; readTime: string; }
-
-export default function Home() {
-  const [mounted, setMounted] = useState(false);
-  const [activeFilter, setActiveFilter] = useState("all");
-  const [posts, setPosts] = useState<PostMeta[]>([]);
-  const [formState, setFormState] = useState({ name: "", email: "", message: "" });
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
-  const [formError, setFormError] = useState("");
-  const [mobileNav, setMobileNav] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [navLinks, setNavLinks] = useState<any[]>([]);
-  const [navAuth, setNavAuth] = useState(false);
-  const [pagesOpen, setPagesOpen] = useState(false);
-  const pagesRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setMounted(true);
-    fetch("/api/blog", { headers: { Accept: "application/json" } })
-      .then(r => r.json())
-      .then(d => setPosts((d.posts || []).slice(0, 3)))
-      .catch(() => {});
-    fetch("/api/nav-links", { headers: { Accept: "application/json" } })
-      .then(r => r.json())
-      .then(d => { setNavLinks(d.links || []); setNavAuth(d.authenticated); })
-      .catch(() => {});
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll);
-    const onClickOutside = (e: MouseEvent) => {
-      if (pagesRef.current && !pagesRef.current.contains(e.target as Node)) {
-        setPagesOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", onClickOutside);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      document.removeEventListener("mousedown", onClickOutside);
-    };
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSending(true);
-    setFormError("");
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(formState),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Something went wrong");
-      setSent(true);
-      setFormState({ name: "", email: "", message: "" });
-    } catch (err: any) {
-      setFormError(err.message || "Something went wrong");
-    } finally {
-      setSending(false);
-    }
-  };
-
-  const filteredProjects = activeFilter === "all" ? PROJECTS : PROJECTS.filter(p => p.status === activeFilter);
-
-  const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      const navHeight = 80;
-      const targetY = el.getBoundingClientRect().top + window.scrollY - navHeight;
-      window.scrollTo({ top: targetY, behavior: "smooth" });
-    } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  };
-
-  const ICON_MAP: Record<string, any> = {
-    "pencil": PenLine,
-    "palette": Palette,
-    "settings": Settings,
-    "layout-dashboard": LayoutDashboard,
-    "sparkles": Sparkles,
-    "share-2": Share2,
-    "clock": Clock,
-    "briefcase": Briefcase,
-  };
-
-  const filteredNavLinks = navLinks.filter((link: any) => link.path !== "/blog");
-
-  return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
-        * { box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        .font-heading { font-family: 'Space Grotesk', sans-serif; }
-        .font-body { font-family: 'Inter', sans-serif; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        .bg-grid {
-          background-size: 60px 60px;
-          background-image:
-            linear-gradient(to right, rgba(99,102,241,0.06) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(6,182,212,0.06) 1px, transparent 1px);
-        }
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-        @keyframes glow-pulse { 0%,100%{opacity:0.4} 50%{opacity:0.8} }
-        .animate-float { animation: float 6s ease-in-out infinite; }
-        .animate-glow { animation: glow-pulse 4s ease-in-out infinite; }
-        .glass { background: rgba(15,17,23,0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); }
-        .card-hover { transition: all 0.3s ease; }
-        .card-hover:hover { border-color: rgba(6,182,212,0.4); box-shadow: 0 0 30px -10px rgba(6,182,212,0.15); transform: translateY(-2px); }
-      `}</style>
-
-      <div className="min-h-screen text-white font-body relative overflow-hidden" style={{ background: COLORS.bg }}>
-        <DraggableZenny />
-        {/* Background effects */}
-        <div className="absolute inset-0 bg-grid pointer-events-none" />
-        <div className="absolute pointer-events-none" style={{ top: -200, left: "30%", width: 500, height: 500, background: COLORS.cyan, borderRadius: "50%", opacity: 0.04, filter: "blur(150px)" }} />
-        <div className="absolute pointer-events-none" style={{ bottom: -200, right: "10%", width: 400, height: 400, background: COLORS.indigo, borderRadius: "50%", opacity: 0.05, filter: "blur(120px)" }} />
-
-        {/* NAV */}
-        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "glass shadow-lg" : ""}`}>
-          <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <a href="/" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{
-                background: `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})`,
-                boxShadow: `0 0 20px -5px ${COLORS.cyan}80`,
-              }}>
-                <span className="text-white font-bold text-sm font-heading">C</span>
-              </div>
-              <span className="font-heading font-semibold text-lg">curtastrophe</span>
-            </a>
-            <div className="hidden md:flex items-center gap-6">
-              {NAV_ITEMS.map(item => (
-                item === "Blog" ? (
-                  <a key={item} href="/blog"
-                    className="text-xs font-mono tracking-widest uppercase transition-colors hover:text-white" style={{ color: COLORS.muted }}>
-                    {item}
-                  </a>
-                ) : (
-                  <button key={item} onClick={() => scrollToSection(item.toLowerCase())}
-                    className="text-xs font-mono tracking-widest uppercase transition-colors hover:text-white bg-transparent border-none cursor-pointer" style={{ color: COLORS.muted }}>
-                    {item}
-                  </button>
-                )
-              ))}
-              {filteredNavLinks.length > 0 && (
-                <div className="relative" ref={pagesRef}>
-                  <button
-                    onClick={() => setPagesOpen(!pagesOpen)}
-                    className="flex items-center gap-1.5 text-xs font-mono tracking-widest uppercase transition-colors hover:text-white"
-                    style={{ color: COLORS.muted }}
-                  >
-                    Pages <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${pagesOpen ? "rotate-180" : ""}`} />
-                  </button>
-                  {pagesOpen && (
-                    <div className="absolute right-0 top-full mt-2 w-64 glass rounded-xl p-3 z-50" style={{ border: `1px solid ${COLORS.border}` }}>
-                      <div className="flex flex-col gap-1">
-                        {filteredNavLinks.map((link: any) => {
-                          const IconComp = ICON_MAP[link.icon] || ExternalLink;
-                          return (
-                            <a key={link.path} href={link.path}
-                              className="flex items-start gap-3 p-2.5 rounded-lg transition-colors hover:bg-white/5">
-                              <IconComp className="w-4 h-4 mt-0.5" style={{ color: link.category === "private" ? COLORS.indigoLight : COLORS.cyan }} />
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-sm font-medium truncate">{link.name}</span>
-                                  {link.category === "private" && (
-                                    <span className="px-1.5 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider"
-                                      style={{ background: `${COLORS.indigo}20`, color: COLORS.indigoLight }}>
-                                      Private
-                                    </span>
-                                  )}
-                                </div>
-                                <p className="text-xs mt-0.5 truncate" style={{ color: COLORS.dimmed }}>{link.description}</p>
-                              </div>
-                            </a>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-            <button className="md:hidden" onClick={() => setMobileNav(!mobileNav)}>
-              {mobileNav ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-          </div>
-          {mobileNav && (
-            <div className="md:hidden glass border-t" style={{ borderColor: COLORS.border }}>
-              <div className="px-6 py-4 flex flex-col gap-3">
-                {NAV_ITEMS.map(item => (
-                  item === "Blog" ? (
-                    <a key={item} href="/blog"
-                      onClick={() => setMobileNav(false)}
-                      className="text-sm font-mono tracking-wider uppercase py-2" style={{ color: COLORS.muted }}>
-                      {item}
-                    </a>
-                  ) : (
-                    <button key={item} onClick={() => { scrollToSection(item.toLowerCase()); setMobileNav(false); }}
-                      className="text-sm font-mono tracking-wider uppercase py-2 text-left bg-transparent border-none cursor-pointer" style={{ color: COLORS.muted }}>
-                      {item}
-                    </button>
-                  )
-                ))}
-                {filteredNavLinks.length > 0 && (
-                  <>
-                    <div className="h-px my-1" style={{ background: COLORS.border }} />
-                    <span className="text-xs font-mono tracking-widest uppercase pt-1" style={{ color: COLORS.dimmed }}>
-                      Pages {navAuth && <Lock className="w-3 h-3 inline ml-1" style={{ color: COLORS.cyan }} />}
-                    </span>
-                    {filteredNavLinks.map((link: any) => {
-                      const IconComp = ICON_MAP[link.icon] || ExternalLink;
-                      return (
-                        <a key={link.path} href={link.path}
-                          onClick={() => setMobileNav(false)}
-                          className="flex items-center gap-3 py-2">
-                          <IconComp className="w-4 h-4" style={{ color: link.category === "private" ? COLORS.indigoLight : COLORS.cyan }} />
-                          <span className="text-sm" style={{ color: COLORS.muted }}>{link.name}</span>
-                          {link.category === "private" && (
-                            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono uppercase" style={{ background: `${COLORS.indigo}20`, color: COLORS.indigoLight }}>
-                              Private
-                            </span>
-                          )}
-                        </a>
-                      );
-                    })}
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-        </nav>
-
-        {/* HERO */}
-        <section className="relative z-10 max-w-7xl mx-auto px-6 pt-28 pb-20 md:pt-36 md:pb-28">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6" style={{ background: "rgba(255,255,255,0.05)", border: `1px solid ${COLORS.border}` }}>
-                <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: COLORS.cyan }} />
-                <span className="text-xs font-mono tracking-wider uppercase" style={{ color: COLORS.muted }}>Building things on Zo Space</span>
-              </div>
-
-              <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl font-bold leading-tight mb-4">
-                Zenlyte
-              </h1>
-              <p className="font-mono text-sm mb-6" style={{ color: COLORS.cyan }}>@curtastrophe</p>
-              <p className="text-lg md:text-xl leading-relaxed mb-8 max-w-lg" style={{ color: COLORS.muted }}>
-                Data & Analytics professional and AI builder. Turning raw data into decisions, and exploring the frontier of AI on Zo Computer.
-              </p>
-
-              <div className="flex flex-wrap gap-4">
-                <button onClick={() => scrollToSection("projects")} className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-semibold text-sm tracking-wider uppercase transition-all duration-300 hover:scale-105" style={{
-                  background: `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})`,
-                  boxShadow: `0 0 25px -5px ${COLORS.cyan}60`,
-                  border: "none", cursor: "pointer",
-                }}>
-                  View Projects <ArrowRight className="w-4 h-4" />
-                </button>
-                <a href="/blog" className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm tracking-wider uppercase transition-all duration-300 hover:bg-white/10" style={{
-                  border: "2px solid rgba(255,255,255,0.2)",
-                }}>
-                  Read Blog
-                </a>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-center">
-              <div className="animate-float relative">
-                <HexAvatar size={180} />
-                <div className="absolute -top-2 -right-8 px-3 py-1.5 rounded-lg glass text-xs font-mono animate-bounce" style={{ animationDuration: "3s", color: COLORS.cyanLight }}>
-                  Data & AI
-                </div>
-                <div className="absolute -bottom-2 -left-8 px-3 py-1.5 rounded-lg glass text-xs font-mono animate-bounce" style={{ animationDuration: "4s", animationDelay: "1s", color: COLORS.indigoLight }}>
-                  Builder
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ABOUT */}
-        <section id="about" className="relative z-10 max-w-7xl mx-auto px-6 py-24">
-          <SectionHeader label="About" title="Who I" highlight="am" />
-          <div className="grid md:grid-cols-5 gap-8">
-            <div className="md:col-span-2">
-              <p className="text-lg leading-relaxed mb-4" style={{ color: COLORS.muted }}>
-                Data & Analytics professional by day, AI tinkerer by night. Building tools, agents, and dashboards on Zo Computer while exploring what's possible at the intersection of data and artificial intelligence.
-              </p>
-              <p className="text-sm leading-relaxed" style={{ color: COLORS.muted }}>
-                Somewhere between a beginner software dev and a power user who ships. Interested in the intersection of data, AI, and productivity systems.
-              </p>
-            </div>
-            <div className="md:col-span-3 grid sm:grid-cols-2 gap-4">
-              {[
-                { icon: Database, title: "Data & Analytics", desc: "Turning raw data into decisions and insights that drive impact." },
-                { icon: Bot, title: "AI & Automation", desc: "Agents, LLMs, memory systems, and intelligent workflows." },
-                { icon: Users, title: "Community", desc: "Leading EDBA and contributing to the Zo Computer community." },
-                { icon: Wrench, title: "Building", desc: "Shipping skills, tools, dashboards, and open-source projects." },
-              ].map(card => (
-                <div key={card.title} className="p-6 rounded-xl card-hover" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
-                  <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-4" style={{ background: `${COLORS.cyan}15`, border: `1px solid ${COLORS.cyan}30` }}>
-                    <card.icon className="w-5 h-5" style={{ color: COLORS.cyan }} />
-                  </div>
-                  <h3 className="font-heading font-semibold text-lg mb-2">{card.title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: COLORS.muted }}>{card.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* PROJECTS */}
-        <section id="projects" className="relative z-10 py-24" style={{ background: COLORS.card }}>
-          <div className="max-w-7xl mx-auto px-6">
-            <SectionHeader label="Projects" title="What I'm" highlight="building" />
-            <div className="flex flex-wrap justify-center gap-3 mb-12">
-              {[
-                { key: "all", label: "All" },
-                { key: "completed", label: "Completed" },
-                { key: "in-progress", label: "In Progress" },
-                { key: "planned", label: "Planned" },
-              ].map(f => (
-                <button key={f.key} onClick={() => setActiveFilter(f.key)}
-                  className="px-4 py-2 rounded-full text-xs font-mono tracking-wider uppercase transition-all duration-200"
-                  style={{
-                    background: activeFilter === f.key ? `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})` : "rgba(255,255,255,0.05)",
-                    color: activeFilter === f.key ? "white" : COLORS.muted,
-                    border: `1px solid ${activeFilter === f.key ? "transparent" : COLORS.border}`,
-                  }}>
-                  {f.label}
-                </button>
-              ))}
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProjects.map(p => (
-                <div key={p.name} className="p-6 rounded-xl card-hover flex flex-col" style={{ background: COLORS.bg, border: `1px solid ${COLORS.border}` }}>
-                  <div className="flex items-start justify-between mb-4">
-                    <StatusBadge status={p.status} />
-                    {p.link && (
-                      <a href={p.link} className="transition-colors hover:opacity-80" style={{ color: COLORS.cyan }}>
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
-                    )}
-                  </div>
-                  <h3 className="font-heading font-semibold text-lg mb-2">{p.name}</h3>
-                  <p className="text-sm leading-relaxed mb-4 flex-grow" style={{ color: COLORS.muted }}>{p.desc}</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {p.tags.map(t => (
-                      <span key={t} className="px-2 py-0.5 rounded text-xs font-mono" style={{ background: `${COLORS.indigo}15`, color: COLORS.indigoLight }}>
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* BLOG PREVIEW */}
-        <section id="blog" className="relative z-10 max-w-7xl mx-auto px-6 py-24">
-          <SectionHeader label="Blog" title="Latest" highlight="posts" />
-          {posts.length > 0 ? (
-            <div className="grid md:grid-cols-3 gap-6 mb-10">
-              {posts.map(post => {
-                const d = new Date(post.date + "T00:00:00").toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" });
-                return (
-                  <a key={post.slug} href={`/blog/${post.slug}`} className="block p-6 rounded-xl card-hover" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
-                    <div className="h-1 w-12 rounded-full mb-5" style={{ background: `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})` }} />
-                    <div className="flex flex-wrap gap-1.5 mb-3">
-                      {post.tags.slice(0, 2).map(t => (
-                        <span key={t} className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-mono" style={{ background: `${COLORS.cyan}15`, color: COLORS.cyan, border: `1px solid ${COLORS.cyan}25` }}>
-                          <Tag className="w-2.5 h-2.5" />{t}
-                        </span>
-                      ))}
-                    </div>
-                    <h3 className="font-heading font-semibold text-lg mb-2 leading-tight">{post.title}</h3>
-                    <p className="text-sm leading-relaxed mb-4 line-clamp-2" style={{ color: COLORS.muted }}>{post.excerpt}</p>
-                    <div className="flex items-center gap-3 text-xs font-mono" style={{ color: COLORS.dimmed }}>
-                      <span>{d}</span>
-                      <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{post.readTime}</span>
-                    </div>
-                  </a>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="font-mono text-sm" style={{ color: COLORS.dimmed }}>No posts yet. Check back soon.</p>
-            </div>
-          )}
-          <div className="text-center">
-            <a href="/blog" className="inline-flex items-center gap-2 text-sm font-mono tracking-wider uppercase transition-colors" style={{ color: COLORS.cyan }}>
-              View all posts <ArrowRight className="w-4 h-4" />
-            </a>
-          </div>
-        </section>
-
-        {/* SOCIAL */}
-        <section id="social" className="relative z-10 py-24" style={{ background: COLORS.card }}>
-          <div className="max-w-7xl mx-auto px-6">
-            <SectionHeader label="Social" title="Find me" highlight="online" />
-            <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
-              {SOCIAL_LINKS.map(s => (
-                <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer"
-                  className="group p-6 rounded-xl card-hover text-center" style={{ background: COLORS.bg, border: `1px solid ${COLORS.border}` }}>
-                  <div className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center transition-all duration-300 group-hover:scale-110" style={{ background: `${s.color}15`, border: `1px solid ${s.color}30` }}>
-                    <s.icon className="w-5 h-5" style={{ color: s.color }} />
-                  </div>
-                  <h3 className="font-heading font-semibold text-sm mb-1">{s.name}</h3>
-                  <p className="text-xs font-mono" style={{ color: COLORS.dimmed }}>
-                    {s.url.replace("https://", "").split("/").slice(0, 2).join("/")}
-                  </p>
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* INTERACTIVE */}
-        <section className="relative z-10 max-w-7xl mx-auto px-6 py-24">
-          <SectionHeader label="Play" title="Interactive" highlight="zone" />
-          <div className="grid md:grid-cols-2 gap-6">
-            <a href="/trivia" className="block p-8 rounded-xl card-hover relative overflow-hidden group" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
-              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <ArrowRight className="w-5 h-5" style={{ color: COLORS.cyanLight }} />
-              </div>
-              <Sparkles className="w-10 h-10 mb-4" style={{ color: COLORS.cyan }} />
-              <h3 className="font-heading font-semibold text-xl mb-2 group-hover:text-cyan-400 transition-colors">Zo Trivia</h3>
-              <p className="text-sm leading-relaxed" style={{ color: COLORS.muted }}>
-                Daily trivia questions about Zo Computer features, tips, and hidden gems. Test your knowledge and learn something new.
-              </p>
-            </a>
-            <a href="/icon-configurator" className="block p-8 rounded-xl card-hover relative overflow-hidden group" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
-              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <ArrowRight className="w-5 h-5" style={{ color: COLORS.indigoLight }} />
-              </div>
-              <Gamepad2 className="w-10 h-10 mb-4" style={{ color: COLORS.indigo }} />
-              <h3 className="font-heading font-semibold text-xl mb-2 group-hover:text-indigo-400 transition-colors">Zo Icon Configurator</h3>
-              <p className="text-sm leading-relaxed" style={{ color: COLORS.muted }}>
-                Choose a black or white Zo Computer logo, describe your modifications, and generate a custom version to download.
-              </p>
-            </a>
-          </div>
-        </section>
-
-        {/* CONTACT */}
-        <section id="contact" className="relative z-10 py-24" style={{ background: COLORS.card }}>
-          <div className="max-w-7xl mx-auto px-6">
-            <SectionHeader label="Contact" title="Get in" highlight="touch" />
-            <div className="max-w-xl mx-auto">
-              {sent ? (
-                <div className="text-center p-12 rounded-xl" style={{ background: COLORS.bg, border: `1px solid ${COLORS.cyan}40` }}>
-                  <CheckCircle className="w-12 h-12 mx-auto mb-4" style={{ color: COLORS.cyan }} />
-                  <h3 className="font-heading text-xl font-semibold mb-2">Message sent!</h3>
-                  <p className="text-sm mb-6" style={{ color: COLORS.muted }}>Thanks for reaching out. I'll get back to you soon.</p>
-                  <button onClick={() => setSent(false)} className="text-sm font-mono tracking-wider uppercase transition-colors" style={{ color: COLORS.cyan }}>
-                    Send another
-                  </button>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  {[
-                    { name: "name", label: "Name", type: "text", placeholder: "Your name" },
-                    { name: "email", label: "Email", type: "email", placeholder: "you@example.com" },
-                  ].map(field => (
-                    <div key={field.name}>
-                      <label className="block text-xs font-mono tracking-wider uppercase mb-2" style={{ color: COLORS.muted }}>{field.label}</label>
-                      <input type={field.type} required
-                        value={(formState as any)[field.name]}
-                        onChange={e => setFormState(s => ({ ...s, [field.name]: e.target.value }))}
-                        className="w-full px-4 py-3 rounded-xl font-body transition-all outline-none"
-                        style={{ background: COLORS.bg, border: `1px solid ${COLORS.border}`, color: "white" }}
-                        onFocus={e => e.target.style.borderColor = `${COLORS.cyan}50`}
-                        onBlur={e => e.target.style.borderColor = COLORS.border}
-                        placeholder={field.placeholder} />
-                    </div>
-                  ))}
-                  <div>
-                    <label className="block text-xs font-mono tracking-wider uppercase mb-2" style={{ color: COLORS.muted }}>Message</label>
-                    <textarea required rows={5} maxLength={2000}
-                      value={formState.message}
-                      onChange={e => setFormState(s => ({ ...s, message: e.target.value }))}
-                      className="w-full px-4 py-3 rounded-xl font-body transition-all outline-none resize-none"
-                      style={{ background: COLORS.bg, border: `1px solid ${COLORS.border}`, color: "white" }}
-                      onFocus={e => (e.target as HTMLTextAreaElement).style.borderColor = `${COLORS.cyan}50`}
-                      onBlur={e => (e.target as HTMLTextAreaElement).style.borderColor = COLORS.border}
-                      placeholder="What's on your mind?" />
-                  </div>
-                  {formError && <p className="text-red-400 text-sm font-mono">{formError}</p>}
-                  <button type="submit" disabled={sending}
-                    className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-white font-semibold text-sm tracking-wider uppercase transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
-                    style={{
-                      background: `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.indigo})`,
-                      boxShadow: `0 0 25px -5px ${COLORS.cyan}50`,
-                    }}>
-                    {sending ? "Sending..." : <><span>Send message</span><Send className="w-4 h-4" /></>}
-                  </button>
-                </form>
-              )}
-            </div>
-          </div>
-        </section>
-
-        {/* FOOTER */}
-        <footer className="relative z-10 py-8" style={{ borderTop: `1px solid ${COLORS.border}` }}>
-          <div className="max-w-7xl mx-auto px-6 flex flex-wrap items-center justify-between gap-4">
-            <p className="text-xs font-mono tracking-wider" style={{ color: COLORS.dimmed }}>&copy; 2026 Zenlyte</p>
-            <div className="flex items-center gap-4">
-              {SOCIAL_LINKS.map(s => (
-                <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer" className="transition-colors hover:opacity-80" style={{ color: COLORS.dimmed }}>
-                  <s.icon className="w-4 h-4" />
-                </a>
-              ))}
-            </div>
-            <p className="text-xs" style={{ color: COLORS.dimmed }}>
-              Built on{" "}
-              <a href="https://zo.computer" target="_blank" rel="noopener" className="transition-colors hover:text-white" style={{ color: COLORS.cyan }}>
-                Zo Computer
-              </a>
-            </p>
-          </div>
-        </footer>
-      </div>
-    </>
-  );
-}
 ```
 
-### `/404` (page, public)
+### `/404` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect } from "react";
 
 export default function NotFound() {
@@ -863,13 +113,13 @@ const NF_CSS = [
   ".nf-links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}",
   ".nf-link{padding:10px 20px;border-radius:8px;border:1px solid rgba(232,224,212,0.1);background:rgba(232,224,212,0.03);color:#e8e0d4;text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:13px;transition:all 0.2s}",
   ".nf-link:hover{border-color:#c08b5c;background:rgba(192,139,92,0.08);color:#c08b5c}",
-].join("\
-");
+].join("\n");
 ```
 
-### `/Zo-Ops` (page, private)
+### `/Zo/Ops` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -1702,9 +952,10 @@ function ProjectModal({ project, onClose, onSave, columns, priorityColumns, colo
 }
 ```
 
-### `/about-the-build` (page, public)
+### `/about/the/build` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState } from "react";
 
 export default function AboutTheBuild() {
@@ -1937,13 +1188,13 @@ const ATB_CSS = [
   ".atb-decision,.atb-challenge{padding:16px;border-radius:8px;border:1px solid rgba(232,224,212,0.08);background:rgba(232,224,212,0.02);margin-bottom:14px}",
   ".atb-thanks{margin-top:32px;padding:20px;border-radius:10px;background:rgba(192,139,92,0.08);border:1px solid rgba(192,139,92,0.2);text-align:center;font-family:'Playfair Display',serif;font-size:18px;color:#c08b5c}",
   "@media(max-width:768px){.atb-nav{width:100%;min-height:auto;position:static;border-right:none;border-bottom:1px solid rgba(232,224,212,0.08)}.atb-tabs{flex-direction:row;flex-wrap:wrap}.atb-content{margin-left:0;padding:24px}}",
-].join("\
-");
+].join("\n");
 ```
 
 ### `/api/agents` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -1998,6 +1249,7 @@ export default async (c: Context) => {
 ### `/api/audit` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { timingSafeEqual } from "node:crypto";
 
@@ -2044,9 +1296,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/auth-status` (api, public)
+### `/api/auth/status` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -2067,6 +1320,7 @@ export default (c: Context) => {
 ### `/api/benchmarks` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
@@ -2216,6 +1470,7 @@ export default async (c: Context) => {
 ### `/api/benchmarks/refresh` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { spawn } from "child_process";
 
@@ -2238,6 +1493,7 @@ export default async (c: Context) => {
 ### `/api/billing` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { timingSafeEqual } from "node:crypto";
 
@@ -2285,6 +1541,7 @@ export default async (c: Context) => {
 ### `/api/blog` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
@@ -2304,10 +1561,7 @@ export interface BlogPost {
 // Simple frontmatter parser
 function parseMarkdown(filePath: string): { data: any; content: string } {
   const fileContent = readFileSync(filePath, "utf-8");
-  const frontmatterRegex = /^---\
-([\s\S]*?)\
----\
-([\s\S]*)$/;
+  const frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
   const match = fileContent.match(frontmatterRegex);
   
   if (!match) {
@@ -2318,8 +1572,7 @@ function parseMarkdown(filePath: string): { data: any; content: string } {
   const content = match[2];
   
   const data: any = {};
-  frontmatterString.split("\
-").forEach((line) => {
+  frontmatterString.split("\n").forEach((line) => {
     const colonIndex = line.indexOf(":");
     if (colonIndex === -1) return;
     const key = line.slice(0, colonIndex).trim();
@@ -2398,6 +1651,7 @@ export default async (c: Context) => {
 ### `/api/blog/:slug` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
@@ -2405,10 +1659,7 @@ import { join } from "node:path";
 // Share the same parsing logic
 function parseMarkdown(filePath: string): { data: any; content: string } {
   const fileContent = readFileSync(filePath, "utf-8");
-  const frontmatterRegex = /^---\
-([\s\S]*?)\
----\
-([\s\S]*)$/;
+  const frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
   const match = fileContent.match(frontmatterRegex);
   
   if (!match) {
@@ -2419,8 +1670,7 @@ function parseMarkdown(filePath: string): { data: any; content: string } {
   const content = match[2];
   
   const data: any = {};
-  frontmatterString.split("\
-").forEach((line) => {
+  frontmatterString.split("\n").forEach((line) => {
     const colonIndex = line.indexOf(":");
     if (colonIndex === -1) return;
     const key = line.slice(0, colonIndex).trim();
@@ -2491,6 +1741,7 @@ export default async (c: Context) => {
 ### `/api/buildin/callback` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { writeFileSync, mkdirSync } from "fs";
 
@@ -2584,6 +1835,7 @@ export default async (c: Context) => {
 ### `/api/buildin/disconnect` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -2603,6 +1855,7 @@ export default async (c: Context) => {
 ### `/api/buildin/status` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -2639,6 +1892,7 @@ export default async (c: Context) => {
 ### `/api/bydesign/callback` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { mkdir, writeFile } from "node:fs/promises";
 
@@ -2655,8 +1909,7 @@ export default async (c: Context) => {
 
   try {
     await mkdir("/home/workspace/Data/bydesign", { recursive: true });
-    await writeFile(OUTPUT_PATH, `${JSON.stringify(payload, null, 2)}\
-`, "utf8");
+    await writeFile(OUTPUT_PATH, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
   } catch (error) {
     console.error("Failed to persist ByDesign OAuth callback", error);
     return c.json(
@@ -2697,9 +1950,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/byok-reference` (api, public)
+### `/api/byok/reference` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 // Server-side cache. zo.space server keeps the Hono process warm, so this
@@ -2855,6 +2109,7 @@ export default async (c: Context) => {
 ### `/api/calendar` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 /**
  * Calendar API - Phase 2.1 (Live Integration)
  * Fetches next 48 hours of events from "Jess and Curt's Events" calendar
@@ -3065,9 +2320,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/career-ops` (api, public)
+### `/api/career/ops` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -3138,9 +2394,10 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/career-ops/applications` (api, public)
+### `/api/career/ops/applications` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -3162,9 +2419,10 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/career-ops/batch` (api, public)
+### `/api/career/ops/batch` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -3196,9 +2454,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/career-ops/pipeline` (api, public)
+### `/api/career/ops/pipeline` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -3214,9 +2473,10 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/career-ops/scan` (api, public)
+### `/api/career/ops/scan` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { spawn } from "node:child_process";
 
@@ -3246,9 +2506,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/career-ops/scan-history` (api, public)
+### `/api/career/ops/scan/history` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -3264,6 +2525,7 @@ export default (c: Context) => {
 ### `/api/contact` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import fs from "node:fs";
 
@@ -3309,8 +2571,7 @@ export default async (c: Context) => {
       timestamp: new Date().toISOString(),
       ip,
     });
-    fs.appendFileSync(path, entry + "\
-");
+    fs.appendFileSync(path, entry + "\n");
 
     console.log(`[contact] submission saved from ${name} <${email}>`);
     return c.json({ success: true, message: "Thanks! Your request was received." });
@@ -3324,6 +2585,7 @@ export default async (c: Context) => {
 ### `/api/credits` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 // Query Zo API for real credits/billing data
@@ -3374,6 +2636,7 @@ export default async (c: Context) => {
 ### `/api/datasets/list` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -3449,6 +2712,7 @@ export default async (c: Context) => {
 ### `/api/datasets/proxy/*` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 function isOwnerLike(c: Context): boolean {
@@ -3513,6 +2777,7 @@ export default async (c: Context) => {
 ### `/api/datasets/start` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { execSync } from "child_process";
 
@@ -3615,6 +2880,7 @@ EOF`
 ### `/api/datasets/viewer` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { execSync, spawn } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, readFileSync } from "node:fs";
@@ -3715,6 +2981,7 @@ export default async (c: Context) => {
 ### `/api/diagnose` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -3749,9 +3016,10 @@ Please diagnose the issue, attempt to repair it, and once you have finished, sen
 };
 ```
 
-### `/api/extension-save` (api, public)
+### `/api/extension/save` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -3765,6 +3033,7 @@ export default async (c: Context) => {
 ### `/api/failures` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { execSync } from "node:child_process";
@@ -3782,8 +3051,7 @@ interface Failure {
 function tailFile(path: string, maxLines: number): string[] {
   try {
     const content = readFileSync(path, "utf8");
-    const lines = content.split("\
-").filter(l => l.trim());
+    const lines = content.split("\n").filter(l => l.trim());
     return lines.slice(-maxLines);
   } catch { return []; }
 }
@@ -3919,9 +3187,10 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/family-log` (api, public)
+### `/api/family/log` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { readFile, writeFile } from "node:fs/promises";
 import type { Context } from "hono";
 
@@ -3990,8 +3259,7 @@ export default async (c: Context) => {
       });
     }
 
-    const lines = logContent.split("\
-");
+    const lines = logContent.split("\n");
     const todos = [];
     const health = { emi: "", ellie: "" };
     const butlerNotes = [];
@@ -4089,6 +3357,7 @@ export default async (c: Context) => {
 ### `/api/files` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readdir, stat } from "fs/promises";
 import { join, extname } from "path";
@@ -4178,6 +3447,7 @@ export default async (c: Context) => {
 ### `/api/flowpulse` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { existsSync, readFileSync } from "fs";
 
@@ -4188,8 +3458,7 @@ function readJsonl(file: string): any[] {
   if (!existsSync(p)) return [];
   const raw = readFileSync(p, "utf-8").trim();
   if (!raw) return [];
-  return raw.split("\
-").filter(Boolean).map((l: string) => JSON.parse(l));
+  return raw.split("\n").filter(Boolean).map((l: string) => JSON.parse(l));
 }
 
 function readJson(file: string): any {
@@ -4312,9 +3581,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/generate-icon` (api, public)
+### `/api/generate/icon` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { randomUUID } from "node:crypto";
@@ -4344,8 +3614,7 @@ function saveRateLimits(limits: Record<string, { count: number; resetDate: strin
 function sanitizeInput(input: string): string {
   if (!input) return "";
   // Strip control characters, newlines, limit to 100 characters to prevent injection
-  return input.replace(/[\r\
-\t\x00-\x1F]/g, " ").slice(0, 100).trim();
+  return input.replace(/[\r\n\t\x00-\x1F]/g, " ").slice(0, 100).trim();
 }
 
 function isAuthenticated(c: Context): boolean {
@@ -4517,8 +3786,7 @@ async function runGeneration(jobId: string, logoType: string, colors: string, th
             imagePath: destImage,
             status: "success"
           };
-          appendFileSync("/home/workspace/zo-icon-generations/source/generations.jsonl", JSON.stringify(logEntry) + "\
-");
+          appendFileSync("/home/workspace/zo-icon-generations/source/generations.jsonl", JSON.stringify(logEntry) + "\n");
         } catch (e) {
           console.error("Failed to log generation:", e);
         }
@@ -4598,9 +3866,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/health-check` (api, public)
+### `/api/health/check` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { execSync } from "node:child_process";
@@ -4725,8 +3994,7 @@ export default async (c: Context) => {
     const telemetryPath = "/home/workspace/.zo/gemini-telemetry.jsonl";
     
     if (existsSync(telemetryPath)) {
-      const lines = readFileSync(telemetryPath, "utf-8").split("\
-").filter(l => l.trim());
+      const lines = readFileSync(telemetryPath, "utf-8").split("\n").filter(l => l.trim());
       const totalRequests = lines.length;
       
       // Check for quota errors in recent telemetry
@@ -4826,6 +4094,7 @@ export default async (c: Context) => {
 ### `/api/logs` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 
@@ -4868,8 +4137,7 @@ function parseGenericLog(line: string, source: string): LogLine | null {
 function tailFile(path: string, maxLines: number): string[] {
   try {
     const content = readFileSync(path, "utf8");
-    const lines = content.split("\
-").filter(l => l.trim());
+    const lines = content.split("\n").filter(l => l.trim());
     return lines.slice(-maxLines);
   } catch { return []; }
 }
@@ -4962,9 +4230,10 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/model-explorer/import-omniroute` (api, public)
+### `/api/model/explorer/import/omniroute` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -5166,9 +4435,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model-explorer/models` (api, public)
+### `/api/model/explorer/models` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -5272,9 +4542,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model-explorer/providers` (api, public)
+### `/api/model/explorer/providers` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 import { isIP } from "node:net";
@@ -5394,9 +4665,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model-explorer/providers/delete` (api, public)
+### `/api/model/explorer/providers/delete` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -5518,9 +4790,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model-explorer/stats` (api, public)
+### `/api/model/explorer/stats` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -5593,9 +4866,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model-explorer/sync` (api, public)
+### `/api/model/explorer/sync` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 async function validateSession(c: Context): Promise<boolean> {
@@ -5647,9 +4921,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/model-explorer/workbench` (api, public)
+### `/api/model/explorer/workbench` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -5772,6 +5047,7 @@ export default async (c: Context) => {
 ### `/api/models` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -5801,9 +5077,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/my-models` (api, public)
+### `/api/my/models` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -5837,9 +5114,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/nav-links` (api, public)
+### `/api/nav/links` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync } from "node:fs";
 
@@ -5906,9 +5184,10 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/oauth-mcp/callback` (api, public)
+### `/api/oauth/mcp/callback` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { existsSync, readFileSync, writeFileSync, mkdirSync, unlinkSync } from "fs";
 
@@ -6008,6 +5287,7 @@ export default async (c: Context) => {
 ### `/api/projects` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -6111,9 +5391,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/projects-conversations` (api, public)
+### `/api/projects/conversations` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "node:fs";
 
@@ -6157,9 +5438,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/puzzle-callback` (page, public)
+### `/api/puzzle/callback` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 export default function PuzzleCallback() {
   return (
     <div className="min-h-screen bg-zinc-900 text-white flex items-center justify-center">
@@ -6207,15 +5489,57 @@ export default function PuzzleCallback() {
 }
 ```
 
-### `/api/receipt-images` (api, public)
+### `/api/receipt/images` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import { timingSafeEqual } from 'node:crypto';
+import type { Context } from 'hono';
 
+const IMAGES_DIR = '/home/workspace/Data/ReceiptTracker/Images';
+
+function checkAuth(passcode: string | undefined) {
+  const secret = process.env.COSTCO_APP_PASSCODE;
+  if (!secret || !passcode) return false;
+  try {
+    const aBytes = Buffer.from(passcode);
+    const bBytes = Buffer.from(secret);
+    if (aBytes.length !== bBytes.length) return false;
+    return timingSafeEqual(aBytes, bBytes);
+  } catch(e) {
+    return false;
+  }
+}
+
+export default async (c: Context) => {
+  const passcode = c.req.header('X-Passcode') || c.req.query('passcode');
+  if (!checkAuth(passcode)) return c.text('Unauthorized', 401);
+  const id = c.req.query('id');
+  if (!id) return c.text('Missing id', 400);
+  const safeId = path.basename(id);
+  const filepath = path.join(IMAGES_DIR, safeId);
+  try {
+    const fileBuf = await fs.readFile(filepath);
+    const ext = path.extname(safeId).toLowerCase();
+    const mime = ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg';
+    return new Response(fileBuf, {
+      headers: {
+        'Content-Type': mime,
+        'Cache-Control': 'public, max-age=31536000'
+      }
+    });
+  } catch (e) {
+    return c.text('Image not found', 404);
+  }
+};
 ```
 
 ### `/api/receipts` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { exec } from 'node:child_process';
@@ -6290,27 +5614,7 @@ function checkAuth(c: Context) {
 }
 
 async function extractItemsFromText(rawText: string): Promise<{ items: any[], total: number, date: string, store_name: string }> {
-  const prompt = `You are a receipt parser. Extract all purchased items from this retail receipt OCR text (Costco, Winners, Marshalls, etc.).\
-\
-IMPORTANT: \
-- Identify the store name from the top of the receipt (e.g. "Costco", "Winners", "Marshalls", "Walmart").\
-- Only extract actual purchased ITEMS (products), ignore: SUBTOTAL, TAX, TOTAL, payment info, store info, "APPROVED", card numbers, dates without items\
-- Item codes might be alphanumeric depending on the store (e.g., 7 digits for Costco, others vary). If there is no item code, use an empty string or the most likely identifier.\
-- Return ONLY valid JSON, no markdown\
-\
-Return JSON in this exact format:\
-{\
-  "store_name": "Costco",\
-  "items": [\
-    {"item_code": "1851427", "description": "MTG MARVEL", "price": 49.99},\
-    {"item_code": "1748763", "description": "BAC&EGG SAND", "price": 24.99}\
-  ],\
-  "total": 186.98,\
-  "date": "2026-03-16"\
-}\
-\
-Receipt text:\
-${rawText}`;
+  const prompt = `You are a receipt parser. Extract all purchased items from this retail receipt OCR text (Costco, Winners, Marshalls, etc.).\n\nIMPORTANT: \n- Identify the store name from the top of the receipt (e.g. "Costco", "Winners", "Marshalls", "Walmart").\n- Only extract actual purchased ITEMS (products), ignore: SUBTOTAL, TAX, TOTAL, payment info, store info, "APPROVED", card numbers, dates without items\n- Item codes might be alphanumeric depending on the store (e.g., 7 digits for Costco, others vary). If there is no item code, use an empty string or the most likely identifier.\n- Return ONLY valid JSON, no markdown\n\nReturn JSON in this exact format:\n{\n  "store_name": "Costco",\n  "items": [\n    {"item_code": "1851427", "description": "MTG MARVEL", "price": 49.99},\n    {"item_code": "1748763", "description": "BAC&EGG SAND", "price": 24.99}\n  ],\n  "total": 186.98,\n  "date": "2026-03-16"\n}\n\nReceipt text:\n${rawText}`;
 
   try {
     const zoRes = await fetch('https://api.zo.computer/zo/ask', {
@@ -6490,6 +5794,7 @@ export default async (c: Context) => {
 ### `/api/security` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 
@@ -6506,8 +5811,7 @@ interface SecurityEvent {
 function tailFile(path: string, maxLines: number): string[] {
   try {
     const content = readFileSync(path, "utf8");
-    const lines = content.split("\
-").filter(l => l.trim());
+    const lines = content.split("\n").filter(l => l.trim());
     return lines.slice(-maxLines);
   } catch { return []; }
 }
@@ -6645,6 +5949,7 @@ export default (c: Context) => {
 ### `/api/services` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 // Query Zo API for real service data
@@ -6702,6 +6007,7 @@ export default async (c: Context) => {
 ### `/api/share` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFile, writeFile, copyFile, mkdir, stat } from "fs/promises";
 import { join, basename, extname } from "path";
@@ -6888,6 +6194,7 @@ export default async (c: Context) => {
 ### `/api/share/:id` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
@@ -6999,6 +6306,7 @@ export default async (c: Context) => {
 ### `/api/share/:id/download` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
@@ -7080,6 +6388,7 @@ export default async (c: Context) => {
 ### `/api/sites` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 // Query Zo API for real space routes (Sites/Spaces)
@@ -7129,9 +6438,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/skills-gallery` (api, public)
+### `/api/skills/gallery` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readdir, readFile, stat } from "fs/promises";
 import { join, relative } from "path";
@@ -7152,14 +6462,9 @@ function requireAuth(c: Context): boolean {
 
 // Simple frontmatter parser (no external deps)
 function parseFrontmatter(raw: string): { data: Record<string, any>; content: string } {
-  const s = raw.replace(/\r\
-/g, "\
-");
-  if (!s.startsWith("---\
-")) return { data: {}, content: raw };
-  const end = s.indexOf("\
----\
-", 4);
+  const s = raw.replace(/\r\n/g, "\n");
+  if (!s.startsWith("---\n")) return { data: {}, content: raw };
+  const end = s.indexOf("\n---\n", 4);
   if (end === -1) return { data: {}, content: raw };
   const fmBlock = s.slice(4, end);
   const content = s.slice(end + 5);
@@ -7170,8 +6475,7 @@ function parseFrontmatter(raw: string): { data: Record<string, any>; content: st
   let inNestedObj = "";
   const nestedData: Record<string, Record<string, any>> = {};
 
-  for (const line of fmBlock.split("\
-")) {
+  for (const line of fmBlock.split("\n")) {
     // Nested object key (e.g. "metadata:")
     const nestedMatch = line.match(/^([a-zA-Z_][a-zA-Z0-9_-]*):\s*$/);
     if (nestedMatch && !inArray) {
@@ -7288,9 +6592,7 @@ function stringifyFrontmatter(data: Record<string, any>, content: string): strin
     }
   }
   lines.push("---");
-  return lines.join("\
-") + "\
-" + content;
+  return lines.join("\n") + "\n" + content;
 }
 
 async function findSkillFiles(dir: string): Promise<string[]> {
@@ -7478,9 +6780,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/speech-game-auth` (api, public)
+### `/api/speech/game/auth` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -7492,9 +6795,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/speech-game-data` (api, public)
+### `/api/speech/game/data` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { timingSafeEqual } from "node:crypto";
 
@@ -7720,17 +7024,17 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/system-stats` (api, public)
+### `/api/system/stats` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 function readMemInfo() {
   const text = readFileSync("/proc/meminfo", "utf8");
   const values: Record<string, number> = {};
-  for (const line of text.split("\
-")) {
+  for (const line of text.split("\n")) {
     const match = line.match(/^([^:]+):\s+(\d+)/);
     if (match) values[match[1]] = Number(match[2]);
   }
@@ -7760,9 +7064,10 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/telemetry-data` (api, public)
+### `/api/telemetry/data` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -7775,8 +7080,7 @@ function readJsonl(path: string): any[] {
   if (!existsSync(path)) return [];
   const raw = readFileSync(path, "utf-8").trim();
   if (!raw) return [];
-  return raw.split("\
-").map(line => { try { return JSON.parse(line); } catch { return null; } }).filter(Boolean);
+  return raw.split("\n").map(line => { try { return JSON.parse(line); } catch { return null; } }).filter(Boolean);
 }
 
 export default async (c: Context) => {
@@ -7872,50 +7176,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/temporal-auth-check` (api, public)
-
-```typescript
-import type { Context } from "hono";
-
-// Check if user is authenticated via Zo session
-export default async (c: Context) => {
-  // Check X-Zo-User header (set by Zo for authenticated requests)
-  const zoUser = c.req.header("X-Zo-User");
-  if (zoUser === "curtastrophe") {
-    return c.json({ authenticated: true, method: "zo_user" });
-  }
-  
-  // Check for Zo session cookie
-  const cookieHeader = c.req.header("Cookie") || "";
-  const hasSession = cookieHeader.includes("zo_session") || 
-                     cookieHeader.includes("auth_token");
-  
-  if (hasSession) {
-    return c.json({ authenticated: true, method: "session" });
-  }
-  
-  // Check Referer - if from authenticated Zo page, allow
-  const referer = c.req.header("Referer") || "";
-  if (referer.includes("curtastrophe.zo.space") || referer.includes("curtastrophe.zo.computer")) {
-    return c.json({ authenticated: true, method: "referer" });
-  }
-  
-  // Check for Bearer token (API access)
-  const authHeader = c.req.header("Authorization");
-  if (authHeader?.startsWith("Bearer ")) {
-    const token = authHeader.slice(7);
-    if (process.env.ZO_API_KEY && token === process.env.ZO_API_KEY) {
-      return c.json({ authenticated: true, method: "api_key" });
-    }
-  }
-  
-  return c.json({ authenticated: false, error: "Unauthorized" }, 401);
-};
-```
-
 ### `/api/temporal/*` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 // Proxy to internal Temporal gRPC endpoint
@@ -7969,9 +7233,52 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/test-deps` (api, public)
+### `/api/temporal/auth/check` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
+import type { Context } from "hono";
+
+// Check if user is authenticated via Zo session
+export default async (c: Context) => {
+  // Check X-Zo-User header (set by Zo for authenticated requests)
+  const zoUser = c.req.header("X-Zo-User");
+  if (zoUser === "curtastrophe") {
+    return c.json({ authenticated: true, method: "zo_user" });
+  }
+  
+  // Check for Zo session cookie
+  const cookieHeader = c.req.header("Cookie") || "";
+  const hasSession = cookieHeader.includes("zo_session") || 
+                     cookieHeader.includes("auth_token");
+  
+  if (hasSession) {
+    return c.json({ authenticated: true, method: "session" });
+  }
+  
+  // Check Referer - if from authenticated Zo page, allow
+  const referer = c.req.header("Referer") || "";
+  if (referer.includes("curtastrophe.zo.space") || referer.includes("curtastrophe.zo.computer")) {
+    return c.json({ authenticated: true, method: "referer" });
+  }
+  
+  // Check for Bearer token (API access)
+  const authHeader = c.req.header("Authorization");
+  if (authHeader?.startsWith("Bearer ")) {
+    const token = authHeader.slice(7);
+    if (process.env.ZO_API_KEY && token === process.env.ZO_API_KEY) {
+      return c.json({ authenticated: true, method: "api_key" });
+    }
+  }
+  
+  return c.json({ authenticated: false, error: "Unauthorized" }, 401);
+};
+```
+
+### `/api/test/deps` (api, public)
+
+```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 export default async (c) => {
   const fs = require("fs");
   const path = require("path");
@@ -7985,9 +7292,10 @@ export default async (c) => {
 };
 ```
 
-### `/api/test-env` (api, public)
+### `/api/test/env` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -7999,9 +7307,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/test-exec` (api, public)
+### `/api/test/exec` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { exec } from "node:child_process";
 import { promisify } from "node:util";
 import type { Context } from "hono";
@@ -8018,9 +7327,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/test-write` (api, public)
+### `/api/test/write` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { promises as fs } from "node:fs";
 import type { Context } from "hono";
 
@@ -8037,6 +7347,7 @@ export default async (c: Context) => {
 ### `/api/trivia` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -8223,9 +7534,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/trivia/by-date` (api, public)
+### `/api/trivia/by/date` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -8365,6 +7677,7 @@ export default async (c: Context) => {
 ### `/api/trivia/dates` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -8397,6 +7710,7 @@ export default async (c: Context) => {
 ### `/api/trivia/leaderboard` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -8482,6 +7796,7 @@ export default async (c: Context) => {
 ### `/api/trivia/random` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -8567,6 +7882,7 @@ export default async (c: Context) => {
 ### `/api/trivia/subscribe` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 const TEABLE_BASE = "https://app.teable.io/api";
@@ -8691,6 +8007,7 @@ export default async (c: Context) => {
 ### `/api/trivia/unsubscribe` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -8810,9 +8127,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/trivia/user-stats` (api, public)
+### `/api/trivia/user/stats` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -8888,6 +8206,7 @@ export default async (c: Context) => {
 ### `/api/twinmind` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 /**
  * TwinMind Synthesis API - Phase 3.3
  * Provides meeting insights and action items from TwinMind recordings
@@ -8984,9 +8303,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/twinmind-callback` (api, public)
+### `/api/twinmind/callback` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 // This route captures the OAuth authorization code from TwinMind
@@ -9024,6 +8344,7 @@ export default async (c: Context) => {
 ### `/api/updates` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, writeFileSync, existsSync, statSync, readdirSync } from "node:fs";
 import { resolve, join } from "node:path";
@@ -9110,9 +8431,7 @@ function fetchNotes(): UpdateItem[] {
   for (const file of files) {
     try {
       const content = readFileSync(join(notesDir, file), "utf-8");
-      const match = content.match(/^---\
-([\s\S]*?)\
----/);
+      const match = content.match(/^---\n([\s\S]*?)\n---/);
       if (match) {
         const fm = match[1];
         const titleMatch = fm.match(/title:\s*(.+)/);
@@ -9172,9 +8491,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/voi-zos` (api, public)
+### `/api/voi/zos` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 const VOI_LOCKDOWN = (process.env.VOI_LOCKDOWN ?? "true") !== "false";
@@ -9204,8 +8524,7 @@ const HOMEPAGE_KB: Record<string, string> = {
 
 const KB_TEXT = Object.entries(HOMEPAGE_KB)
   .map(([k, v]) => `[${k}] ${v}`)
-  .join("\
-");
+  .join("\n");
 
 const REFUSAL = "I can only answer based on information publicly shown on the homepage.";
 
@@ -9426,8 +8745,7 @@ const OUTPUT_SCHEMA = {
 } as const;
 
 function sanitizeAnswer(s: string): string {
-  let out = s.replace(/[\r\
-\t]+/g, " ");
+  let out = s.replace(/[\r\n\t]+/g, " ");
   out = out.replace(/^[\s`*_>#\-]+/, "");
   out = out.replace(/[\s`*_]+$/, "");
   out = out.replace(/\*\*([^*]+)\*\*/g, "$1");
@@ -9441,9 +8759,7 @@ function sanitizeAnswer(s: string): string {
 async function callAskZo(question: string): Promise<VoiResponse> {
   if (!ZO_TOKEN) return refusal();
 
-  const input = `Homepage question: ${question}\
-\
-Reminder: call final_result once. Plain text only. No markdown. No leading/trailing whitespace or newlines.`;
+  const input = `Homepage question: ${question}\n\nReminder: call final_result once. Plain text only. No markdown. No leading/trailing whitespace or newlines.`;
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 8000);
@@ -9540,9 +8856,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/x-feed` (api, public)
+### `/api/x/feed` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, writeFileSync, existsSync, statSync } from "node:fs";
 import { resolve } from "node:path";
@@ -9707,9 +9024,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/zo-city-data` (api, public)
+### `/api/zo/city/data` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFile, readdir, stat, access } from "node:fs/promises";
 import path from "node:path";
@@ -9796,9 +9114,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/zo-space-theme-gallery` (api, public)
+### `/api/zo/space/theme/gallery` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync } from "fs";
 
@@ -9839,9 +9158,10 @@ export default (c: Context) => {
 };
 ```
 
-### `/api/zo-space-theme-gallery/:id` (api, public)
+### `/api/zo/space/theme/gallery/:id` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -9866,8 +9186,7 @@ export default (c: Context) => {
       const content = readFileSync(SKILL_PATH, "utf-8");
       return c.text(content);
     } catch {
-      return c.text("# Error\
-Skill file not found.", 500);
+      return c.text("# Error\nSkill file not found.", 500);
     }
   }
 
@@ -9890,9 +9209,10 @@ Skill file not found.", 500);
 };
 ```
 
-### `/api/zo-space-theme-gallery/skill` (api, public)
+### `/api/zo/space/theme/gallery/skill` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync } from "fs";
 
@@ -9912,9 +9232,7 @@ export default (c: Context) => {
     const skillContent = readFileSync(SKILL_PATH, "utf-8");
     return c.text(skillContent);
   } catch {
-    return c.text("# Skill not found\
-\
-The zo-space-themer skill could not be loaded.", 404);
+    return c.text("# Skill not found\n\nThe zo-space-themer skill could not be loaded.", 404);
   }
 };
 ```
@@ -9922,6 +9240,7 @@ The zo-space-themer skill could not be loaded.", 404);
 ### `/api/zoboard/*` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import {
   readFileSync,
@@ -10011,14 +9330,10 @@ function generateId(): string {
 }
 
 function parseFrontmatter(raw: string): { data: Record<string, any>; content: string } {
-  const match = raw.match(/^---\r?\
-([\s\S]*?)\r?\
----\r?\
-([\s\S]*)$/);
+  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
   if (!match) return { data: {}, content: raw };
   const data: Record<string, any> = {};
-  match[1].split("\
-").forEach((line) => {
+  match[1].split("\n").forEach((line) => {
     const idx = line.indexOf(":");
     if (idx === -1) return;
     const key = line.slice(0, idx).trim();
@@ -10041,11 +9356,7 @@ function stringifyFrontmatter(data: Record<string, unknown>, content: string): s
     if (typeof v === "string" && (v.includes(":") || v.includes("#") || v.includes("'"))) return `${k}: '${v}'`;
     return `${k}: ${v}`;
   });
-  return `---\
-${fmLines.join("\
-")}\
----\
-${content}`;
+  return `---\n${fmLines.join("\n")}\n---\n${content}`;
 }
 
 function readIndex() {
@@ -10188,8 +9499,7 @@ export default async (c: Context) => {
           timestamp: ts, action: "create", card_id: id,
           card_title: fm.title, board_slug: route.slug, origin: "api",
           mengram_id: mengramId || undefined,
-        }) + "\
-", "utf-8");
+        }) + "\n", "utf-8");
         return c.json({ card: { id, ...fm, body: body.body || "" } }, 201);
       }
 
@@ -10219,8 +9529,7 @@ export default async (c: Context) => {
           timestamp: ts,
           action: body.column_id && body.column_id !== data.column_id ? "move" : "update",
           card_id: route.id, card_title: merged.title, board_slug: entry.board_slug, origin: "api",
-        }) + "\
-", "utf-8");
+        }) + "\n", "utf-8");
         return c.json({ card: { ...merged, body: newContent } });
       }
 
@@ -10241,8 +9550,7 @@ export default async (c: Context) => {
         appendFileSync(ACTIVITY_PATH, JSON.stringify({
           timestamp: ts, action: "delete",
           card_id: route.id, card_title: entry.title, board_slug: entry.board_slug, origin: "api",
-        }) + "\
-", "utf-8");
+        }) + "\n", "utf-8");
         if (existsSync(cardPath)) unlinkSync(cardPath);
         rebuildIndex();
         return c.json({ deleted: route.id });
@@ -10271,8 +9579,7 @@ export default async (c: Context) => {
           : [];
         let recentActivity: any[] = [];
         if (existsSync(ACTIVITY_PATH)) {
-          const lines = readFileSync(ACTIVITY_PATH, "utf-8").trim().split("\
-").filter(Boolean);
+          const lines = readFileSync(ACTIVITY_PATH, "utf-8").trim().split("\n").filter(Boolean);
           recentActivity = lines
             .map((l) => {
               try { return JSON.parse(l); } catch { return null; }
@@ -10307,8 +9614,7 @@ export default async (c: Context) => {
 
       case "activity": {
         if (!existsSync(ACTIVITY_PATH)) return c.json({ activity: [] });
-        const lines = readFileSync(ACTIVITY_PATH, "utf-8").trim().split("\
-").filter(Boolean);
+        const lines = readFileSync(ACTIVITY_PATH, "utf-8").trim().split("\n").filter(Boolean);
         const entries = lines.map((l) => JSON.parse(l));
         if (!route.since) return c.json({ activity: entries });
         return c.json({ activity: entries.filter((e: any) => e.timestamp > route.since!) });
@@ -10324,9 +9630,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/api/zos/build-log` (api, public)
+### `/api/zos/build/log` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -10352,6 +9659,7 @@ export default (c: Context) => {
 ### `/api/zos/now` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -10381,6 +9689,7 @@ export default (c: Context) => {
 ### `/api/zos/signals` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -10398,9 +9707,10 @@ export default (c: Context) => {
 };
 ```
 
-### `/blog` (page, public)
+### `/blog` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useRef } from "react";
 import { ArrowRight, ArrowLeft, Clock, Tag, Search, Filter, X, Menu, Lock } from "lucide-react";
 
@@ -10795,9 +10105,10 @@ export default function Blog() {
 }
 ```
 
-### `/blog/:slug` (page, public)
+### `/blog/:slug` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Clock, Tag, Share2, ChevronUp } from "lucide-react";
 
@@ -10911,8 +10222,7 @@ function GlobalNav() {
 }
 
 function MarkdownRenderer({ content }: { content: string }) {
-  const lines = content.trim().split("\
-");
+  const lines = content.trim().split("\n");
   const elements: React.ReactNode[] = [];
   let i = 0, inCodeBlock = false, codeLines: string[] = [], codeLang = "";
 
@@ -10930,8 +10240,7 @@ function MarkdownRenderer({ content }: { content: string }) {
           <div key={`code-${i}`} className="my-6 rounded-xl overflow-hidden" style={{ border: `1px solid ${COLORS.border}` }}>
             {codeLang && <div className="px-4 py-2 text-xs font-mono tracking-wider uppercase" style={{ background: COLORS.card, borderBottom: `1px solid ${COLORS.border}`, color: `${COLORS.cyan}99` }}>{codeLang}</div>}
             <pre className="p-4 overflow-x-auto" style={{ background: "#06060a" }}>
-              <code className="text-sm font-mono leading-relaxed" style={{ color: "#e2e8f0" }}>{codeLines.join("\
-")}</code>
+              <code className="text-sm font-mono leading-relaxed" style={{ color: "#e2e8f0" }}>{codeLines.join("\n")}</code>
             </pre>
           </div>
         );
@@ -11203,9 +10512,10 @@ export default function BlogPost() {
 }
 ```
 
-### `/buildin-auth` (page, private)
+### `/buildin/auth` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect } from "react";
 
 export default function BuildinAuth() {
@@ -11342,9 +10652,10 @@ export default function BuildinAuth() {
 }
 ```
 
-### `/byok-reference` (page, private)
+### `/byok/reference` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useEffect, useMemo, useState } from "react";
 import { Copy, Check, RefreshCw, Database, Search, ExternalLink, AlertCircle, Clock } from "lucide-react";
 
@@ -11515,8 +10826,7 @@ export default function ByokReference() {
                 backgroundColor: theme.card,
                 color: isStale ? "#fca5a5" : theme.muted,
               }}
-              title={`Source: ${data.source}\
-Fetched: ${data.fetchedAt}`}
+              title={`Source: ${data.source}\nFetched: ${data.fetchedAt}`}
             >
               {isStale ? <AlertCircle className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
               <span className="font-mono">{fmtAge(now - new Date(data.fetchedAt).getTime())}</span>
@@ -11707,9 +11017,10 @@ Fetched: ${data.fetchedAt}`}
 }
 ```
 
-### `/career-ops` (page, private)
+### `/career/ops` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useCallback } from "react";
 import {
   Briefcase, FileText, TrendingUp, BarChart3, Plus,
@@ -12059,6 +11370,7 @@ export default function CareerOpsDashboard() {
 ### `/dashboard` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 /**
  * Family Butler Dashboard - Phase 3.3, 4.1 & 4.2
  * Updates: TwinMind Synthesis (3.3), Mobile PWA (4.1), Interactive Actions (4.2)
@@ -12568,9 +11880,10 @@ export default function FamilyDashboard() {
 }
 ```
 
-### `/data-explorer` (page, private)
+### `/data/explorer` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useEffect } from "react";
 
 export default function DataExplorerRedirect() {
@@ -12583,9 +11896,10 @@ export default function DataExplorerRedirect() {
 }
 ```
 
-### `/data/zo-trivia/` (page, private)
+### `/data/zo/trivia` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useEffect, useState } from "react";
 import { 
   Bar, 
@@ -12898,9 +12212,10 @@ function StatCard({ title, value, icon, color }: { title: string, value: any, ic
 }
 ```
 
-### `/data/zo-trivia/api/query` (api, public)
+### `/data/zo/trivia/api/query` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -12990,6 +12305,7 @@ export default async (c: Context) => {
 ### `/docs` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -12997,9 +12313,10 @@ export default (c: Context) => {
 };
 ```
 
-### `/icon-configurator` (page, public)
+### `/icon/configurator` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useCallback, useEffect, useRef } from "react";
 import { 
   Download, Loader2, Wand2, ArrowLeft, Zap, Sparkles, Info, Menu, X, Lock,
@@ -13455,9 +12772,7 @@ export default function IconConfigurator() {
           return;
         } else if (result.status === "error") {
           setAiAttempt(null);
-          const detail = result.detail ? `\
-\
-Detail: ${result.detail}` : "";
+          const detail = result.detail ? `\n\nDetail: ${result.detail}` : "";
           const retryNote = result.retriesExhausted ? " (retries exhausted)" : "";
           throw new Error((result.error || "AI generation failed") + retryNote + detail);
         }
@@ -13744,9 +13059,173 @@ Detail: ${result.detail}` : "";
 }
 ```
 
-### `/job-ops` (page, private)
+### `/index` (api, public)
+
+```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
+import type { Context } from "hono";
+
+export type ApiRouteHandler = (c: Context) => Response | Promise<Response>;
+
+export interface ApiRouteConfig {
+  handler: ApiRouteHandler;
+  public: boolean;
+}
+
+export interface ApiRouteManifest {
+  file: string;
+  public: boolean;
+}
+
+export const apiRouteManifest: Record<string, ApiRouteManifest> = {
+  "/api/agents": { file: "api-agents", public: true },
+  "/api/temporal-auth-check": { file: "api-temporal-auth-check", public: true },
+  "/api/temporal/*": { file: "api-temporal-*", public: true },
+  "/api/share/:id/download": { file: "api-share-:id-download", public: true },
+  "/api/flowpulse": { file: "api-flowpulse", public: true },
+  "/api/blog/:slug": { file: "api-blog-:slug", public: true },
+  "/api/career-ops/scan-history": { file: "api-career-ops-scan-history", public: true },
+  "/api/skills-gallery": { file: "api-skills-gallery", public: true },
+  "/api/zo-space-theme-gallery/skill": { file: "api-zo-space-theme-gallery-skill", public: true },
+  "/api/zo-space-theme-gallery": { file: "api-zo-space-theme-gallery", public: true },
+  "/api/zo-space-theme-gallery/:id": { file: "api-zo-space-theme-gallery-:id", public: true },
+  "/api/logs": { file: "api-logs", public: true },
+  "/api/security": { file: "api-security", public: true },
+  "/api/failures": { file: "api-failures", public: true },
+  "/api/trivia/dates": { file: "api-trivia-dates", public: true },
+  "/api/calendar": { file: "api-calendar", public: true },
+  "/api/extension-save": { file: "api-extension-save", public: true },
+  "/api/generate-icon": { file: "api-generate-icon", public: true },
+  "/api/test-write": { file: "api-test-write", public: true },
+  "/api/test-exec": { file: "api-test-exec", public: true },
+  "/api/benchmarks/refresh": { file: "api-benchmarks-refresh", public: true },
+  "/api/billing": { file: "api-billing", public: true },
+  "/api/audit": { file: "api-audit", public: true },
+  "/api/test-env": { file: "api-test-env", public: true },
+  "/api/diagnose": { file: "api-diagnose", public: true },
+  "/api/receipts": { file: "api-receipts", public: true },
+  "/api/model-explorer/workbench": { file: "api-model-explorer-workbench", public: true },
+  "/api/twinmind": { file: "api-twinmind", public: true },
+  "/api/datasets/start": { file: "api-datasets-start", public: true },
+  "/docs": { file: "docs", public: true },
+  "/api/sites": { file: "api-sites", public: true },
+  "/api/my-models": { file: "api-my-models", public: true },
+  "/api/updates": { file: "api-updates", public: true },
+  "/api/blog": { file: "api-blog", public: true },
+  "/kg-search": { file: "kg-search", public: true },
+  "/api/share": { file: "api-share", public: true },
+  "/kg-entity": { file: "kg-entity", public: true },
+  "/api/models": { file: "api-models", public: true },
+  "/kg-by-type": { file: "kg-by-type", public: true },
+  "/kg-stats": { file: "kg-stats", public: true },
+  "/kg-recall": { file: "kg-recall", public: true },
+  "/kg-browse": { file: "kg-browse", public: true },
+  "/kg-graph": { file: "kg-graph", public: true },
+  "/api/files": { file: "api-files", public: true },
+  "/api/services": { file: "api-services", public: true },
+  "/api/system-stats": { file: "api-system-stats", public: true },
+  "/api/credits": { file: "api-credits", public: true },
+  "/api/trivia/leaderboard": { file: "api-trivia-leaderboard", public: true },
+  "/api/trivia/random": { file: "api-trivia-random", public: true },
+  "/api/trivia/by-date": { file: "api-trivia-by-date", public: true },
+  "/api/datasets/proxy/*": { file: "api-datasets-proxy-*", public: true },
+  "/api/benchmarks": { file: "api-benchmarks", public: true },
+  "/api/career-ops/scan": { file: "api-career-ops-scan", public: true },
+  "/api/speech-game-auth": { file: "api-speech-game-auth", public: true },
+  "/api/career-ops/batch": { file: "api-career-ops-batch", public: true },
+  "/speech-game-manifest.json": { file: "speech-game-manifest.json", public: true },
+  "/speech-game-sw.js": { file: "speech-game-sw.js", public: true },
+  "/data/zo-trivia/api/query": { file: "data-zo-trivia-api-query", public: true },
+  "/api/buildin/disconnect": { file: "api-buildin-disconnect", public: true },
+  "/api/projects": { file: "api-projects", public: true },
+  "/api/test-deps": { file: "api-test-deps", public: true },
+  "/api/zos/now": { file: "api-zos-now", public: true },
+  "/api/zos/build-log": { file: "api-zos-build-log", public: true },
+  "/api/auth-status": { file: "api-auth-status", public: true },
+  "/api/zos/signals": { file: "api-zos-signals", public: true },
+  "/api/career-ops": { file: "api-career-ops", public: true },
+  "/api/career-ops/pipeline": { file: "api-career-ops-pipeline", public: true },
+  "/api/career-ops/applications": { file: "api-career-ops-applications", public: true },
+  "/api/health-check": { file: "api-health-check", public: true },
+  "/api/speech-game-data": { file: "api-speech-game-data", public: true },
+  "/api/telemetry-data": { file: "api-telemetry-data", public: true },
+  "/api/buildin/callback": { file: "api-buildin-callback", public: true },
+  "/api/datasets/viewer": { file: "api-datasets-viewer", public: true },
+  "/api/datasets/list": { file: "api-datasets-list", public: true },
+  "/api/nav-links": { file: "api-nav-links", public: true },
+  "/api/share/:id": { file: "api-share-:id", public: true },
+  "/api/trivia": { file: "api-trivia", public: true },
+  "/api/family-log": { file: "api-family-log", public: true },
+  "/api/trivia/user-stats": { file: "api-trivia-user-stats", public: true },
+  "/api/projects-conversations": { file: "api-projects-conversations", public: true },
+  "/api/receipt-images": { file: "api-receipt-images", public: true },
+  "/api/buildin/status": { file: "api-buildin-status", public: true },
+  "/api/contact": { file: "api-contact", public: true },
+  "/api/x-feed": { file: "api-x-feed", public: true },
+  "/api/zo-city-data": { file: "api-zo-city-data", public: true },
+  "/api/voi-zos": { file: "api-voi-zos", public: true },
+  "/api/model-explorer/models": { file: "api-model-explorer-models", public: true },
+  "/api/model-explorer/sync": { file: "api-model-explorer-sync", public: true },
+  "/api/model-explorer/stats": { file: "api-model-explorer-stats", public: true },
+  "/api/zoboard/*": { file: "api-zoboard-*", public: true },
+  "/api/model-explorer/import-omniroute": { file: "api-model-explorer-import-omniroute", public: true },
+  "/api/trivia/subscribe": { file: "api-trivia-subscribe", public: true },
+  "/api/model-explorer/providers": { file: "api-model-explorer-providers", public: true },
+  "/api/model-explorer/providers/delete": { file: "api-model-explorer-providers-delete", public: true },
+  "/api/byok-reference": { file: "api-byok-reference", public: true },
+  "/api/twinmind-callback": { file: "api-twinmind-callback", public: true },
+  "/api/bydesign/callback": { file: "api-bydesign-callback", public: true },
+  "/api/trivia/unsubscribe": { file: "api-trivia-unsubscribe", public: true },
+  "/api/oauth-mcp/callback": { file: "api-oauth-mcp-callback", public: true },
+};
+
+export const apiRoutes: Record<string, ApiRouteConfig> = {};
+
+export async function loadApiRoutes(
+  writeError: (route: string, type: "import", error: unknown) => Promise<void>,
+  clearError: (route: string) => Promise<void>
+): Promise<void> {
+  for (const [path, manifest] of Object.entries(apiRouteManifest)) {
+    try {
+      const module = await import(`./${manifest.file}.ts`);
+      let handler: ApiRouteHandler;
+
+      if (typeof module.default === "function") {
+        handler = module.default;
+      } else if (typeof module.default === "object" && module.default !== null) {
+        const methods: Record<string, ApiRouteHandler> = {};
+        for (const [key, val] of Object.entries(module.default)) {
+          if (typeof val === "function") methods[key.toUpperCase()] = val as ApiRouteHandler;
+        }
+        if (Object.keys(methods).length === 0) {
+          throw new Error(`Route ${path} default export has no handler methods`);
+        }
+        handler = async (c: Context) => {
+          const fn = methods[c.req.method];
+          if (!fn) return c.json({ error: "Method not allowed" }, 405);
+          return fn(c);
+        };
+      } else {
+        throw new Error(`Route ${path} must export a default function or method handlers`);
+      }
+
+      apiRoutes[path] = {
+        handler,
+        public: manifest.public,
+      };
+
+      await clearError(path);
+    } catch (error) {
+      await writeError(path, "import", error);
+    }
+  }
+}
+```
+
+### `/job/ops` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useRef } from "react";
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -13931,9 +13410,10 @@ export default function JobOps() {
 }
 ```
 
-### `/kg-browse` (api, public)
+### `/kg/browse` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 import { readFileSync, readdirSync } from "fs";
 import { join } from "path";
@@ -13948,14 +13428,11 @@ export default async (c: Context) => {
     for (const file of files) {
       try {
         const content = readFileSync(join(vaultPath, file), "utf-8");
-        const frontmatterMatch = content.match(/^---\
-([\s\S]*?)\
----/);
+        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
         
         if (frontmatterMatch) {
           const fm: Record<string, string> = {};
-          for (const line of frontmatterMatch[1].split("\
-")) {
+          for (const line of frontmatterMatch[1].split("\n")) {
             const [key, ...vals] = line.split(":");
             if (key && vals.length) {
               fm[key.trim()] = vals.join(":").trim();
@@ -13994,9 +13471,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg-by-type` (api, public)
+### `/kg/by/type` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -14026,9 +13504,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg-entity` (api, public)
+### `/kg/entity` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -14058,9 +13537,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg-graph` (api, public)
+### `/kg/graph` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -14087,9 +13567,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg-recall` (api, public)
+### `/kg/recall` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -14113,9 +13594,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg-search` (api, public)
+### `/kg/search` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -14139,9 +13621,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/kg-stats` (api, public)
+### `/kg/stats` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -14159,9 +13642,10 @@ export default async (c: Context) => {
 };
 ```
 
-### `/knowledge-graph` (page, private)
+### `/knowledge/graph` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useRef } from "react";
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -15008,9 +14492,10 @@ export default function KnowledgeGraph() {
 }
 ```
 
-### `/model-advisor` (page, public)
+### `/model/advisor` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { Brain, Zap, DollarSign, Download, ChevronDown, ChevronUp, Sparkles, ArrowUpDown, Check, Info, Calculator, Trophy, Star, Target, MessageSquare, Code, BookOpen, Scale, Cpu, Sun, Moon, Bot, X, Filter, Search } from "lucide-react";
 
@@ -15561,9 +15046,10 @@ export default function ModelAdvisor() {
 }
 ```
 
-### `/model-explorer` (page, private)
+### `/model/explorer` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useMemo, useCallback, Fragment, type CSSProperties } from "react";
 import {
   Search, Filter, Database, Zap, ChevronDown, ChevronRight, X,
@@ -16760,12 +16246,444 @@ function PromptWorkbench() {
       const rows = (data.providers || []) as OmniImportProvider[];
       const refreshed = rows.find((row) => row.prefix === prefix);
       setOmniProviders(rows);
-      if (r
+      if (refreshed) {
+        const match = refreshed.suggested_secret_name || refreshed.current_secret_name || "";
+        setOmniSelections((current) => ({ ...current, [prefix]: match }));
+      }
+    } catch (error: any) {
+      setOmniProviders(previousRows);
+      setOmniError(error.message || "Could not refresh Zo Secret matches");
+    } finally {
+      setOmniLoading(false);
+    }
+  };
+
+  const importOmniProviders = async () => {
+    setOmniImporting(true);
+    setOmniError("");
+    try {
+      const prefixes = omniProviders.filter((row) => omniSelected[row.prefix]).map((row) => row.prefix);
+      const response = await fetch("/api/model-explorer/import-omniroute", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ mode: omniMode, prefixes, selections: omniSelections }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || `OmniRoute import failed (${response.status})`);
+      await fetchProviders();
+      setOmniModalOpen(false);
+    } catch (error: any) {
+      setOmniError(error.message || "OmniRoute import failed");
+    } finally {
+      setOmniImporting(false);
+    }
+  };
+
+  // Fetch providers
+  useEffect(() => {
+    fetch("/api/model-explorer/providers", { headers: { Accept: "application/json" } })
+      .then((r) => r.json())
+      .then((d) => {
+        const ps = d.providers || [];
+        setProviders(ps);
+        const firstActive = ps.find((p) => p.sync_status === "success" && p.model_count > 0);
+        if (firstActive) setSelectedProviderId(firstActive.id);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Fetch models for selected provider
+  useEffect(() => {
+    if (selectedProviderId === "") { setProviderModels([]); return; }
+    fetch(`/api/model-explorer/models?provider_id=${selectedProviderId}&limit=500&sort_by=model_id&sort_dir=asc`, {
+      credentials: "same-origin",
+      headers: { Accept: "application/json" },
+    })
+      .then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data.error || `Model request failed (${r.status})`);
+        return data;
+      })
+      .then((d: ModelsResponse) => {
+        setProviderModels(d.models || []);
+        setSelectedModel("");
+      })
+      .catch(() => setProviderModels([]));
+  }, [selectedProviderId]);
+
+  const handleSend = async () => {
+    setLoading(true);
+    setResult(null);
+    try {
+      const body: any = {
+        messages: [
+          ...(systemPrompt ? [{ role: "system", content: systemPrompt }] : []),
+          { role: "user", content: userMessage },
+        ],
+        temperature,
+        max_tokens: maxTokens,
+        stream,
+      };
+      if (mode === "stored") {
+        body.provider_id = selectedProviderId;
+        body.model = selectedModel;
+      } else {
+        body.base_url = customBaseUrl;
+        body.api_key = customApiKey;
+        body.model = customModel;
+      }
+      const r = await fetch("/api/model-explorer/workbench", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: stream ? "text/event-stream" : "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (stream) {
+        if (!r.ok || !r.body) {
+          const detail = await r.text();
+          setResult({ error: `HTTP ${r.status}`, detail });
+        } else {
+          const startedAt = Date.now();
+          const reader = r.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+          let content = "";
+          let usage: any = null;
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() || "";
+            for (const line of lines) {
+              if (!line.startsWith("data:")) continue;
+              const payload = line.slice(5).trim();
+              if (!payload || payload === "[DONE]") continue;
+              try {
+                const chunk = JSON.parse(payload);
+                content += chunk.choices?.[0]?.delta?.content || "";
+                if (chunk.usage) usage = chunk.usage;
+                setResult({
+                  response: { choices: [{ message: { content } }], usage },
+                  elapsed_ms: Date.now() - startedAt,
+                });
+              } catch {}
+            }
+          }
+        }
+      } else {
+        const d: WorkbenchResult = await r.json();
+        setResult(d);
+      }
+    } catch (e: any) {
+      setResult({ error: e.message });
+    }
+    setLoading(false);
+  };
+
+  const canSend = mode === "stored"
+    ? selectedProviderId !== "" && selectedModel && userMessage.trim()
+    : customBaseUrl.trim() && customModel.trim() && userMessage.trim();
+
+  return (
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[400px_1fr]" style={{ minHeight: "calc(100vh - 120px)" }}>
+      {/* Config Panel */}
+      <div className="space-y-4">
+        {/* Mode toggle */}
+        <div className="flex gap-1 rounded-lg p-1" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
+          <button
+            onClick={() => setMode("stored")}
+            className="flex-1 rounded-md px-3 py-2 text-sm font-medium transition"
+            style={{ background: mode === "stored" ? theme.accentDim : "transparent", color: mode === "stored" ? theme.accent : theme.muted }}
+          >
+            <Database className="size-3.5 inline mr-1" /> Stored Provider
+          </button>
+          <button
+            onClick={() => setMode("custom")}
+            className="flex-1 rounded-md px-3 py-2 text-sm font-medium transition"
+            style={{ background: mode === "custom" ? theme.accentDim : "transparent", color: mode === "custom" ? theme.accent : theme.muted }}
+          >
+            <Settings2 className="size-3.5 inline mr-1" /> Custom Endpoint
+          </button>
+        </div>
+
+        {/* Provider config */}
+        <div className="rounded-xl p-4 space-y-3" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
+          {mode === "stored" ? (
+            <>
+              <div>
+                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.muted }}>BYOK Provider</label>
+                <select
+                  value={selectedProviderId}
+                  onChange={(e) => setSelectedProviderId(e.target.value === "" ? "" : Number(e.target.value))}
+                  className="w-full rounded-lg px-3 py-2 text-sm outline-none"
+                  style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
+                >
+                  <option value="">Select a provider...</option>
+                  {providers.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} {p.sync_status === "success" ? "✓" : "○"} ({p.model_count})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.muted }}>Model</label>
+                <select
+                  value={selectedModel}
+                  onChange={(e) => setSelectedModel(e.target.value)}
+                  className="w-full rounded-lg px-3 py-2 text-sm font-mono outline-none"
+                  style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
+                >
+                  <option value="">Select a model...</option>
+                  {providerModels.map((m) => (
+                    <option key={m.id} value={m.model_id}>{m.model_id}</option>
+                  ))}
+                </select>
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.muted }}>Base URL</label>
+                <input
+                  type="text"
+                  value={customBaseUrl}
+                  onChange={(e) => setCustomBaseUrl(e.target.value)}
+                  placeholder="https://api.example.com/v1"
+                  className="w-full rounded-lg px-3 py-2 text-sm font-mono outline-none"
+                  style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.muted }}>API Key</label>
+                <input
+                  type="password"
+                  value={customApiKey}
+                  onChange={(e) => setCustomApiKey(e.target.value)}
+                  placeholder="sk-... or your provider key"
+                  className="w-full rounded-lg px-3 py-2 text-sm font-mono outline-none"
+                  style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.muted }}>Model ID</label>
+                <input
+                  type="text"
+                  value={customModel}
+                  onChange={(e) => setCustomModel(e.target.value)}
+                  placeholder="gpt-4o, claude-3-opus, etc."
+                  className="w-full rounded-lg px-3 py-2 text-sm font-mono outline-none"
+                  style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
+                />
+              </div>
+            </>
+          )}
+
+          {/* Parameters */}
+          <div className="grid grid-cols-2 gap-3 pt-1">
+            <div>
+              <label className="text-xs font-medium mb-1 block" style={{ color: theme.muted }}>
+                Temperature: {temperature.toFixed(1)}
+              </label>
+              <input
+                type="range" min="0" max="2" step="0.1"
+                value={temperature}
+                onChange={(e) => setTemperature(Number(e.target.value))}
+                className="w-full"
+                style={{ accentColor: theme.accent }}
+              />
+            </div>
+            <div>
+              <label className="text-xs font-medium mb-1 block" style={{ color: theme.muted }}>Max Tokens</label>
+              <input
+                type="number"
+                value={maxTokens}
+                onChange={(e) => setMaxTokens(Number(e.target.value))}
+                className="w-full rounded-lg px-3 py-1.5 text-sm outline-none"
+                style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
+              />
+            </div>
+          </div>
+          <button
+            type="button"
+            aria-pressed={stream}
+            onClick={() => setStream(!stream)}
+            className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm"
+            style={{ background: stream ? theme.accentDim : "transparent", border: `1px solid ${stream ? theme.borderActive : theme.border}` }}
+          >
+            <span style={{ color: stream ? theme.accent : theme.muted }}>Stream response</span>
+            {stream ? <ToggleRight className="size-5" style={{ color: theme.accent }} /> : <ToggleLeft className="size-5" style={{ color: theme.dim }} />}
+          </button>
+          <button type="button" onClick={() => setProviderModalOpen(true)} className="rounded-lg px-3 py-2 text-xs font-semibold" style={{ background: theme.accentDim, color: theme.accent, border: `1px solid ${theme.borderActive}` }}>
+            <Plus className="mr-1 inline size-3.5" /> Add Provider
+          </button>
+          <button type="button" onClick={openOmniImport} className="rounded-lg px-3 py-2 text-xs font-semibold" style={{ color: theme.blue, border: `1px solid ${theme.border}` }}>
+            <Database className="mr-1 inline size-3.5" /> Import from OmniRoute
+          </button>
+        </div>
+
+        {/* Send button */}
+        <button
+          onClick={handleSend}
+          disabled={!canSend || loading}
+          className="flex w-full items-center justify-center gap-2 rounded-lg py-3 text-sm font-bold transition disabled:opacity-40"
+          style={{ background: theme.accent, color: "#1a1a18" }}
+        >
+          {loading ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+          {loading ? "Generating..." : "Send Prompt"}
+        </button>
+      </div>
+
+      {/* Prompt + Response Panel */}
+      <div className="space-y-4">
+        {/* System prompt */}
+        <div className="rounded-xl p-4" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
+          <label className="text-xs font-medium mb-2 block" style={{ color: theme.muted }}>System Prompt (optional)</label>
+          <textarea
+            value={systemPrompt}
+            onChange={(e) => setSystemPrompt(e.target.value)}
+            placeholder="You are a helpful assistant..."
+            rows={2}
+            className="w-full resize-y rounded-lg p-3 text-sm outline-none"
+            style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
+          />
+        </div>
+
+        {/* User message */}
+        <div className="rounded-xl p-4" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
+          <label className="text-xs font-medium mb-2 block" style={{ color: theme.muted }}>User Message</label>
+          <textarea
+            value={userMessage}
+            onChange={(e) => setUserMessage(e.target.value)}
+            placeholder="Type your prompt here..."
+            rows={6}
+            className="w-full resize-y rounded-lg p-3 text-sm outline-none"
+            style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
+          />
+        </div>
+
+        {/* Response */}
+        <div className="rounded-xl p-4 min-h-[200px]" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: theme.muted }}>Response</span>
+            {result?.elapsed_ms && (
+              <span className="flex items-center gap-1 text-xs" style={{ color: theme.dim }}>
+                <Clock className="size-3" /> {result.elapsed_ms}ms
+              </span>
+            )}
+          </div>
+          {!result && !loading && (
+            <div className="flex flex-col items-center justify-center py-12" style={{ color: theme.dim }}>
+              <Zap className="size-6 mb-2 opacity-40" />
+              <span className="text-sm">Send a prompt to see the response here.</span>
+            </div>
+          )}
+          {loading && (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="size-5 animate-spin" style={{ color: theme.accent }} />
+            </div>
+          )}
+          {result?.error && (
+            <div className="rounded-lg p-3" style={{ background: "rgba(234,105,98,0.1)", border: `1px solid ${theme.red}` }}>
+              <div className="flex items-center gap-1.5 text-sm font-medium" style={{ color: theme.red }}>
+                <AlertCircle className="size-4" /> Error
+              </div>
+              <pre className="mt-2 text-xs whitespace-pre-wrap" style={{ color: theme.muted }}>{result.detail || result.error}</pre>
+            </div>
+          )}
+          {result?.response && (
+            <div className="space-y-3">
+              {/* Content */}
+              {result.response.choices?.[0]?.message?.content && (
+                <div className="rounded-lg p-3 text-sm" style={{ background: theme.bg, border: `1px solid ${theme.border}`, color: theme.fg }}>
+                  {result.response.choices[0].message.content}
+                </div>
+              )}
+              {/* Usage */}
+              {result.response.usage && (
+                <div className="flex flex-wrap gap-3 text-xs" style={{ color: theme.dim }}>
+                  <span>Prompt: {result.response.usage.prompt_tokens} tok</span>
+                  <span>Completion: {result.response.usage.completion_tokens} tok</span>
+                  <span>Total: {result.response.usage.total_tokens} tok</span>
+                  {result.response.model && <span>Model: {result.response.model}</span>}
+                </div>
+              )}
+              {/* Raw JSON */}
+              <details className="rounded-lg" style={{ background: theme.bg, border: `1px solid ${theme.border}` }}>
+                <summary className="cursor-pointer px-3 py-2 text-xs font-medium" style={{ color: theme.muted }}>
+                  Raw response JSON
+                </summary>
+                <pre className="overflow-x-auto p-3 text-xs font-mono" style={{ color: theme.dim }}>
+                  {JSON.stringify(result.response, null, 2)}
+                </pre>
+              </details>
+            </div>
+          )}
+        </div>
+        {providerModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true" aria-labelledby="add-provider-title">
+            <div className="w-full max-w-lg rounded-2xl p-5" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
+              <div className="mb-4 flex items-center justify-between"><h2 id="add-provider-title" className="text-lg font-bold" style={{ color: theme.fg }}>Add Provider</h2><button type="button" onClick={() => setProviderModalOpen(false)} aria-label="Close">×</button></div>
+              <div className="space-y-3">
+                {([["name", "Provider name", "OpenRouter"], ["prefix", "Provider prefix", "openrouter"], ["base_url", "Base URL", "https://api.example.com/v1"], ["secret_name", "Zo Secret API Name", "MY_PROVIDER_API_KEY"]] as const).map(([key, label, placeholder]) => <label key={key} className="block text-xs font-medium" style={{ color: theme.muted }}>{label}<input value={providerForm[key]} onChange={(e) => setProviderForm({ ...providerForm, [key]: e.target.value })} placeholder={placeholder} className="mt-1 w-full rounded-lg px-3 py-2 text-sm outline-none" style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }} /></label>)}
+                <p className="text-xs" style={{ color: theme.dim }}>Save the API key separately in Zo Secrets under this exact name. Model Explorer stores only the name.</p>
+                <button type="button" disabled={providerSaving || !providerForm.name || !providerForm.prefix || !providerForm.base_url || !providerForm.secret_name} onClick={addProvider} className="w-full rounded-lg py-2.5 text-sm font-bold disabled:opacity-40" style={{ background: theme.accent, color: "#1a1a18" }}>{providerSaving ? "Saving…" : "Add and Sync Provider"}</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {omniModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true" aria-labelledby="omniroute-import-title" onClick={() => !omniImporting && setOmniModalOpen(false)}>
+            <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl p-5" style={{ background: theme.surface, border: `1px solid ${theme.border}` }} onClick={(event) => event.stopPropagation()}>
+              <div className="mb-4 flex items-start justify-between gap-4">
+                <div><h2 id="omniroute-import-title" className="text-lg font-bold" style={{ color: theme.fg }}>Import from OmniRoute</h2><p className="mt-1 text-xs" style={{ color: theme.muted }}>Dry-run preview. API-key values are never copied. Model Explorer stores only Zo Secret names.</p></div>
+                <button type="button" onClick={() => setOmniModalOpen(false)} aria-label="Close OmniRoute import" disabled={omniImporting}><X className="size-4" /></button>
+              </div>
+              <div className="mb-4 flex flex-wrap items-center gap-3">
+                <label className="text-xs" style={{ color: theme.muted }}>Import mode
+                  <select value={omniMode} onChange={(event) => setOmniMode(event.target.value as typeof omniMode)} className="ml-2 rounded-md px-2 py-1.5" style={{ background: theme.bg, border: `1px solid ${theme.border}` }}>
+                    <option value="providers_only">Providers only</option>
+                    <option value="providers_and_models">Providers and sync models</option>
+                  </select>
+                </label>
+                <button type="button" onClick={selectAllNewOmniProviders} disabled={omniLoading || omniImporting} className="rounded-md px-2.5 py-1.5 text-xs" style={{ border: `1px solid ${theme.border}` }}>Select all new</button>
+                <button type="button" onClick={deselectAllOmniProviders} disabled={omniLoading || omniImporting} className="rounded-md px-2.5 py-1.5 text-xs" style={{ border: `1px solid ${theme.border}` }}>Deselect all</button>
+                <button type="button" onClick={() => loadOmniPreview(false)} disabled={omniLoading || omniImporting} className="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs" style={{ border: `1px solid ${theme.border}` }}><RefreshCw className={`size-3 ${omniLoading ? "animate-spin" : ""}`} /> Refresh matches</button>
+                <span className="text-xs" style={{ color: theme.dim }}>{omniProviders.filter((row) => omniSelected[row.prefix]).length} selected</span>
+              </div>
+              {omniLoading ? <div className="py-12 text-center"><Loader2 className="mx-auto size-5 animate-spin" /></div> : (
+                <div className="space-y-2">
+                  {omniProviders.map((row) => (
+                    <div key={row.omni_id} className="grid gap-3 rounded-lg p-3 md:grid-cols-[auto_1.2fr_1.5fr_1.4fr]" style={{ background: theme.bg, border: `1px solid ${theme.border}` }}>
+                      <input type="checkbox" checked={Boolean(omniSelected[row.prefix])} onChange={(event) => setOmniSelected((current) => ({ ...current, [row.prefix]: event.target.checked }))} aria-label={`Import ${row.name}`} />
+                      <div><div className="flex flex-wrap items-center gap-2 text-sm font-semibold">{row.name}{row.action === "update" && <span className="rounded-full px-1.5 py-0.5 text-[10px] font-medium" style={{ color: theme.warn, background: theme.warnDim }}>Already imported</span>}</div><div className="text-[11px]" style={{ color: theme.dim }}>{row.action} · {row.prefix}</div></div>
+                      <div className="min-w-0"><div className="truncate text-xs font-mono" title={row.base_url}>{row.base_url}</div><div className="mt-1 text-[11px]" style={{ color: theme.dim }}>{row.models_path || "/models"}</div></div>
+                      <label className="text-[11px]" style={{ color: theme.muted }}>Zo Secret API Name
+                        <input value={omniSelections[row.prefix] || ""} onChange={(event) => setOmniSelections((current) => ({ ...current, [row.prefix]: event.target.value }))} placeholder="e.g. OPENROUTER_API_KEY" className="mt-1 w-full rounded-md px-2 py-1.5 text-xs" style={{ background: theme.surface, border: `1px solid ${row.secret_status === "missing" ? theme.warn : theme.border}` }} />
+                        {row.secret_candidates.length > 0 && <div className="mt-1 flex flex-wrap gap-1">{row.secret_candidates.slice(0, 4).map((name) => <button type="button" key={name} onClick={() => setOmniSelections((current) => ({ ...current, [row.prefix]: name }))} className="rounded px-1.5 py-0.5 text-[10px]" style={{ color: theme.accent, background: theme.accentDim }}>{name}</button>)}</div>}
+                        <span className="mt-1 flex flex-wrap items-center gap-2" style={{ color: row.secret_status === "matched" ? theme.success : row.secret_status === "needs_selection" ? theme.warn : theme.dim }}>{row.secret_status === "matched" ? "Matched" : row.secret_status === "needs_selection" ? "Needs secret selection" : "No logical Zo Secret match"}<button type="button" onClick={() => retryOmniSecretMatch(row.prefix)} disabled={omniLoading || omniImporting} className="underline underline-offset-2 disabled:opacity-50">Try match</button></span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {omniError && <div className="mt-4 rounded-lg p-3 text-xs" style={{ color: theme.danger, background: theme.dangerDim }}>{omniError}</div>}
+              <div className="mt-5 flex justify-end gap-2"><button type="button" onClick={() => setOmniModalOpen(false)} disabled={omniImporting} className="rounded-md px-3 py-2 text-xs" style={{ border: `1px solid ${theme.border}` }}>Cancel</button><button type="button" onClick={importOmniProviders} disabled={omniLoading || omniImporting || !omniProviders.some((row) => omniSelected[row.prefix])} className="rounded-md px-3 py-2 text-xs font-semibold disabled:opacity-50" style={{ background: theme.accent, color: "#071019" }}>{omniImporting ? "Importing…" : "Import selected"}</button></div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 ```
 
-### `/openclaw-dashboard` (page, private)
+### `/openclaw/dashboard` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -16976,9 +16894,10 @@ export default function OpenClawDashboard() {
 }
 ```
 
-### `/press` (page, public)
+### `/press` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect } from "react";
 
 export default function PressPage() {
@@ -17170,13 +17089,13 @@ const PR_CSS = [
   ".pr-foot{text-align:center;padding:40px 0 20px;border-top:1px solid rgba(232,224,212,0.08)}",
   ".pr-foot-note{font-size:11px;color:#6b6b78;margin-top:16px;letter-spacing:0.5px}",
   "@media (max-width:640px){.pr{padding:32px 16px}.pr-hero{padding:24px 0 40px;margin-bottom:40px}.pr-section{margin-bottom:40px}.pr-route{padding:14px}}",
-].join("\
-");
+].join("\n");
 ```
 
-### `/profile` (page, public)
+### `/profile` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useRef } from "react";
 import { MapPin, ExternalLink, Github, ChevronUp, ArrowUpRight, Layers, Cpu, Bot, Puzzle, Zap, Rss, BookOpen, FolderKanban, LayoutGrid, Clock, Tag, Heart, MessageCircle, Menu, X, Lock, PenLine, Palette, Settings, Share2, Briefcase, LayoutDashboard, Sparkles } from "lucide-react";
 
@@ -17748,9 +17667,10 @@ function GlobalNav({ links = [] }: { links?: any[] }) {
 }
 ```
 
-### `/receipts` (page, public)
+### `/receipts` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   Upload, Search, Image as ImageIcon, Loader2, Lock, ArrowUpDown, ArrowUp, ArrowDown, CheckCircle2, RefreshCw, AlertCircle, X, ZoomIn, ZoomOut, RotateCw, Maximize2, Minimize2, Receipt, ArrowLeft, Menu,
@@ -18397,6 +18317,7 @@ export default function RetailReceiptTracker() {
 ### `/repurpose` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useMemo, useState } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Copy, Check, Lock, Sparkles, Globe, Clock3, Shield } from "lucide-react";
@@ -18706,9 +18627,10 @@ export default function ContentRepurposer() {
 }
 ```
 
-### `/s/:id` (page, public)
+### `/s/:id` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 // @zo-theme: web3 | applied: 2026-03-02T07:00:00Z
 import { useState, useEffect, useRef } from "react";
 import { Download, Check, Zap, Menu, X, Lock } from "lucide-react";
@@ -19067,9 +18989,10 @@ function GlobalNav() {
 }
 ```
 
-### `/secret` (page, public)
+### `/secret` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect } from "react";
 
 export default function SecretPage() {
@@ -19182,13 +19105,13 @@ const SEC_CSS = [
   ".sec-links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}",
   ".sec-link{padding:10px 20px;border-radius:8px;border:1px solid rgba(232,224,212,0.1);background:rgba(232,224,212,0.03);color:#e8e0d4;text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:12px;transition:all 0.2s}",
   ".sec-link:hover{border-color:#c08b5c;background:rgba(192,139,92,0.08);color:#c08b5c}",
-].join("\
-");
+].join("\n");
 ```
 
 ### `/share` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useRef } from "react";
 import { FolderIcon, FileIcon, ChevronLeft, ChevronRight, Copy, Check, Trash2, Link, Download, Users, ExternalLink, Menu, X, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -19730,9 +19653,10 @@ export default function SharePage() {
 }
 ```
 
-### `/skills-gallery` (page, private)
+### `/skills/gallery` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Search, Loader2, X, Tag, FolderOpen, ChevronRight, Menu, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -20147,9 +20071,10 @@ export default function SkillsGallery() {
 }
 ```
 
-### `/speech-game` (page, public)
+### `/speech/game` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useCallback } from "react";
 import { Lock, Loader2 } from "lucide-react";
 
@@ -20769,9 +20694,10 @@ export default function SpeechGame() {
 }
 ```
 
-### `/speech-game-manifest.json` (api, public)
+### `/speech/game/manifest.json` (api, public)
 
 ```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -20800,66 +20726,10 @@ export default (c: Context) => {
 };
 ```
 
-### `/speech-game-sw.js` (api, public)
-
-```typescript
-import type { Context } from "hono";
-
-const SW_CODE = `
-const CACHE_NAME = "sblend-v1";
-const PRECACHE = [
-  "/speech-game",
-  "/speech-game/stickers",
-  "/icons/speech-game-192.png",
-  "/icons/speech-game-512.png",
-];
-
-self.addEventListener("install", (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE)).then(() => self.skipWaiting())
-  );
-});
-
-self.addEventListener("activate", (e) => {
-  e.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    ).then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener("fetch", (e) => {
-  const url = new URL(e.request.url);
-  if (url.pathname.startsWith("/api/")) return;
-  if (e.request.method !== "GET") return;
-  e.respondWith(
-    fetch(e.request)
-      .then((res) => {
-        if (res.ok) {
-          const clone = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
-        }
-        return res;
-      })
-      .catch(() => caches.match(e.request))
-  );
-});
-`;
-
-export default (c: Context) => {
-  return new Response(SW_CODE.trim(), {
-    headers: {
-      "Content-Type": "application/javascript",
-      "Service-Worker-Allowed": "/",
-      "Cache-Control": "no-cache",
-    },
-  });
-};
-```
-
-### `/speech-game/stats` (page, public)
+### `/speech/game/stats` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect } from "react";
 import { Lock, Loader2 } from "lucide-react";
 
@@ -21327,9 +21197,10 @@ export default function StatsPage() {
 }
 ```
 
-### `/speech-game/stickers` (page, public)
+### `/speech/game/stickers` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect } from "react";
 import { Lock, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -21639,9 +21510,68 @@ export default function Stickers() {
 }
 ```
 
+### `/speech/game/sw.js` (api, public)
+
+```typescript
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
+import type { Context } from "hono";
+
+const SW_CODE = `
+const CACHE_NAME = "sblend-v1";
+const PRECACHE = [
+  "/speech-game",
+  "/speech-game/stickers",
+  "/icons/speech-game-192.png",
+  "/icons/speech-game-512.png",
+];
+
+self.addEventListener("install", (e) => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE)).then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener("activate", (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+    ).then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener("fetch", (e) => {
+  const url = new URL(e.request.url);
+  if (url.pathname.startsWith("/api/")) return;
+  if (e.request.method !== "GET") return;
+  e.respondWith(
+    fetch(e.request)
+      .then((res) => {
+        if (res.ok) {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+        }
+        return res;
+      })
+      .catch(() => caches.match(e.request))
+  );
+});
+`;
+
+export default (c: Context) => {
+  return new Response(SW_CODE.trim(), {
+    headers: {
+      "Content-Type": "application/javascript",
+      "Service-Worker-Allowed": "/",
+      "Cache-Control": "no-cache",
+    },
+  });
+};
+```
+
 ### `/telemetry` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, ArrowLeft, Activity, RefreshCw, Terminal, Users, Zap, TrendingUp, Lock, ExternalLink, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -21955,6 +21885,7 @@ export default function TelemetryDashboard() {
 ### `/temporal` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useEffect, useState, useRef } from "react";
 
 const COLORS = {
@@ -22224,9 +22155,10 @@ export default function TemporalDashboard() {
 }
 ```
 
-### `/trivia` (page, public)
+### `/trivia` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useRef } from "react";
 import { 
   Trophy, Calendar, Shuffle, ChevronLeft, CheckCircle, XCircle, 
@@ -23111,6 +23043,7 @@ export default function TriviaQuiz() {
 ### `/trivia/archive` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useRef } from "react";
 import { 
   Calendar, ChevronLeft, ChevronRight, Clock, 
@@ -23445,6 +23378,7 @@ export default function TriviaArchive() {
 ### `/trivia/leaderboard` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useRef } from "react";
 import { 
   Trophy, Medal, Users, ArrowLeft, ArrowRight, 
@@ -23691,8 +23625,7 @@ export default function TriviaLeaderboard() {
             {userStats && (
               <div className="p-6 rounded-2xl border flex items-center gap-6" style={{ background: COLORS.card, borderColor: COLORS.border }}>
                 <div className="text-center">
-                  <p className="text-[10px] font-mono uppercase tracking-widest mb-1" style={{ color: COLORS.dimmed }}>Streak</p>\
-                  <p className="text-2xl font-bold font-heading" style={{ color: "#fb923c" }}>🔥 {userStats.best_streak || 0}</p>
+                  <p className="text-[10px] font-mono uppercase tracking-widest mb-1" style={{ color: COLORS.dimmed }}>Streak</p>\n                  <p className="text-2xl font-bold font-heading" style={{ color: "#fb923c" }}>🔥 {userStats.best_streak || 0}</p>
                 </div>
                 <div className="w-px h-10 bg-white/10" />
                 <div className="text-center">
@@ -23795,8 +23728,7 @@ export default function TriviaLeaderboard() {
                 <Calendar className="w-5 h-5" style={{ color: COLORS.indigo }} />
               </div>
               <h3 className="font-heading font-bold text-sm">View Archive</h3>
-              <p className="text-[10px]" style={{ color: COLORS.muted }}>Browse past questions and stats.</p>\
-            </a>
+              <p className="text-[10px]" style={{ color: COLORS.muted }}>Browse past questions and stats.</p>\n            </a>
             <div className="p-6 rounded-2xl border flex flex-col items-center text-center gap-3" style={{ background: COLORS.card, borderColor: COLORS.border }}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.05)", border: `1px solid ${COLORS.border}` }}>
                 <Users className="w-5 h-5" style={{ color: COLORS.muted }} />
@@ -23818,9 +23750,10 @@ export default function TriviaLeaderboard() {
 }
 ```
 
-### `/zo-city` (page, public)
+### `/zo/city` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 
 const TW = 16, TH = 8;
@@ -24455,9 +24388,10 @@ export default function ZoCity() {
 }
 ```
 
-### `/zo-city-three-test` (page, public)
+### `/zo/city/three/test` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useEffect, useRef, useState } from "react";
 
 export default function Page() {
@@ -24530,9 +24464,10 @@ export default function Page() {
 }
 ```
 
-### `/zo-control-deck` (page, private)
+### `/zo/control/deck` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Activity, Server, Bot, CreditCard, Shield, AlertTriangle, FileText, Globe, Menu, X, ChevronDown, ChevronRight, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -25455,9 +25390,10 @@ function StatCard({ label, value, sub, onClick, accent }: { label: string; value
 }
 ```
 
-### `/zo-space-theme-gallery` (page, public)
+### `/zo/space/theme/gallery` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { 
   Search, SunMedium, Moon, Filter, ChevronRight, Palette, Copy, Check, Eye, X, Menu, Lock,
@@ -26079,9 +26015,10 @@ export default function ThemeGallery() {
 }
 ```
 
-### `/zo-space-theme-gallery/:id` (page, public)
+### `/zo/space/theme/gallery/:id` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useEffect, useMemo, useState, useRef } from "react";
 import { ArrowLeft, Copy, Palette, Check, SunMedium, Moon, Eye, X } from "lucide-react";
 import { marked } from "marked";
@@ -26365,9 +26302,10 @@ export default function ThemeDetail() {
 }
 ```
 
-### `/zo-status` (page, public)
+### `/zo/status` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { 
@@ -27068,6 +27006,7 @@ function GlobalNav() {
 ### `/zoboard` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect } from "react";
 import { Layout, AlertCircle, Loader2 } from "lucide-react";
 
@@ -27172,6 +27111,7 @@ export default function ZoBoard() {
 ### `/zoboard/:slug` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
@@ -27805,6 +27745,7 @@ function CardDrawer({
 ### `/zos` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
 const BOOT_LINES: [string, number][] = [
@@ -28287,12 +28228,425 @@ function CmdPalette(p:{onClose:()=>void;onAction:(a:string)=>void}){
   const actions=[["about","Open About Me"],["terminal","Open Terminal"],["projects","Open Projects"],["voi","Open Voi-ZOS"],["command","Open Command Centre"],["lab","Open Lab"],["games","Open Games"],["settings","Open Settings"],["mail","Open Briefings"],["calendar","Open Book Time"],["store","Open App Store"],["theme-oxidized","Theme: Oxidized Future"],["theme-signal","Theme: Signal Lab"],["theme-lunar","Theme: Lunar Archive"],["easter-egg","🥚 Secret Easter Egg"]];
   const filtered=q?actions.filter(a=>a[1].toLowerCase().includes(q.toLowerCase())):actions;
   useEffect(()=>{const esc=(e:KeyboardEvent)=>{if(e.key==="Escape")p.onClose();};addEventListener("keydown",esc);return()=>removeEventListener("keydown",esc);},[p.onClose]);
-  return(<><div className="zov" onClick={p.onClose}/><div className="zcp"><input className="zcp-input" placeholder="Type a command..." value={q} onChange={e=>setQ(e.target.value)} autoFocus/><div className="zcp-list">{filtered.map(([id,label])=>(<button key={id} className="zcp-item" onClick={()=>{p.onAction(id);p.onClose();}}>{label}</button>))}
+  return(<><div className="zov" onClick={p.onClose}/><div className="zcp"><input className="zcp-input" placeholder="Type a command..." value={q} onChange={e=>setQ(e.target.value)} autoFocus/><div className="zcp-list">{filtered.map(([id,label])=>(<button key={id} className="zcp-item" onClick={()=>{p.onAction(id);p.onClose();}}>{label}</button>))}</div></div></>);
+}
+
+function Screensaver(p:{onDismiss:()=>void}){
+  const ref=useRef<HTMLCanvasElement>(null);
+  useEffect(()=>{const c=ref.current;if(!c)return;const ctx=c.getContext("2d");if(!ctx)return;
+    c.width=innerWidth;c.height=innerHeight;
+    const cols=Math.floor(c.width/14);const drops=Array(cols).fill(1);
+    const chars="ZOSZENLYTE0123456789";
+    let anim=0,lastStep=0;
+    const draw=(ts=0)=>{
+      if(ts-lastStep<32){anim=requestAnimationFrame(draw);return;}
+      lastStep=ts;
+      ctx.fillStyle="rgba(0,0,0,0.05)";ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle="#c08b5c";ctx.font="14px monospace";
+      for(let i=0;i<drops.length;i++){const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*14,drops[i]*14);if(drops[i]*14>c.height&&Math.random()>0.975)drops[i]=0;drops[i]++;}
+      anim=requestAnimationFrame(draw);
+    };
+    draw();
+    const dismiss=()=>p.onDismiss();
+    addEventListener("click",dismiss);addEventListener("mousemove",dismiss);addEventListener("keydown",dismiss);
+    return()=>{cancelAnimationFrame(anim);removeEventListener("click",dismiss);removeEventListener("mousemove",dismiss);removeEventListener("keydown",dismiss);};
+  },[p.onDismiss]);
+  return <canvas ref={ref} className="zss-canvas"/>;
+}
+
+function ToastContainer(p:{toasts:{id:number;msg:string;type:string}[];onRemove:(id:number)=>void}){
+  return(<div className="ztoast-container">{p.toasts.map(t=>(<div key={t.id} className={"ztoast ztoast-"+t.type}><span className="ztoast-msg">{t.msg}</span><button className="ztoast-close" onClick={()=>p.onRemove(t.id)}>✕</button></div>))}</div>);
+}
+
+function DesktopWatermark(p:{onEasterEgg?:()=>void}){
+  const clickRef=useRef(0);const timerRef=useRef<ReturnType<typeof setTimeout>|null>(null);
+  const handleClick=()=>{clickRef.current++;if(timerRef.current)clearTimeout(timerRef.current);timerRef.current=setTimeout(()=>{clickRef.current=0;},2000);if(clickRef.current>=5){clickRef.current=0;p.onEasterEgg?.();}};
+  return <div className="zos-watermark zos-wm-clickable" onClick={handleClick}><img src={ZOS_WATERMARK_LOGO_SRC} alt="ZOS" className="zos-wm-logo"/><div className="zos-wm-sub">ZenOS v1.0.0</div></div>;
+}
+function DesktopClock(){const [now,setNow]=useState(new Date());useEffect(()=>{const iv=setInterval(()=>setNow(new Date()),1000);return()=>clearInterval(iv);},[]);return <div className="zos-dclock"><div className="zos-dclock-time">{now.getHours().toString().padStart(2,"0")}:{now.getMinutes().toString().padStart(2,"0")}<span className="zos-dclock-sec">:{now.getSeconds().toString().padStart(2,"0")}</span></div><div className="zos-dclock-date">{now.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"})}</div></div>;}
+function DesktopStatus(p:{role:string;windowCount:number;foundCount:number;totalPoints:number}){return(<div className="zos-dstatus"><div className="zos-dstatus-row"><span className="zos-dstatus-dot green"/>System Online</div><div className="zos-dstatus-row"><span className="zos-dstatus-dot copper"/>Mode: {p.role}</div><div className="zos-dstatus-row"><span className="zos-dstatus-dot amber"/>{p.windowCount} window{p.windowCount!==1?"s":""} open</div><div className="zos-dstatus-row"><span className="zos-dstatus-dot verd"/>{p.totalPoints} signal points</div><div className="zos-dstatus-row"><span className="zos-dstatus-dot copper"/>{p.foundCount}/{SIGNALS.length} signals logged</div><div className="zos-dstatus-hint">Press ⌘K for command palette</div></div>);}
+
+export default function ZOS(){
+  const [phase,setPhase]=useState<"boot"|"desktop">("boot");
+  const [role,setRole]=useState("visitor");const [theme,setTheme]=useState("oxidized");
+  const [wins,setWins]=useState<WS[]>([]);const [active,setActive]=useState<string|null>(null);
+  const [startOpen,setStartOpen]=useState(false);const [cmdOpen,setCmdOpen]=useState(false);
+  const [helpOpen,setHelpOpen]=useState(false);
+  const [zC,setZC]=useState(100);const [ctxMenu,setCtxMenu]=useState<{x:number;y:number}|null>(null);
+  const [konamiIdx,setKonamiIdx]=useState(0);const [konamiActive,setKonamiActive]=useState(false);
+  const [foundSignals,setFoundSignals]=useState<string[]>([]);
+  const [screenSaver,setScreenSaver]=useState(false);const idleRef=useRef<ReturnType<typeof setTimeout>|null>(null);
+  const [toasts,setToasts]=useState<{id:number;msg:string;type:string}[]>([]);const toastId=useRef(0);
+  const addToast=useCallback((msg:string,type="info")=>{const id=++toastId.current;setToasts(t=>[...t,{id,msg,type}]);setTimeout(()=>setToasts(t=>t.filter(x=>x.id!==id)),4000);},[]);
+  const removeToast=useCallback((id:number)=>{setToasts(t=>t.filter(x=>x.id!==id));},[]);
+
+  useEffect(()=>{try{const st=localStorage.getItem("zos-theme");const sr=localStorage.getItem("zos-role");const ss=localStorage.getItem("zos-found-signals");if(st&&["oxidized","signal","lunar"].includes(st))setTheme(st);if(sr)setRole(sr);if(ss){const parsed=JSON.parse(ss);if(Array.isArray(parsed))setFoundSignals(parsed);}}catch(e){}},[]);
+  useEffect(()=>{try{localStorage.setItem("zos-theme",theme);}catch(e){}},[theme]);
+  useEffect(()=>{try{localStorage.setItem("zos-role",role);}catch(e){}},[role]);
+  useEffect(()=>{try{localStorage.setItem("zos-found-signals",JSON.stringify(foundSignals));}catch(e){}},[foundSignals]);
+
+  useEffect(()=>{if(phase!=="desktop")return;const resetIdle=()=>{if(idleRef.current)clearTimeout(idleRef.current);setScreenSaver(false);idleRef.current=setTimeout(()=>setScreenSaver(true),30000);};resetIdle();addEventListener("mousemove",resetIdle);addEventListener("keydown",resetIdle);addEventListener("click",resetIdle);return()=>{if(idleRef.current)clearTimeout(idleRef.current);removeEventListener("mousemove",resetIdle);removeEventListener("keydown",resetIdle);removeEventListener("click",resetIdle);};},[phase]);
+
+  const nz=useCallback(()=>{setZC(c=>c+1);return zC+1;},[zC]);
+  const triggerSignal=useCallback((id:string)=>{const match=SIGNALS.find(s=>s[0]===id);if(!match)return;const name=match[2];const points=match[4];setFoundSignals(prev=>{if(prev.includes(id))return prev;setTimeout(()=>addToast(name+" unlocked! +"+points+" signal points","egg"),0);return [...prev,id];});},[addToast]);
+  const totalPoints=useMemo(()=>foundSignals.reduce((sum,id)=>{const match=SIGNALS.find(s=>s[0]===id);return sum+(match?match[4]:0);},0),[foundSignals]);
+  const bootDone=useCallback((r:string)=>{setRole(r);setPhase("desktop");try{localStorage.setItem("zos-role",r);}catch(e){}setTimeout(()=>addToast("Welcome to ZOS. Press ⌘K for command palette.","success"),500);setTimeout(()=>addToast("Tip: press ? or F1 for shortcuts.","info"),1400);},[addToast]);
+  const handleContextMenu=useCallback((e:React.MouseEvent)=>{e.preventDefault();setCtxMenu({x:e.clientX,y:e.clientY});},[]);
+
+  useEffect(()=>{if(phase!=="desktop")return;const h=(e:KeyboardEvent)=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();setCmdOpen(v=>!v);setHelpOpen(false);}if(e.key==="/"&&!cmdOpen&&document.activeElement?.tagName!=="INPUT"&&document.activeElement?.tagName!=="TEXTAREA"){e.preventDefault();setCmdOpen(true);setHelpOpen(false);}if((e.key==="?"||e.key==="F1")&&document.activeElement?.tagName!=="INPUT"&&document.activeElement?.tagName!=="TEXTAREA"){e.preventDefault();setHelpOpen(v=>!v);setCmdOpen(false);}if(e.key==="Escape"){if(helpOpen){setHelpOpen(false);return;}if(cmdOpen){setCmdOpen(false);return;}const ordered=[...wins].filter(w=>!w.min).sort((a,b)=>b.z-a.z);if(ordered[0])close(ordered[0].id);}};addEventListener("keydown",h);return()=>removeEventListener("keydown",h);},[phase,cmdOpen,helpOpen,wins]);
+  useEffect(()=>{const h=(e:any)=>{if(e?.detail)open(e.detail);};window.addEventListener("zos-open-app",h);return()=>window.removeEventListener("zos-open-app",h);},[]);
+
+  useEffect(()=>{if(phase!=="desktop")return;const h=(e:KeyboardEvent)=>{if(e.key===konamiSeq[konamiIdx]){const next=konamiIdx+1;setKonamiIdx(next);if(next===konamiSeq.length){setKonamiActive(true);setKonamiIdx(0);setTimeout(()=>setKonamiActive(false),5000);triggerSignal("konami");}}else{setKonamiIdx(0);}};addEventListener("keydown",h);return()=>removeEventListener("keydown",h);},[phase,konamiIdx,triggerSignal]);
+
+  useEffect(()=>{const r=document.documentElement;const themes:Record<string,Record<string,string>>={oxidized:{"--bg":"#0e0e11","--card":"#151519","--hdr":"#1a1a20","--bone":"#e8e0d4","--copper":"#c08b5c","--verd":"#5daa96","--amber":"#d4a847","--dim":"#6b6b78","--muted":"#94938e"},signal:{"--bg":"#080c08","--card":"#0d120d","--hdr":"#111811","--bone":"#d4e8d4","--copper":"#00ff88","--verd":"#00cc6a","--amber":"#88ff00","--dim":"#5a7a5a","--muted":"#8aaa8a"},lunar:{"--bg":"#0e1117","--card":"#131820","--hdr":"#181d28","--bone":"#d4dce8","--copper":"#8eaadc","--verd":"#6b9fd4","--amber":"#a8c4e0","--dim":"#5a6a7a","--muted":"#8a9aaa"}};const t=themes[theme]||themes.oxidized;Object.entries(t).forEach(([k,v])=>r.style.setProperty(k,v));},[theme]);
+
+  const open=(appId:string)=>{const ex=wins.find(w=>w.id===appId);if(ex){setWins(ws=>ws.map(w=>w.id===appId?{...w,min:false,z:nz()}:w));setActive(appId);return;}const app=APPS.find(a=>a[0]===appId);if(!app)return;const wW=Math.min(innerWidth-80,Math.max(960,Math.floor(innerWidth*0.72)));const wH=Math.min(innerHeight-120,Math.max(680,Math.floor((innerHeight-48)*0.74)));const cx=Math.max(0,Math.floor((innerWidth-wW)/2));const cy=Math.max(0,Math.floor((innerHeight-48-wH)/2));const cascade=(wins.length%8)*30;setWins(ws=>[...ws,{id:appId,title:app[1],icon:app[2],x:cx+cascade,y:cy+cascade,w:wW,h:wH,z:nz(),min:false,max:false}]);setActive(appId);};
+  const close=(id:string)=>{setWins(ws=>ws.filter(w=>w.id!==id));if(active===id)setActive(null);};
+  const focus=(id:string)=>{setWins(ws=>ws.map(w=>w.id===id?{...w,z:nz()}:w));setActive(id);};
+  const togMin=(id:string)=>{const w=wins.find(w=>w.id===id);if(w&&!w.min&&active===id){setWins(ws=>ws.map(w=>w.id===id?{...w,min:true}:w));setActive(null);}else{setWins(ws=>ws.map(w=>w.id===id?{...w,min:false,z:nz()}:w));setActive(id);}};
+  const togMax=(id:string)=>{setWins(ws=>ws.map(w=>w.id===id?{...w,max:!w.max}:w));};
+  const mv=(id:string,x:number,y:number)=>{setWins(ws=>ws.map(w=>w.id===id?{...w,x,y}:w));};
+  const rsz=(id:string,nw:number,nh:number)=>{setWins(ws=>ws.map(w=>w.id===id?{...w,w:nw,h:nh}:w));};
+
+  const content=(id:string)=>{if(id==="about")return <AboutApp role={role}/>;if(id==="terminal")return <TerminalApp onSignal={triggerSignal} onNavigate={open}/>;if(id==="projects")return <ProjectsApp/>;if(id==="voi")return <VoiZosApp role={role} onNavigate={open}/>;if(id==="games")return <GamesHub/>;if(id==="settings")return <SettingsApp theme={theme} onTheme={setTheme} role={role} onRole={setRole}/>;if(id==="command")return <CommandCentre role={role} windowCount={wins.length}/>;if(id==="lab")return <LabApp foundSignals={foundSignals} totalPoints={totalPoints} onSignal={triggerSignal}/>;if(id==="mail")return <XFeedApp/>;if(id==="calendar")return <BookTimeApp/>;if(id==="store")return <AppStoreApp/>;return <div className="zph"><span className="zph-ico">{"🚧"}</span><span className="zph-name">{id}</span></div>;};
+  const tbClick=(id:string)=>{const w=wins.find(w=>w.id===id);if(!w)return;if(w.min){setWins(ws=>ws.map(w=>w.id===id?{...w,min:false,z:nz()}:w));setActive(id);}else if(active===id){setWins(ws=>ws.map(w=>w.id===id?{...w,min:true}:w));setActive(null);}else focus(id);};
+  const cmdAction=(a:string)=>{if(["about","terminal","projects","voi","command","lab","games","settings","mail","calendar","store"].includes(a))open(a);if(a==="theme-oxidized"){setTheme("oxidized");addToast("Theme: Oxidized Future","success");}if(a==="theme-signal"){setTheme("signal");addToast("Theme: Signal Lab","success");}if(a==="theme-lunar"){setTheme("lunar");addToast("Theme: Lunar Archive","success");}if(a==="easter-egg"){setKonamiActive(true);setTimeout(()=>setKonamiActive(false),5000);triggerSignal("palette");}if(a==="about-zos"){open("about");}};
+  const ctxAction=(a:string)=>{setCtxMenu(null);if(["about","terminal","projects"].includes(a))open(a);else if(a==="refresh")window.location.reload();else if(a==="source")window.open("https://github.com/Zenlyte","_blank");else if(a==="about-zos")open("about");};
+
+  return(<><style>{CSS_STYLES}</style>{phase==="boot"&&<BootScreen onDone={bootDone}/>}{phase==="desktop"&&(<div className="zos-desk" onContextMenu={handleContextMenu}><img src="/images/ZOS/zos-wallpaper.png" alt="" className="zos-wp"/><CursorHalo/><Particles/><DesktopWatermark onEasterEgg={()=>{setKonamiActive(true);setTimeout(()=>setKonamiActive(false),5000);triggerSignal("watermark");}}/><DesktopClock/><DesktopStatus role={role} windowCount={wins.length} foundCount={foundSignals.length} totalPoints={totalPoints}/>
+    <div className="zi">{APPS.map(([id,name,icon])=><DIcon key={id} icon={icon} name={name} onOpen={()=>open(id)}/>)}</div>
+    {wins.map(w=><Win key={w.id} s={w} active={active===w.id} onFocus={()=>focus(w.id)} onClose={()=>close(w.id)} onMin={()=>togMin(w.id)} onMax={()=>togMax(w.id)} onMove={(x,y)=>mv(w.id,x,y)} onResize={(nw,nh)=>rsz(w.id,nw,nh)}>{content(w.id)}</Win>)}
+    {startOpen&&<StartMenu onLaunch={open} onClose={()=>setStartOpen(false)}/>}
+    {cmdOpen&&<CmdPalette onClose={()=>setCmdOpen(false)} onAction={cmdAction}/>}
+    {helpOpen&&<HelpOverlay onClose={()=>setHelpOpen(false)} />}
+    {ctxMenu&&<ContextMenu x={ctxMenu.x} y={ctxMenu.y} onClose={()=>setCtxMenu(null)} onAction={ctxAction}/>}
+    {konamiActive&&<div className="zk-overlay"><div className="zk-text">{"🎉"} EASTER EGG FOUND! {"🎉"}</div><div className="zk-sub">Signal logged to the hunt. Keep exploring.</div></div>}
+    {screenSaver&&<Screensaver onDismiss={()=>setScreenSaver(false)}/>}
+    <ToastContainer toasts={toasts} onRemove={removeToast}/>
+    <Taskbar wins={wins} active={active} onWinClick={tbClick} onStart={()=>setStartOpen(s=>!s)} startOpen={startOpen} role={role} onLogoSecret={()=>{triggerSignal("palette");addToast("Persistent signal unlocked via taskbar logo.","egg");}}/>
+  </div>)}</>);
+}
+
+const CSS_STYLES = [
+  "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap');",
+  "*{box-sizing:border-box;margin:0;padding:0}",
+  ":root{--bg:#0e0e11;--card:#151519;--hdr:#1a1a20;--bone:#e8e0d4;--copper:#c08b5c;--verd:#5daa96;--amber:#d4a847;--dim:#6b6b78;--muted:#94938e;--bord:rgba(232,224,212,0.08);--bord2:rgba(232,224,212,0.15)}",
+  "body{overflow:hidden;background:var(--bg);font-family:'Inter',sans-serif;color:var(--bone);cursor:none}",
+  "::-webkit-scrollbar{width:6px},::-webkit-scrollbar-track{background:transparent},::-webkit-scrollbar-thumb{background:rgba(192,139,92,0.3);border-radius:3px},::-webkit-scrollbar-thumb:hover{background:rgba(192,139,92,0.4)}",
+  "::selection{background:rgba(192,139,92,0.3);color:white}",
+  ".zc-halo{position:fixed;width:24px;height:24px;border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);border:1.5px solid var(--copper);opacity:0.6;mix-blend-mode:screen;box-shadow:0 0 15px rgba(192,139,92,0.15)}",
+  ".zb{position:fixed;inset:0;background:#000;z-index:9999;display:flex;align-items:center;justify-content:center}",
+  ".zb-scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.15) 2px,rgba(0,0,0,0.15) 4px);pointer-events:none;z-index:2}",
+  ".zb-vig{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,0.7));pointer-events:none;z-index:2}",
+  ".zb-body{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--bone);width:70%;max-width:700px;max-height:80vh;overflow-y:auto;z-index:3;text-shadow:0 0 8px rgba(192,139,92,0.4);cursor:default}",
+  ".zb-logo-wrap{text-align:center;margin-bottom:24px}",
+  ".zb-logo{width:180px;height:auto;opacity:0;animation:zfade 0.8s 0.1s forwards;filter:drop-shadow(0 0 30px rgba(192,139,92,0.4))}",
+  ".zb-line{min-height:1.6em;opacity:0;animation:zfade 0.15s forwards}",".zb-cursor{color:var(--copper)}","@keyframes zfade{to{opacity:1;transform:translateX(0)}}",
+  ".zb-roles{margin-top:24px;display:flex;flex-direction:column;gap:8px}",
+  ".zb-prompt{color:var(--bone);font-size:13px;margin-bottom:8px;opacity:0;animation:zfade 0.3s 0.2s forwards}",
+  ".zb-role{display:flex;align-items:center;gap:16px;padding:10px 16px;border-radius:6px;border:1px solid var(--bord);background:transparent;color:var(--bone);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:13px;text-align:left;transition:all 0.2s;opacity:0;animation:zfade 0.3s forwards}",
+  ".zb-role:nth-child(2){animation-delay:0.3s}.zb-role:nth-child(3){animation-delay:0.4s}.zb-role:nth-child(4){animation-delay:0.5s}.zb-role:nth-child(5){animation-delay:0.6s}",
+  ".zb-role:hover{border-color:var(--copper);background:rgba(192,139,92,0.12);transform:translateX(4px)}",
+  ".zb-role-label{color:var(--copper);font-weight:700;min-width:160px}",".zb-role-desc{color:var(--muted);font-size:11px}",
+  ".zos-desk{position:fixed;inset:0;background:var(--bg)}",
+  ".zos-wp{position:fixed;inset:0;width:100vw;height:100vh;object-fit:cover;z-index:0;opacity:0.5;pointer-events:none}",
+  ".zp-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}",
+  ".zi{position:fixed;top:16px;left:16px;z-index:1;display:grid;grid-template-columns:80px 80px;gap:4px;padding:8px}",
+  ".zd{width:80px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;border-radius:8px;cursor:pointer;transition:background 0.15s;user-select:none}",
+  ".zd:hover{background:rgba(232,224,212,0.06)}",".zd-ico{font-size:32px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))}",
+  ".zd-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;text-align:center;color:var(--bone);text-shadow:0 1px 3px rgba(0,0,0,0.8);white-space:nowrap}",
+  ".zt{position:fixed;bottom:0;left:0;right:0;height:48px;background:rgba(14,14,17,0.92);backdrop-filter:blur(20px);border-top:1px solid var(--bord);z-index:1000;display:flex;align-items:center;padding:0 8px;font-family:'JetBrains Mono',monospace;font-size:12px}",
+  ".zt-start{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;border:none;background:transparent;color:var(--copper);cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:1px;transition:all 0.15s}",
+  ".zt-logo{width:18px;height:18px;object-fit:contain}",
+  ".zt-start.open,.zt-start:hover{background:rgba(192,139,92,0.15)}",".zt-div{width:1px;height:24px;background:var(--bord);margin:0 8px}",
+  ".zt-tabs{flex:1;display:flex;gap:2px;overflow-x:auto;align-items:center}",
+  ".zt-tab{padding:4px 12px;border-radius:4px;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--dim);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;white-space:nowrap;transition:all 0.15s}",
+  ".zt-tab.active{background:rgba(192,139,92,0.12);color:var(--bone);border-bottom-color:var(--copper)}",".zt-tab.dim{opacity:0.5}",
+  ".zt-tray{margin-left:auto;display:flex;align-items:center;gap:12px;padding:0 8px}",".zt-role{color:var(--verd);font-size:10px;text-transform:uppercase;letter-spacing:1px}",".zt-time{color:var(--muted);font-size:11px}",
+  ".zw{background:var(--card);border:1px solid var(--bord);display:flex;flex-direction:column;overflow:hidden;transition:box-shadow 0.2s,border-color 0.2s;animation:zwOpen 0.25s cubic-bezier(0.16,1,0.3,1)}",
+  "@keyframes zwOpen{from{opacity:0;transform:scale(0.92) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}",
+  ".zw.active{border-color:rgba(192,139,92,0.3);box-shadow:0 0 40px -10px rgba(192,139,92,0.15)}",
+  ".zw-hdr{height:38px;min-height:38px;background:var(--hdr);display:flex;align-items:center;padding:0 12px;cursor:grab;user-select:none;border-bottom:1px solid var(--bord)}",
+  ".zw-icon{margin-right:8px;font-size:14px}",".zw-title{flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".zw-btns{display:flex;gap:8px}",".zw-b{width:12px;height:12px;border-radius:50%;border:none;cursor:pointer;opacity:0.8;transition:opacity 0.15s}",".zw-b:hover{opacity:1}",
+  ".zw-b.min{background:var(--amber)}",".zw-b.max{background:var(--verd)}",".zw-b.cls{background:#e87171}",
+  ".zw-body{flex:1;overflow:auto;position:relative}",".zw-rsz{position:absolute;bottom:0;right:0;width:16px;height:16px;cursor:nwse-resize}",
+  ".zov{position:fixed;inset:0;z-index:998}",
+  ".zsm{position:fixed;bottom:56px;left:8px;width:260px;background:rgba(21,21,25,0.95);backdrop-filter:blur(20px);border:1px solid var(--bord);border-radius:12px;padding:8px 0;z-index:999;box-shadow:0 20px 60px rgba(0,0,0,0.6)}",
+  ".zsm-hdr{padding:8px 16px 12px;border-bottom:1px solid var(--bord);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--copper)}",
+  ".zsm-item{display:flex;align-items:center;gap:12px;width:100%;padding:10px 16px;border:none;background:transparent;color:var(--bone);cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;transition:background 0.15s;text-align:left}",
+  ".zsm-item:hover{background:rgba(192,139,92,0.08)}",".zsm-ico{font-size:18px;width:24px;text-align:center}",
+  ".zsm-foot{padding:8px 16px;border-top:1px solid var(--bord);font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);margin-top:4px}",
+  ".zcp{position:fixed;top:20%;left:50%;transform:translateX(-50%);width:480px;max-width:90vw;background:rgba(21,21,25,0.98);backdrop-filter:blur(20px);border:1px solid var(--bord2);border-radius:12px;z-index:9999;box-shadow:0 20px 60px rgba(0,0,0,0.6)}",
+  ".zcp-input{width:100%;padding:16px 20px;background:transparent;border:none;border-bottom:1px solid var(--bord);outline:none;color:var(--bone);font-family:'JetBrains Mono',monospace;font-size:14px;caret-color:var(--copper)}",
+  ".zcp-input::placeholder{color:var(--dim)}",".zcp-list{max-height:300px;overflow-y:auto;padding:8px 0}",
+  ".zcp-item{display:block;width:100%;padding:10px 20px;border:none;background:transparent;color:var(--bone);cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;text-align:left;transition:background 0.15s}",
+  ".zcp-item:hover{background:rgba(192,139,92,0.1)}",
+  ".zhelp{position:fixed;top:16%;left:50%;transform:translateX(-50%);width:min(620px,92vw);background:rgba(21,21,25,0.98);backdrop-filter:blur(20px);border:1px solid var(--bord2);border-radius:14px;z-index:10000;box-shadow:0 24px 80px rgba(0,0,0,0.65);padding:20px}",
+  ".zhelp-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}",
+  ".zhelp-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--bone)}",
+  ".zhelp-sub{font-family:'Inter',sans-serif;font-size:13px;color:var(--muted);margin-top:4px}",
+  ".zhelp-close{background:transparent;border:1px solid var(--bord);color:var(--bone);border-radius:8px;width:34px;height:34px;cursor:pointer}",
+  ".zhelp-grid{display:grid;grid-template-columns:1fr;gap:10px}",
+  ".zhelp-row{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:center;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.025);border:1px solid rgba(232,224,212,0.08)}",
+  ".zhelp-row kbd{display:inline-flex;align-items:center;justify-content:center;min-width:fit-content;width:max-content;padding:6px 10px;border-radius:8px;border:1px solid rgba(192,139,92,0.25);background:rgba(192,139,92,0.08);color:var(--bone);font-family:'JetBrains Mono',monospace;font-size:12px;box-shadow:inset 0 -2px 0 rgba(0,0,0,0.2)}",
+  ".zph{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px}",
+  ".zph-ico{font-size:48px;opacity:0.4}",".zph-name{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;color:var(--bone)}",
+  ".zos-watermark{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:0;pointer-events:none;text-align:center;user-select:none}",
+  ".zos-wm-clickable{pointer-events:auto;cursor:default}",
+  ".zos-wm-logo{width:clamp(200px,30vw,420px);height:auto;opacity:0.12;pointer-events:none;filter:drop-shadow(0 0 60px rgba(192,139,92,0.1))}",
+  ".zos-wm-sub{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--verd);margin-top:8px;letter-spacing:6px;text-transform:uppercase;opacity:0.6}",
+  ".zos-dclock{position:fixed;top:20px;right:20px;z-index:1;text-align:right;pointer-events:none;user-select:none;}",
+  ".zos-dclock-time{font-family:'Space Grotesk',sans-serif;font-size:48px;font-weight:700;color:rgba(232,224,212,0.12);line-height:1;letter-spacing:-1px}",
+  ".zos-dclock-sec{font-size:24px;opacity:0.5}",
+  ".zos-dclock-date{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--verd);margin-top:4px;letter-spacing:1px}",
+  ".zos-dstatus{position:fixed;bottom:60px;right:20px;z-index:1;text-align:right;pointer-events:none;user-select:none;display:flex;flex-direction:column;gap:6px}",
+  ".zos-dstatus-dot{width:6px;height:6px;border-radius:50%;display:inline-block}",
+  ".zos-dstatus-dot.green{background:var(--verd);box-shadow:0 0 6px var(--verd)}",".zos-dstatus-dot.copper{background:var(--copper);box-shadow:0 0 6px var(--copper)}",".zos-dstatus-dot.amber{background:var(--amber);box-shadow:0 0 6px var(--amber)}",
+  ".zos-dstatus-hint{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);margin-top:4px}",
+  ".za{padding:16px;font-family:'JetBrains Mono',monospace;font-size:13px}",
+  ".za-path{font-size:12px;color:var(--dim);margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--bord)}",
+  ".za-role-msg{font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--copper);margin-bottom:16px;padding:12px;border-left:2px solid var(--copper);border-radius:0 6px 6px 0}",
+  ".za-files{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}",
+  ".za-file{padding:8px 12px;border-radius:6px;display:flex;align-items:center;gap:10px;background:rgba(232,224,212,0.03);border:1px solid var(--bord);cursor:pointer;transition:all 0.15s;font-size:12px}",
+  ".za-file:hover{border-color:rgba(192,139,92,0.3);background:rgba(192,139,92,0.04)}",".za-file.active{border-color:var(--copper);background:rgba(192,139,92,0.08)}",
+  ".za-readme{padding:16px;border-radius:8px;background:rgba(192,139,92,0.04);border:1px solid rgba(192,139,92,0.15);line-height:1.7}",
+  ".za-cmd{color:var(--copper);font-size:11px;opacity:0.6;margin-bottom:8px}",
+  ".za-hi{color:var(--muted);margin-bottom:4px}",
+  ".za-name{color:var(--copper);font-weight:600}",
+  ".za-desc{color:var(--muted);margin-bottom:4px}",
+  ".za-principles{list-style:none;padding:0}",
+  ".za-principles li{padding:4px 0;color:var(--muted);font-size:12px}",
+  ".za-principles li::before{content:'▸ ';color:var(--copper)}",
+  ".za-skill-grid{display:flex;flex-direction:column;gap:12px;margin-top:8px}",
+  ".za-skill-cat{padding:10px;border-radius:6px;border:1px solid var(--bord);background:rgba(232,224,212,0.02)}",
+  ".za-skill-cat-name{font-size:11px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}",
+  ".za-skill-tags{display:flex;flex-wrap:wrap;gap:6px}",
+  ".za-skill-tag{font-size:11px;padding:3px 10px;border-radius:4px;background:rgba(192,139,92,0.08);border:1px solid rgba(192,139,92,0.15);color:var(--bone)}",
+  ".za-json{font-family:'JetBrains Mono',monospace;font-size:12px;margin-top:8px}",
+  ".za-json-line{padding:2px 0;color:var(--muted)}",
+  ".za-json-key{color:var(--copper)}",
+  ".za-json-val{color:var(--verd);text-decoration:none}",
+  ".za-json-val:hover{text-decoration:underline}",
+  ".za-timeline{display:flex;flex-direction:column;gap:0;margin-top:8px;padding-left:16px;border-left:2px solid var(--bord)}",
+  ".za-timeline-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;position:relative}",
+  ".za-timeline-dot{width:10px;height:10px;border-radius:50%;background:var(--copper);border:2px solid var(--card);position:absolute;left:-22px;top:14px;box-shadow:0 0 6px var(--copper)}",
+  ".za-timeline-content{padding-left:4px}",
+  ".za-timeline-title{font-size:13px;font-weight:600;color:var(--bone);margin-bottom:2px}",
+  ".za-timeline-desc{font-size:11px;color:var(--muted)}",
+  ".za-secret{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:#e87171;text-align:center;margin:24px 0 8px}",
+  ".za-secret-sub{text-align:center;font-size:12px;color:var(--muted);margin-bottom:4px}",
+  ".za-secret-hint{text-align:center;font-size:14px;color:var(--dim);letter-spacing:2px}",
+  ".zterm{display:flex;flex-direction:column;height:100%;background:#080808;font-family:'JetBrains Mono',monospace;font-size:13px}",
+  ".zterm-scroll{flex:1;overflow-y:auto;padding:12px}",
+  ".zterm-line{min-height:1.4em;color:var(--copper);opacity:0.9}",
+  ".zterm-in{display:flex;align-items:center;gap:8px;padding:8px 12px;border-top:1px solid var(--bord)}",
+  ".zterm-prompt{color:var(--copper);font-weight:600}",
+  ".zterm-inp{flex:1;background:transparent;border:none;outline:none;color:var(--bone);font-family:inherit;font-size:inherit;caret-color:var(--copper)}",
+  ".zproj{padding:16px;font-family:'JetBrains Mono',monospace;font-size:13px;height:100%;overflow-y:auto}",
+  ".zproj-path{font-size:12px;color:var(--dim);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bord)}",
+  ".zproj-filters{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}",
+  ".zproj-fbtn{padding:4px 12px;border-radius:4px;border:1px solid var(--bord);background:transparent;color:var(--dim);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;transition:all 0.15s}",
+  ".zproj-fbtn:hover{border-color:var(--copper);color:var(--bone)}",
+  ".zproj-fbtn.active{background:rgba(192,139,92,0.15);border-color:var(--copper);color:var(--copper)}",
+  ".zproj-loading{color:var(--dim);text-align:center;padding:40px}",
+  ".zproj-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}",
+  ".zproj-card{padding:16px;border-radius:8px;border:1px solid var(--bord);background:rgba(232,224,212,0.02);cursor:pointer;transition:all 0.2s}",
+  ".zproj-card:hover{border-color:rgba(192,139,92,0.3);background:rgba(192,139,92,0.04);transform:translateY(-2px)}",
+  ".zproj-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}",
+  ".zproj-card-id{font-size:10px;color:var(--dim);letter-spacing:1px}",
+  ".zproj-card-status{font-size:10px;padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:0.5px}",
+  ".st-done{background:rgba(93,170,150,0.15);color:var(--verd);border:1px solid rgba(93,170,150,0.3)}",
+  ".st-wip{background:rgba(192,139,92,0.15);color:var(--copper);border:1px solid rgba(192,139,92,0.3)}",
+  ".st-plan{background:rgba(212,168,71,0.15);color:var(--amber);border:1px solid rgba(212,168,71,0.3)}",
+  ".zproj-card-name{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;color:var(--bone);margin-bottom:6px}",
+  ".zproj-card-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}",
+  ".zproj-tags{display:flex;gap:6px;flex-wrap:wrap}",
+  ".zproj-tag{font-size:10px;padding:2px 8px;border-radius:3px;background:rgba(232,224,212,0.05);color:var(--dim);border:1px solid var(--bord)}",
+  ".zproj-back{padding:6px 12px;border-radius:4px;border:1px solid var(--bord);background:transparent;color:var(--copper);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;margin-bottom:16px;transition:all 0.15s}",
+  ".zproj-back:hover{background:rgba(192,139,92,0.1)}",
+  ".zproj-detail{padding:16px;border-radius:8px;border:1px solid var(--bord);background:rgba(232,224,212,0.02)}",
+  ".zproj-detail-hdr{margin-bottom:12px}",
+  ".zproj-status{display:inline-block;font-size:10px;padding:3px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:0.5px}",
+  ".zproj-detail-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--bone);margin-bottom:8px}",
+  ".zproj-detail-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px}",
+  ".zproj-detail-section{margin-bottom:16px}",
+  ".zproj-detail-label{font-size:10px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}",
+  ".zproj-link{color:var(--copper);text-decoration:none;font-size:12px}",
+  ".zproj-link:hover{opacity:0.7}",
+  ".zsnake{display:flex;flex-direction:column;align-items:center;height:100%;background:#080808;padding:16px}",
+  ".zsnake-hud{display:flex;justify-content:space-between;width:320px;margin-bottom:12px;font-family:'JetBrains Mono',monospace;font-size:12px}",
+  ".zsnake-score{color:var(--copper)}",
+  ".zsnake-over{color:#e87171;font-weight:700}",
+  ".zsnake-start{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:16px}",
+  ".zsnake-title{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;color:var(--bone)}",
+  ".zsnake-sub{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim)}",
+  ".zsnake-btn{padding:10px 24px;border-radius:6px;border:1px solid var(--copper);background:rgba(192,139,92,0.1);color:var(--copper);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;transition:all 0.2s}",
+  ".zsnake-btn:hover{background:rgba(192,139,92,0.2);transform:scale(1.05)}",
+  ".zsnake-canvas{border:1px solid var(--bord);border-radius:4px}",
+  ".zsnake-retry{margin-top:16px}",
+  ".zctx{position:fixed;z-index:9999;width:200px;background:rgba(21,21,25,0.96);backdrop-filter:blur(20px);border:1px solid var(--bord2);border-radius:8px;padding:4px 0;box-shadow:0 8px 30px rgba(0,0,0,0.5)}",
+  ".zctx-item{display:block;width:100%;padding:8px 14px;border:none;background:transparent;color:var(--bone);cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;text-align:left;transition:background 0.15s}",
+  ".zctx-item:hover{background:rgba(192,139,92,0.1)}",
+  ".zctx-div{height:1px;background:var(--bord);margin:4px 0}",
+  ".zset{padding:20px;font-family:'JetBrains Mono',monospace;font-size:13px;height:100%;overflow-y:auto}",
+  ".zset-section{margin-bottom:28px}",
+  ".zset-label{font-size:10px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px}",
+  ".zset-sub{font-size:12px;color:var(--dim);margin-bottom:14px}",
+  ".zset-themes{display:flex;flex-direction:column;gap:8px}",
+  ".zset-theme{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:8px;border:1px solid var(--bord);background:transparent;cursor:pointer;transition:all 0.2s;text-align:left;color:var(--bone);font-family:inherit}",
+  ".zset-theme:hover{border-color:rgba(192,139,92,0.3);background:rgba(192,139,92,0.04)}",
+  ".zset-theme.active{border-color:var(--copper);background:rgba(192,139,92,0.08)}",
+  ".zset-theme-preview{width:40px;height:28px;border-radius:4px;position:relative;overflow:hidden;flex-shrink:0}",
+  ".zset-theme-bg{position:absolute;inset:0;border-radius:4px}",
+  ".zset-theme-bg[data-theme=oxidized]{background:#0e0e11}",
+  ".zset-theme-bg[data-theme=signal]{background:#080c08}",
+  ".zset-theme-bg[data-theme=lunar]{background:#0e1117}",
+  ".zset-theme-accent{position:absolute;bottom:0;left:0;right:0;height:4px}",
+  ".zset-theme-accent[data-theme=oxidized]{background:#c08b5c}",
+  ".zset-theme-accent[data-theme=signal]{background:#00ff88}",
+  ".zset-theme-accent[data-theme=lunar]{background:#8eaadc}",
+  ".zset-theme-info{flex:1}",
+  ".zset-theme-name{font-size:13px;font-weight:600;color:var(--bone)}",
+  ".zset-theme-desc{font-size:11px;color:var(--dim);margin-top:2px}",
+  ".zset-check{color:var(--copper);font-size:16px;font-weight:700}",
+  ".zset-roles{display:flex;flex-direction:column;gap:6px}",
+  ".zset-role{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:6px;border:1px solid var(--bord);background:transparent;cursor:pointer;transition:all 0.15s;text-align:left;color:var(--bone);font-family:inherit}",
+  ".zset-role:hover{border-color:rgba(192,139,92,0.3)}",
+  ".zset-role.active{border-color:var(--copper);background:rgba(192,139,92,0.08)}",
+  ".zset-role-name{font-size:12px;font-weight:600;min-width:120px}",
+  ".zset-role-desc{font-size:11px;color:var(--dim);flex:1}",
+  ".zset-info-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}",
+  ".zset-info-item{padding:10px 12px;border-radius:6px;border:1px solid var(--bord);display:flex;flex-direction:column;gap:4px}",
+  ".zset-info-key{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}",
+  ".zset-info-val{font-size:12px;color:var(--bone)}",
+  ".zcmd{padding:16px;font-family:'JetBrains Mono',monospace;font-size:12px;height:100%;overflow-y:auto}",
+  ".zcmd-hdr{margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--bord)}",
+  ".zcmd-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:var(--bone)}",
+  ".zcmd-time{color:var(--dim);font-size:11px}",
+  ".zcmd-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}",
+  ".zcmd-panel{padding:14px;border-radius:8px;border:1px solid var(--bord);background:rgba(232,224,212,0.02)}",
+  ".zcmd-panel.wide{grid-column:1/-1}",
+  ".zcmd-panel-label{font-size:10px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}",
+  ".zcmd-stat-row{display:flex;align-items:center;gap:8px;padding:4px 0;color:var(--muted);font-size:12px}",
+  ".zcmd-stat-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}",
+  ".zcmd-stat-dot.green{background:var(--verd);box-shadow:0 0 6px var(--verd)}",
+  ".zcmd-stat-dot.copper{background:var(--copper);box-shadow:0 0 6px var(--copper)}",
+  ".zcmd-stat-dot.amber{background:var(--amber);box-shadow:0 0 6px var(--amber)}",
+  ".zcmd-stat-dot.verd{background:var(--verd);box-shadow:0 0 4px var(--verd)}",
+  ".zcmd-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}",
+  ".zcmd-metric{text-align:center;padding:10px 0}",
+  ".zcmd-metric-val{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--copper);line-height:1}",
+  ".zcmd-metric-lbl{font-size:10px;color:var(--dim);margin-top:4px;text-transform:uppercase;letter-spacing:1px}",
+  ".zcmd-feed{display:flex;flex-direction:column;gap:6px}",
+  ".zcmd-feed-item{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:4px;transition:background 0.15s}",
+  ".zcmd-feed-item:hover{background:rgba(232,224,212,0.03)}",
+  ".zcmd-feed-id{font-size:10px;color:var(--dim);min-width:60px}",
+  ".zcmd-feed-name{flex:1;color:var(--bone);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".zcmd-feed-status{font-size:9px;padding:2px 6px;border-radius:3px;text-transform:uppercase}",
+  ".zcmd-loading{color:var(--dim);text-align:center;padding:16px}",
+  ".zcmd-log{display:flex;flex-direction:column;gap:2px}",
+  ".zcmd-log-line{font-size:11px;color:var(--muted);padding:3px 0}",
+  ".zcmd-log-time{color:var(--copper);margin-right:8px;min-width:70px;display:inline-block}",
+  ".zlab{padding:20px;font-family:'JetBrains Mono',monospace;font-size:13px;height:100%;overflow-y:auto}",
+  ".zlab-tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--bord);padding-bottom:8px}",
+  ".zlab-tab{padding:8px 16px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--dim);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;transition:all 0.15s}",
+  ".zlab-tab:hover{color:var(--bone)}",
+  ".zlab-tab.active{background:rgba(192,139,92,0.12);border-color:var(--bord);color:var(--copper)}",
+  ".zlab-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--bone);margin-bottom:6px}",
+  ".zlab-desc{font-size:12px;color:var(--dim);margin-bottom:16px}",
+  ".zlab-input{width:100%;padding:12px;border-radius:6px;border:1px solid var(--bord);background:rgba(232,224,212,0.03);color:var(--bone);font-family:'JetBrains Mono',monospace;font-size:12px;resize:vertical;outline:none;transition:border-color 0.15s}",
+  ".zlab-input:focus{border-color:var(--copper)}",
+  ".zlab-input::placeholder{color:var(--dim)}",
+  ".zlab-btn{margin-top:10px;padding:8px 20px;border-radius:6px;border:1px solid var(--copper);background:rgba(192,139,92,0.15);color:var(--copper);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;transition:all 0.2s}",
+  ".zlab-btn:hover{background:rgba(192,139,92,0.25);transform:scale(1.05)}",
+  ".zlab-btn:disabled{opacity:0.4;cursor:not-allowed}",
+  ".zlab-results{margin-top:16px;padding:14px;border-radius:8px;border:1px solid rgba(192,139,92,0.2);background:rgba(192,139,92,0.04)}",
+  ".zlab-results-label{font-size:10px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}",
+  ".zlab-result{padding:6px 0;color:var(--muted);font-size:12px;line-height:1.5;border-bottom:1px solid var(--bord)}",
+  ".zlab-result:last-child{border-bottom:none}",
+  ".zlab-signal-grid{display:flex;flex-direction:column;gap:8px}",
+  ".zlab-signal{display:flex;align-items:center;gap:12px;padding:12px;border-radius:8px;border:1px solid var(--bord);background:rgba(232,224,212,0.02);transition:all 0.2s}",
+  ".zlab-signal.found{border-color:var(--verd);background:rgba(93,170,150,0.06)}",
+  ".zlab-signal-icon{font-size:24px;width:36px;text-align:center}",
+  ".zlab-signal-name{font-size:13px;font-weight:600;color:var(--bone);margin-bottom:2px}",
+  ".zlab-signal-hint{font-size:11px;color:var(--dim)}",
+  ".zlab-signal-check{font-size:16px;color:var(--dim)}",
+  ".zlab-signal.found .zlab-signal-check{color:var(--verd)}",
+  ".zlab-signal-count{margin-top:14px;text-align:center;font-size:12px;color:var(--dim)}",
+  ".zk-overlay{position:fixed;inset:0;z-index:99998;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px)}",
+  ".zk-text{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;color:var(--copper);text-shadow:0 0 30px var(--copper);animation:zpulse 1s infinite}",
+  "@keyframes zpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.8;transform:scale(1.05)}}",
+  ".zk-sub{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--verd);margin-top:12px}",
+  ".zbrf{padding:20px;font-family:'JetBrains Mono',monospace;font-size:13px;height:100%;overflow-y:auto}",
+  ".zbrf-header{margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--bord)}",
+  ".zbrf-greeting{font-family:'Playfair Display',serif;font-size:24px;color:var(--bone);margin-bottom:4px}",
+  ".zbrf-date{font-size:12px;color:var(--dim)}",
+  ".zbrf-section{margin-bottom:20px}",
+  ".zbrf-label{font-size:10px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}",
+  ".zbrf-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:6px;border:1px solid var(--bord);background:rgba(232,224,212,0.02);margin-bottom:6px;font-size:12px;color:var(--bone)}",
+  ".zbrf-days{display:flex;flex-wrap:wrap;gap:6px}",
+  ".zbrf-day{padding:8px 14px;border-radius:6px;border:1px solid var(--bord);background:transparent;color:var(--muted);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;transition:all 0.15s}",
+  ".zbrf-day:hover{border-color:var(--copper);color:var(--bone)}",
+  ".zbrf-day.active{background:rgba(192,139,92,0.15);border-color:var(--copper);color:var(--copper)}",
+  ".zbrf-slots{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}",
+  ".zbrf-slot{padding:10px;border-radius:6px;border:1px solid var(--bord);background:transparent;color:var(--bone);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;text-align:center;transition:all 0.15s}",
+  ".zbrf-slot:hover:not(:disabled){border-color:var(--copper);background:rgba(192,139,92,0.06)}",
+  ".zbrf-slot.active{background:rgba(192,139,92,0.15);border-color:var(--copper);color:var(--copper)}",
+  ".zbrf-slot.busy{opacity:0.35;cursor:not-allowed;text-decoration:line-through}",
+  ".zbrf-slot-time{font-size:10px;color:var(--dim)}",
+  ".zbrf-input{display:block;width:100%;padding:10px 14px;margin-bottom:8px;border-radius:6px;border:1px solid var(--bord);background:rgba(232,224,212,0.03);color:var(--bone);font-family:'JetBrains Mono',monospace;font-size:12px;outline:none;transition:border-color 0.15s}",
+  ".zbrf-input:focus{border-color:var(--copper)}",
+  ".zbrf-input::placeholder{color:var(--dim)}",
+  ".zbrf-submit{margin-top:8px;padding:10px 24px;border-radius:6px;border:1px solid var(--copper);background:rgba(192,139,92,0.15);color:var(--copper);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;transition:all 0.2s}",
+  ".zbrf-submit:hover{background:rgba(192,139,92,0.25)}",
+  ".zbrf-submit:disabled{opacity:0.4;cursor:not-allowed}",
+  ".zbrf-confirmed{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;text-align:center}",
+  ".zbrf-confirmed-icon{font-size:56px}",
+  ".zbrf-confirmed-title{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:var(--bone)}",
+  ".zbrf-confirmed-detail{font-size:14px;color:var(--copper)}",
+  ".zbrf-confirmed-sub{font-size:12px;color:var(--dim)}",
+  ".zbrf-reset{margin-top:12px;padding:8px 20px;border-radius:6px;border:1px solid var(--bord);background:transparent;color:var(--bone);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;transition:all 0.15s}",
+  ".zbrf-reset:hover{border-color:var(--copper)}",
+  ".zbrf-footer{margin-top:16px;text-align:center;font-size:10px;color:var(--dim);padding-top:12px;border-top:1px solid var(--bord)}",
+  ".zbrf-footer a{color:var(--copper);text-decoration:none}",
+  ".zbrf-footer a:hover{text-decoration:underline}",
+  ".zstore{padding:20px;font-family:'JetBrains Mono',monospace;font-size:13px;height:100%;overflow-y:auto}",
+  ".zstore-hdr{margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--bord)}",
+  ".zstore-title{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--bone)}",
+  ".zstore-sub{font-size:12px;color:var(--dim);margin-left:12px}",
+  ".zstore-grid{display:flex;flex-direction:column;gap:10px}",
+  ".zstore-card{display:flex;align-items:center;gap:16px;padding:16px;border-radius:8px;border:1px solid var(--bord);background:rgba(232,224,212,0.02);transition:all 0.2s}",
+  ".zstore-card:hover{border-color:rgba(192,139,92,0.3);background:rgba(192,139,92,0.04)}",
+  ".zstore-card-icon{font-size:32px;width:48px;text-align:center;flex-shrink:0}",
+  ".zstore-card-info{flex:1}",
+  ".zstore-card-name{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:var(--bone);margin-bottom:3px}",
+  ".zstore-card-desc{font-size:11px;color:var(--muted);margin-bottom:6px}",
+  ".zstore-card-bottom{display:flex;gap:10px;align-items:center}",
+  ".zstore-price{color:var(--copper);font-weight:700;font-size:14px}",
+  ".zstore-tag{font-size:9px;padding:2px 8px;border-radius:3px;background:rgba(232,224,212,0.05);color:var(--dim);border:1px solid var(--bord);text-transform:uppercase;letter-spacing:0.5px}",
+  ".zstore-buy{padding:8px 18px;border-radius:6px;border:1px solid var(--copper);background:rgba(192,139,92,0.12);color:var(--copper);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;transition:all 0.2s;flex-shrink:0}",
+  ".zstore-buy:hover{background:rgba(192,139,92,0.25);transform:scale(1.05)}",
+  ".zss-canvas{position:fixed;inset:0;z-index:99997;cursor:pointer}",
+  ".ztoast-container{position:fixed;top:12px;right:12px;z-index:99999;display:flex;flex-direction:column;gap:8px;pointer-events:none}",
+  ".ztoast{pointer-events:auto;display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:8px;background:rgba(21,21,25,0.95);backdrop-filter:blur(16px);border:1px solid var(--bord2);box-shadow:0 8px 24px rgba(0,0,0,0.4);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--bone);animation:ztoastIn 0.3s ease}",
+  "@keyframes ztoastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}",
+  ".ztoast-success{border-color:rgba(93,170,150,0.3)}",
+  ".ztoast-egg{border-color:rgba(192,139,92,0.4);background:rgba(30,25,20,0.95)}",
+  ".ztoast-msg{flex:1}",
+  ".ztoast-close{background:none;border:none;color:var(--dim);cursor:pointer;font-size:14px;padding:0 4px}",
+  "@media(max-width:768px){body{cursor:auto}.zc-halo{display:none}.zp-canvas{opacity:0.3}.zos-wm-logo{width:120px}.zos-dclock{top:12px;right:12px}.zos-dclock-time{font-size:28px}.zos-dstatus{display:none}.zi{position:fixed;top:60px;left:0;right:0;bottom:56px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:16px;align-content:start;overflow-y:auto}.zd{width:auto}.zw{position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:calc(100vh - 48px)!important;border-radius:0!important;z-index:500!important}.zw-rsz{display:none}.zt{height:52px;padding:0 4px}.zt-start{padding:6px 10px;font-size:11px}.zt-tabs{gap:1px}.zt-tab{padding:4px 8px;font-size:10px}.zt-tray{gap:8px;padding:0 4px}.zsm{width:calc(100vw - 16px);left:8px;bottom:60px;border-radius:16px}.zcp{width:calc(100vw - 16px);top:10%;left:8px;transform:none;border-radius:16px}.zhelp{top:8%;left:8px;transform:none;width:calc(100vw - 16px)}.zhelp-row{grid-template-columns:1fr;gap:8px}.zctx{display:none}.za-files{grid-template-columns:1fr 1fr}.zproj-grid{grid-template-columns:1fr}.zcmd-grid{grid-template-columns:1fr}.zcmd-panel.wide{grid-column:1}.zset-info-grid{grid-template-columns:1fr}.zbrf-slots{grid-template-columns:1fr}}",
+  "@media(max-width:480px){.zi{grid-template-columns:repeat(3,1fr)}.zd-ico{font-size:28px}.zd-lbl{font-size:9px}.za-files{grid-template-columns:1fr}.zcmd-metrics{grid-template-columns:1fr 1fr}.zset-info-grid{grid-template-columns:1fr}.zbrf-slots{grid-template-columns:1fr}}",
+  ".zbrf-tweet-text{color:var(--bone);font-size:12px;line-height:1.5;margin-bottom:4px}",
+  ".zbrf-tweet-meta{font-size:10px;color:var(--dim)}",
+  ".zstore-note{margin-top:16px;padding:12px;border-radius:6px;background:rgba(93,170,150,0.06);border:1px solid rgba(93,170,150,0.15);font-size:11px;color:var(--verd);text-align:center}",
+  ".zbrf-error{color:#e87171;font-size:12px;margin-top:6px;padding:8px;border-radius:4px;background:rgba(232,113,113,0.08)}",
+].join("\n");
 ```
 
-### `/zos-lite` (page, public)
+### `/zos/lite` (page, private)
 
 ```tsx
+// CODE GENERATED BY SPACE TOOLS. DO NOT EDIT FILE. YOUR CHANGES WILL BE LOST.
 import { useState, useEffect, useMemo } from "react";
 
 const CALENDLY_URL = "https://calendly.com/zenlytics/discovery-session";
@@ -28657,9 +29011,9 @@ const STYLES = `
 - `BUILDIN_CLIENT_ID`
 - `BUILDIN_CLIENT_SECRET`
 - `OMNIROUTE_ADMIN_API`
+- `COSTCO_APP_PASSCODE`
 - `TEABLE_API_KEY`
 - `RECEIPT_TRACKER_PASSCODE`
-- `COSTCO_APP_PASSCODE`
 - `SPEECH_GAME_PASSCODE`
 - `SENDFOX_ACCESS_TOKEN`
 - `VOI_LOCKDOWN`
