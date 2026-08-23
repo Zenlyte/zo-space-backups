@@ -1,19 +1,27 @@
 ---
-format: zopack
-version: "1.0"
-name: zo-space-backup
-author: curtastrophe.zo.computer
-routes: 144
-exported: 2026-08-23
+backup_type: zospace
+content_hash: e8e5f9c6be1aac0a8f8ce8d2b68843c5ec1c58324ad89c381cd10fd50870dc15
+asset_hash: 775966ed9fdaba0a800860093788a2fc515292fc24c3880b48c80e9199865545
+timestamp: 2026-08-23T06:05:07.964534+00:00
+route_count: 144
+asset_count: 57
 ---
 
-# zo-space-backup
+# Zo Space Backup
 
-## Routes
+## Settings
 
-### `/` (page, public)
+- custom_head_html: ""
+- favicon_url: "/images/ZOS/zos-logo.png"
+- lang: "en"
+- noindex: false
+- og_image_url: "/images/cover-profile.png"
+- site_description: "ZOS (ZenOS) — a personal site rebuilt as an operating system. Built entirely on Zo Computer for the Zo Computer Challenge. Explore apps, signals, and easter eggs."
+- site_title: "ZOS — ZenOS by Zenlyte"
 
-```tsx
+## / (page, public=true)
+
+```
 import { useState, useEffect, useRef } from "react";
 import {
   ArrowRight, Github, Twitter, Linkedin, MessageSquare, Send, CheckCircle,
@@ -765,12 +773,12 @@ export default function Home() {
       </div>
     </>
   );
-}
+}' public=True source='custom
 ```
 
-### `/404` (page, public)
+## /404 (page, public=true)
 
-```tsx
+```
 import { useState, useEffect } from "react";
 
 export default function NotFound() {
@@ -863,13 +871,13 @@ const NF_CSS = [
   ".nf-links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}",
   ".nf-link{padding:10px 20px;border-radius:8px;border:1px solid rgba(232,224,212,0.1);background:rgba(232,224,212,0.03);color:#e8e0d4;text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:13px;transition:all 0.2s}",
   ".nf-link:hover{border-color:#c08b5c;background:rgba(192,139,92,0.08);color:#c08b5c}",
-].join("\
-");
+].join("\n");
+' public=True source='custom
 ```
 
-### `/Zo-Ops` (page, private)
+## /Zo-Ops (page, public=false)
 
-```tsx
+```
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -1700,11 +1708,12 @@ function ProjectModal({ project, onClose, onSave, columns, priorityColumns, colo
     </div>
   );
 }
+' public=False source='custom
 ```
 
-### `/about-the-build` (page, public)
+## /about-the-build (page, public=true)
 
-```tsx
+```
 import { useState } from "react";
 
 export default function AboutTheBuild() {
@@ -1937,13 +1946,13 @@ const ATB_CSS = [
   ".atb-decision,.atb-challenge{padding:16px;border-radius:8px;border:1px solid rgba(232,224,212,0.08);background:rgba(232,224,212,0.02);margin-bottom:14px}",
   ".atb-thanks{margin-top:32px;padding:20px;border-radius:10px;background:rgba(192,139,92,0.08);border:1px solid rgba(192,139,92,0.2);text-align:center;font-family:'Playfair Display',serif;font-size:18px;color:#c08b5c}",
   "@media(max-width:768px){.atb-nav{width:100%;min-height:auto;position:static;border-right:none;border-bottom:1px solid rgba(232,224,212,0.08)}.atb-tabs{flex-direction:row;flex-wrap:wrap}.atb-content{margin-left:0;padding:24px}}",
-].join("\
-");
+].join("\n");
+' public=True source='custom
 ```
 
-### `/api/agents` (api, public)
+## /api/agents (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -1992,12 +2001,12 @@ export default async (c: Context) => {
       error: "Failed to fetch agents"
     }, 500);
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/audit` (api, public)
+## /api/audit (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { timingSafeEqual } from "node:crypto";
 
@@ -2041,12 +2050,12 @@ export default async (c: Context) => {
     note: "Audit events are mocked. Security monitoring is active.",
     last_updated: new Date().toISOString(),
   });
-};
+};' public=True source='custom
 ```
 
-### `/api/auth-status` (api, public)
+## /api/auth-status (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -2062,11 +2071,12 @@ export default (c: Context) => {
 
   return c.json({ authenticated: isAuthenticated });
 };
+' public=True source='custom
 ```
 
-### `/api/benchmarks` (api, public)
+## /api/benchmarks (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
@@ -2106,7 +2116,7 @@ export default async (c: Context) => {
       // Stale cache — still serve it, but trigger a background refresh
       const { _meta, ...models } = data;
       // Fire-and-forget background refresh
-      fetch(`https://{{HANDLE}}.zo.space/api/benchmarks/refresh`, { method: "POST" }).catch(() => {});
+      fetch(`https://curtastrophe.zo.space/api/benchmarks/refresh`, { method: "POST" }).catch(() => {});
 
       return c.json({
         models,
@@ -2211,11 +2221,12 @@ export default async (c: Context) => {
     }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/api/benchmarks/refresh` (api, public)
+## /api/benchmarks/refresh (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { spawn } from "child_process";
 
@@ -2233,11 +2244,12 @@ export default async (c: Context) => {
 
   return c.json({ status: "refresh started" });
 };
+' public=True source='custom
 ```
 
-### `/api/billing` (api, public)
+## /api/billing (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { timingSafeEqual } from "node:crypto";
 
@@ -2279,12 +2291,12 @@ export default async (c: Context) => {
     note: "Billing data is mocked. Check Zo Billing page for real invoices.",
     last_updated: new Date().toISOString(),
   });
-};
+};' public=True source='custom
 ```
 
-### `/api/blog` (api, public)
+## /api/blog (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
@@ -2304,10 +2316,7 @@ export interface BlogPost {
 // Simple frontmatter parser
 function parseMarkdown(filePath: string): { data: any; content: string } {
   const fileContent = readFileSync(filePath, "utf-8");
-  const frontmatterRegex = /^---\
-([\s\S]*?)\
----\
-([\s\S]*)$/;
+  const frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
   const match = fileContent.match(frontmatterRegex);
   
   if (!match) {
@@ -2318,8 +2327,7 @@ function parseMarkdown(filePath: string): { data: any; content: string } {
   const content = match[2];
   
   const data: any = {};
-  frontmatterString.split("\
-").forEach((line) => {
+  frontmatterString.split("\n").forEach((line) => {
     const colonIndex = line.indexOf(":");
     if (colonIndex === -1) return;
     const key = line.slice(0, colonIndex).trim();
@@ -2392,12 +2400,12 @@ export default async (c: Context) => {
   const postsWithoutContent = allPosts.map(({ content, ...rest }) => rest);
   
   return c.json({ posts: postsWithoutContent });
-};
+};' public=True source='custom
 ```
 
-### `/api/blog/:slug` (api, public)
+## /api/blog/:slug (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
@@ -2405,10 +2413,7 @@ import { join } from "node:path";
 // Share the same parsing logic
 function parseMarkdown(filePath: string): { data: any; content: string } {
   const fileContent = readFileSync(filePath, "utf-8");
-  const frontmatterRegex = /^---\
-([\s\S]*?)\
----\
-([\s\S]*)$/;
+  const frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
   const match = fileContent.match(frontmatterRegex);
   
   if (!match) {
@@ -2419,8 +2424,7 @@ function parseMarkdown(filePath: string): { data: any; content: string } {
   const content = match[2];
   
   const data: any = {};
-  frontmatterString.split("\
-").forEach((line) => {
+  frontmatterString.split("\n").forEach((line) => {
     const colonIndex = line.indexOf(":");
     if (colonIndex === -1) return;
     const key = line.slice(0, colonIndex).trim();
@@ -2485,12 +2489,12 @@ export default async (c: Context) => {
   }
 
   return c.json({ post });
-};
+};' public=True source='custom
 ```
 
-### `/api/buildin/callback` (api, public)
+## /api/buildin/callback (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { writeFileSync, mkdirSync } from "fs";
 
@@ -2524,7 +2528,7 @@ export default async (c: Context) => {
         client_id,
         client_secret,
         code,
-        redirect_uri: `https://{{HANDLE}}.zo.space/api/buildin/callback`
+        redirect_uri: `https://curtastrophe.zo.space/api/buildin/callback`
       })
     });
 
@@ -2579,11 +2583,12 @@ export default async (c: Context) => {
     return c.json({ error: `Authentication failed: ${err.message}` }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/api/buildin/disconnect` (api, public)
+## /api/buildin/disconnect (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -2598,11 +2603,12 @@ export default async (c: Context) => {
   
   return c.json({ success: true });
 }
+' public=True source='custom
 ```
 
-### `/api/buildin/status` (api, public)
+## /api/buildin/status (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -2634,11 +2640,12 @@ export default async (c: Context) => {
     return c.json({ connected: false });
   }
 }
+' public=True source='custom
 ```
 
-### `/api/bydesign/callback` (api, public)
+## /api/bydesign/callback (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { mkdir, writeFile } from "node:fs/promises";
 
@@ -2655,8 +2662,7 @@ export default async (c: Context) => {
 
   try {
     await mkdir("/home/workspace/Data/bydesign", { recursive: true });
-    await writeFile(OUTPUT_PATH, `${JSON.stringify(payload, null, 2)}\
-`, "utf8");
+    await writeFile(OUTPUT_PATH, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
   } catch (error) {
     console.error("Failed to persist ByDesign OAuth callback", error);
     return c.json(
@@ -2695,11 +2701,12 @@ export default async (c: Context) => {
   </body>
 </html>`);
 };
+' public=True source='custom
 ```
 
-### `/api/byok-reference` (api, public)
+## /api/byok-reference (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 // Server-side cache. zo.space server keeps the Hono process warm, so this
@@ -2850,11 +2857,12 @@ export default async (c: Context) => {
     cacheAgeMs: now - cache!.fetchedAt,
   });
 };
+' public=True source='custom
 ```
 
-### `/api/calendar` (api, public)
+## /api/calendar (api, public=true)
 
-```typescript
+```
 /**
  * Calendar API - Phase 2.1 (Live Integration)
  * Fetches next 48 hours of events from "Jess and Curt's Events" calendar
@@ -3062,12 +3070,12 @@ export default async (c: Context) => {
       timestamp: new Date().toISOString()
     }, 500);
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/career-ops` (api, public)
+## /api/career-ops (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -3135,12 +3143,12 @@ export default (c: Context) => {
     pendingUrls: Array.isArray(pipeline?.pending) ? pipeline.pending.length : 0,
     lastUpdated: tracker?.last_updated || pipeline?.last_updated || null
   });
-};
+};' public=True source='custom
 ```
 
-### `/api/career-ops/applications` (api, public)
+## /api/career-ops/applications (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -3160,11 +3168,12 @@ export default (c: Context) => {
   if (minScore > 0) apps = apps.filter((a: any) => a.score >= minScore);
   return c.json({ applications: apps, total: apps.length });
 };
+' public=True source='custom
 ```
 
-### `/api/career-ops/batch` (api, public)
+## /api/career-ops/batch (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -3193,12 +3202,12 @@ export default async (c: Context) => {
   } catch (err) {
     return c.json({ error: String(err) }, 500);
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/career-ops/pipeline` (api, public)
+## /api/career-ops/pipeline (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -3212,11 +3221,12 @@ function loadJSON<T = any>(path: string): T | null {
 export default (c: Context) => {
   return c.json(loadJSON(`${DATA_DIR}/pipeline.json`) || { pending: [], processed: [] });
 };
+' public=True source='custom
 ```
 
-### `/api/career-ops/scan` (api, public)
+## /api/career-ops/scan (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { spawn } from "node:child_process";
 
@@ -3243,12 +3253,12 @@ export default async (c: Context) => {
   } catch {
     return c.json({ ok: true, raw: stdout, stderr });
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/career-ops/scan-history` (api, public)
+## /api/career-ops/scan-history (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -3258,12 +3268,12 @@ export default (c: Context) => {
   if (!existsSync(PATH)) return c.json({ entries: [], last_scan: null });
   const data = JSON.parse(readFileSync(PATH, "utf-8"));
   return c.json(data);
-};
+};' public=True source='custom
 ```
 
-### `/api/contact` (api, public)
+## /api/contact (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import fs from "node:fs";
 
@@ -3309,8 +3319,7 @@ export default async (c: Context) => {
       timestamp: new Date().toISOString(),
       ip,
     });
-    fs.appendFileSync(path, entry + "\
-");
+    fs.appendFileSync(path, entry + "\n");
 
     console.log(`[contact] submission saved from ${name} <${email}>`);
     return c.json({ success: true, message: "Thanks! Your request was received." });
@@ -3318,12 +3327,12 @@ export default async (c: Context) => {
     console.error("[contact] error", err);
     return c.json({ error: "Something went wrong." }, 500);
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/credits` (api, public)
+## /api/credits (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 // Query Zo API for real credits/billing data
@@ -3368,12 +3377,12 @@ export default async (c: Context) => {
       error: "Failed to fetch credits"
     }, 500);
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/datasets/list` (api, public)
+## /api/datasets/list (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -3444,11 +3453,12 @@ export default async (c: Context) => {
     return c.json({ error: error.message }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/api/datasets/proxy/*` (api, public)
+## /api/datasets/proxy/* (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 function isOwnerLike(c: Context): boolean {
@@ -3507,12 +3517,12 @@ export default async (c: Context) => {
   } catch (e: any) {
     return new Response(`502 Bad Gateway - Datasette is not running or unreachable: ${e.message}`, { status: 502 });
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/datasets/start` (api, public)
+## /api/datasets/start (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { execSync } from "child_process";
 
@@ -3609,12 +3619,12 @@ EOF`
   }
 
   return c.json({ url: `/api/datasets/proxy/${dsName}` });
-};
+};' public=True source='custom
 ```
 
-### `/api/datasets/viewer` (api, public)
+## /api/datasets/viewer (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { execSync, spawn } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, readFileSync } from "node:fs";
@@ -3710,11 +3720,12 @@ export default async (c: Context) => {
     return c.json({ success: false, error: error.message }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/api/diagnose` (api, public)
+## /api/diagnose (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -3746,12 +3757,12 @@ Please diagnose the issue, attempt to repair it, and once you have finished, sen
   }).catch(e => console.error("Error triggering Zo:", e));
   
   return c.json({ success: true, message: "Diagnosis requested" });
-};
+};' public=True source='custom
 ```
 
-### `/api/extension-save` (api, public)
+## /api/extension-save (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -3759,12 +3770,12 @@ export default async (c: Context) => {
     headers: c.req.header(),
     envKeyLength: process.env.ZO_API_KEY?.length || 0,
   });
-};
+};' public=True source='custom
 ```
 
-### `/api/failures` (api, public)
+## /api/failures (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { execSync } from "node:child_process";
@@ -3782,8 +3793,7 @@ interface Failure {
 function tailFile(path: string, maxLines: number): string[] {
   try {
     const content = readFileSync(path, "utf8");
-    const lines = content.split("\
-").filter(l => l.trim());
+    const lines = content.split("\n").filter(l => l.trim());
     return lines.slice(-maxLines);
   } catch { return []; }
 }
@@ -3916,12 +3926,12 @@ export default (c: Context) => {
     data_source: "LIVE",
     last_updated: new Date().toISOString(),
   });
-};
+};' public=True source='custom
 ```
 
-### `/api/family-log` (api, public)
+## /api/family-log (api, public=true)
 
-```typescript
+```
 import { readFile, writeFile } from "node:fs/promises";
 import type { Context } from "hono";
 
@@ -3990,8 +4000,7 @@ export default async (c: Context) => {
       });
     }
 
-    const lines = logContent.split("\
-");
+    const lines = logContent.split("\n");
     const todos = [];
     const health = { emi: "", ellie: "" };
     const butlerNotes = [];
@@ -4083,12 +4092,12 @@ export default async (c: Context) => {
   } catch (err) {
     return c.json({ error: String(err) }, 500);
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/files` (api, public)
+## /api/files (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readdir, stat } from "fs/promises";
 import { join, extname } from "path";
@@ -4172,12 +4181,12 @@ export default async (c: Context) => {
   } catch (e: any) {
     return c.json({ error: e.message }, 500);
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/flowpulse` (api, public)
+## /api/flowpulse (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { existsSync, readFileSync } from "fs";
 
@@ -4188,8 +4197,7 @@ function readJsonl(file: string): any[] {
   if (!existsSync(p)) return [];
   const raw = readFileSync(p, "utf-8").trim();
   if (!raw) return [];
-  return raw.split("\
-").filter(Boolean).map((l: string) => JSON.parse(l));
+  return raw.split("\n").filter(Boolean).map((l: string) => JSON.parse(l));
 }
 
 function readJson(file: string): any {
@@ -4309,12 +4317,12 @@ export default async (c: Context) => {
     critical_alerts_24h: criticalAlerts.length,
     last_check: readJson("checker_state.json")?.last_check ?? null,
   });
-};
+};' public=True source='custom
 ```
 
-### `/api/generate-icon` (api, public)
+## /api/generate-icon (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { randomUUID } from "node:crypto";
@@ -4344,8 +4352,7 @@ function saveRateLimits(limits: Record<string, { count: number; resetDate: strin
 function sanitizeInput(input: string): string {
   if (!input) return "";
   // Strip control characters, newlines, limit to 100 characters to prevent injection
-  return input.replace(/[\r\
-\t\x00-\x1F]/g, " ").slice(0, 100).trim();
+  return input.replace(/[\r\n\t\x00-\x1F]/g, " ").slice(0, 100).trim();
 }
 
 function isAuthenticated(c: Context): boolean {
@@ -4517,8 +4524,7 @@ async function runGeneration(jobId: string, logoType: string, colors: string, th
             imagePath: destImage,
             status: "success"
           };
-          appendFileSync("/home/workspace/zo-icon-generations/source/generations.jsonl", JSON.stringify(logEntry) + "\
-");
+          appendFileSync("/home/workspace/zo-icon-generations/source/generations.jsonl", JSON.stringify(logEntry) + "\n");
         } catch (e) {
           console.error("Failed to log generation:", e);
         }
@@ -4596,11 +4602,12 @@ export default async (c: Context) => {
   const remaining = authed ? null : checkRateLimit(ip).remaining;
   return c.json({ jobId, remaining, authed });
 };
+' public=True source='custom
 ```
 
-### `/api/health-check` (api, public)
+## /api/health-check (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { execSync } from "node:child_process";
@@ -4725,8 +4732,7 @@ export default async (c: Context) => {
     const telemetryPath = "/home/workspace/.zo/gemini-telemetry.jsonl";
     
     if (existsSync(telemetryPath)) {
-      const lines = readFileSync(telemetryPath, "utf-8").split("\
-").filter(l => l.trim());
+      const lines = readFileSync(telemetryPath, "utf-8").split("\n").filter(l => l.trim());
       const totalRequests = lines.length;
       
       // Check for quota errors in recent telemetry
@@ -4820,12 +4826,12 @@ export default async (c: Context) => {
     claudeUsage,
     geminiUsage,
   });
-};
+};' public=True source='custom
 ```
 
-### `/api/logs` (api, public)
+## /api/logs (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 
@@ -4868,8 +4874,7 @@ function parseGenericLog(line: string, source: string): LogLine | null {
 function tailFile(path: string, maxLines: number): string[] {
   try {
     const content = readFileSync(path, "utf8");
-    const lines = content.split("\
-").filter(l => l.trim());
+    const lines = content.split("\n").filter(l => l.trim());
     return lines.slice(-maxLines);
   } catch { return []; }
 }
@@ -4959,12 +4964,12 @@ export default (c: Context) => {
     data_source: "LIVE",
     last_updated: new Date().toISOString(),
   });
-};
+};' public=True source='custom
 ```
 
-### `/api/model-explorer/import-omniroute` (api, public)
+## /api/model-explorer/import-omniroute (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -5164,11 +5169,12 @@ export default async (c: Context) => {
 
   return c.json({ source, dry_run: false, mode, results });
 };
+' public=True source='custom
 ```
 
-### `/api/model-explorer/models` (api, public)
+## /api/model-explorer/models (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -5270,11 +5276,12 @@ export default async (c: Context) => {
 
   return c.json({ models, total: total.count, limit, offset });
 };
+' public=True source='custom
 ```
 
-### `/api/model-explorer/providers` (api, public)
+## /api/model-explorer/providers (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 import { isIP } from "node:net";
@@ -5392,11 +5399,12 @@ export default async (c: Context) => {
   db.close();
   return c.json({ providers });
 };
+' public=True source='custom
 ```
 
-### `/api/model-explorer/providers/delete` (api, public)
+## /api/model-explorer/providers/delete (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -5516,11 +5524,12 @@ export default async (c: Context) => {
     return c.json({ error: err instanceof Error ? err.message : "Failed to delete provider" }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/api/model-explorer/stats` (api, public)
+## /api/model-explorer/stats (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -5591,11 +5600,12 @@ export default async (c: Context) => {
     },
   });
 };
+' public=True source='custom
 ```
 
-### `/api/model-explorer/sync` (api, public)
+## /api/model-explorer/sync (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 async function validateSession(c: Context): Promise<boolean> {
@@ -5645,11 +5655,12 @@ export default async (c: Context) => {
     return c.json({ error: "Sync execution error", detail: err.message }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/api/model-explorer/workbench` (api, public)
+## /api/model-explorer/workbench (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -5767,11 +5778,12 @@ export default async (c: Context) => {
     }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/api/models` (api, public)
+## /api/models (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -5798,12 +5810,12 @@ export default async (c: Context) => {
   } catch (err) {
     return c.json({ error: String(err) }, 500);
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/my-models` (api, public)
+## /api/my-models (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -5835,11 +5847,12 @@ export default async (c: Context) => {
     return c.json({ error: String(err) }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/api/nav-links` (api, public)
+## /api/nav-links (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync } from "node:fs";
 
@@ -5903,12 +5916,12 @@ export default (c: Context) => {
     authenticated: isAuthenticated,
     links: [...publicLinks, ...privateLinks],
   });
-};
+};' public=True source='custom
 ```
 
-### `/api/oauth-mcp/callback` (api, public)
+## /api/oauth-mcp/callback (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { existsSync, readFileSync, writeFileSync, mkdirSync, unlinkSync } from "fs";
 
@@ -6003,11 +6016,12 @@ export default async (c: Context) => {
     return htmlResponse(c, "Callback error", err?.message || String(err), false);
   }
 };
+' public=True source='custom
 ```
 
-### `/api/projects` (api, public)
+## /api/projects (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -6109,11 +6123,12 @@ export default async (c: Context) => {
 
   return c.json({ error: "Method not allowed" }, 405);
 };
+' public=True source='custom
 ```
 
-### `/api/projects-conversations` (api, public)
+## /api/projects-conversations (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "node:fs";
 
@@ -6155,11 +6170,12 @@ export default async (c: Context) => {
     return c.json({ error: "Failed to read conversations", message: err.message }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/api/puzzle-callback` (page, public)
+## /api/puzzle-callback (page, public=true)
 
-```tsx
+```
 export default function PuzzleCallback() {
   return (
     <div className="min-h-screen bg-zinc-900 text-white flex items-center justify-center">
@@ -6205,17 +6221,58 @@ export default function PuzzleCallback() {
     </div>
   );
 }
+' public=True source='custom
 ```
 
-### `/api/receipt-images` (api, public)
-
-```typescript
+## /api/receipt-images (api, public=true)
 
 ```
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import { timingSafeEqual } from 'node:crypto';
+import type { Context } from 'hono';
 
-### `/api/receipts` (api, public)
+const IMAGES_DIR = '/home/workspace/Data/ReceiptTracker/Images';
 
-```typescript
+function checkAuth(passcode: string | undefined) {
+  const secret = process.env.COSTCO_APP_PASSCODE;
+  if (!secret || !passcode) return false;
+  try {
+    const aBytes = Buffer.from(passcode);
+    const bBytes = Buffer.from(secret);
+    if (aBytes.length !== bBytes.length) return false;
+    return timingSafeEqual(aBytes, bBytes);
+  } catch(e) {
+    return false;
+  }
+}
+
+export default async (c: Context) => {
+  const passcode = c.req.header('X-Passcode') || c.req.query('passcode');
+  if (!checkAuth(passcode)) return c.text('Unauthorized', 401);
+  const id = c.req.query('id');
+  if (!id) return c.text('Missing id', 400);
+  const safeId = path.basename(id);
+  const filepath = path.join(IMAGES_DIR, safeId);
+  try {
+    const fileBuf = await fs.readFile(filepath);
+    const ext = path.extname(safeId).toLowerCase();
+    const mime = ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg';
+    return new Response(fileBuf, {
+      headers: {
+        'Content-Type': mime,
+        'Cache-Control': 'public, max-age=31536000'
+      }
+    });
+  } catch (e) {
+    return c.text('Image not found', 404);
+  }
+};" public=True source='custom'
+```
+
+## /api/receipts (api, public=true)
+
+```
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { exec } from 'node:child_process';
@@ -6290,27 +6347,7 @@ function checkAuth(c: Context) {
 }
 
 async function extractItemsFromText(rawText: string): Promise<{ items: any[], total: number, date: string, store_name: string }> {
-  const prompt = `You are a receipt parser. Extract all purchased items from this retail receipt OCR text (Costco, Winners, Marshalls, etc.).\
-\
-IMPORTANT: \
-- Identify the store name from the top of the receipt (e.g. "Costco", "Winners", "Marshalls", "Walmart").\
-- Only extract actual purchased ITEMS (products), ignore: SUBTOTAL, TAX, TOTAL, payment info, store info, "APPROVED", card numbers, dates without items\
-- Item codes might be alphanumeric depending on the store (e.g., 7 digits for Costco, others vary). If there is no item code, use an empty string or the most likely identifier.\
-- Return ONLY valid JSON, no markdown\
-\
-Return JSON in this exact format:\
-{\
-  "store_name": "Costco",\
-  "items": [\
-    {"item_code": "1851427", "description": "MTG MARVEL", "price": 49.99},\
-    {"item_code": "1748763", "description": "BAC&EGG SAND", "price": 24.99}\
-  ],\
-  "total": 186.98,\
-  "date": "2026-03-16"\
-}\
-\
-Receipt text:\
-${rawText}`;
+  const prompt = `You are a receipt parser. Extract all purchased items from this retail receipt OCR text (Costco, Winners, Marshalls, etc.).\n\nIMPORTANT: \n- Identify the store name from the top of the receipt (e.g. "Costco", "Winners", "Marshalls", "Walmart").\n- Only extract actual purchased ITEMS (products), ignore: SUBTOTAL, TAX, TOTAL, payment info, store info, "APPROVED", card numbers, dates without items\n- Item codes might be alphanumeric depending on the store (e.g., 7 digits for Costco, others vary). If there is no item code, use an empty string or the most likely identifier.\n- Return ONLY valid JSON, no markdown\n\nReturn JSON in this exact format:\n{\n  "store_name": "Costco",\n  "items": [\n    {"item_code": "1851427", "description": "MTG MARVEL", "price": 49.99},\n    {"item_code": "1748763", "description": "BAC&EGG SAND", "price": 24.99}\n  ],\n  "total": 186.98,\n  "date": "2026-03-16"\n}\n\nReceipt text:\n${rawText}`;
 
   try {
     const zoRes = await fetch('https://api.zo.computer/zo/ask', {
@@ -6484,12 +6521,12 @@ export default async (c: Context) => {
   }
 
   return c.json({ error: 'Unknown action' }, 400);
-};
+};' public=True source='custom
 ```
 
-### `/api/security` (api, public)
+## /api/security (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 
@@ -6506,8 +6543,7 @@ interface SecurityEvent {
 function tailFile(path: string, maxLines: number): string[] {
   try {
     const content = readFileSync(path, "utf8");
-    const lines = content.split("\
-").filter(l => l.trim());
+    const lines = content.split("\n").filter(l => l.trim());
     return lines.slice(-maxLines);
   } catch { return []; }
 }
@@ -6639,12 +6675,12 @@ export default (c: Context) => {
     data_source: "LIVE",
     last_updated: new Date().toISOString(),
   });
-};
+};' public=True source='custom
 ```
 
-### `/api/services` (api, public)
+## /api/services (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 // Query Zo API for real service data
@@ -6696,12 +6732,12 @@ export default async (c: Context) => {
       error: "Failed to fetch services"
     }, 500);
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/share` (api, public)
+## /api/share (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFile, writeFile, copyFile, mkdir, stat } from "fs/promises";
 import { join, basename, extname } from "path";
@@ -6857,7 +6893,7 @@ export default async (c: Context) => {
 
       return c.json({
         id: share.id,
-        url: `https://{{HANDLE}}.zo.space/s/${share.id}`,
+        url: `https://curtastrophe.zo.space/s/${share.id}`,
         fileName: share.fileName,
         fileSize: formatSize(share.fileSize),
       });
@@ -6877,17 +6913,17 @@ export default async (c: Context) => {
       downloads: s.downloads,
       leadCount: s.leads.length,
       requireLead: s.requireLead,
-      url: `https://{{HANDLE}}.zo.space/s/${s.id}`,
+      url: `https://curtastrophe.zo.space/s/${s.id}`,
     })));
   }
 
   return c.json({ error: "Method not allowed" }, 405);
-};
+};' public=True source='custom
 ```
 
-### `/api/share/:id` (api, public)
+## /api/share/:id (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
@@ -6993,12 +7029,12 @@ export default async (c: Context) => {
   }
 
   return c.json({ error: "Method not allowed" }, 405);
-};
+};' public=True source='custom
 ```
 
-### `/api/share/:id/download` (api, public)
+## /api/share/:id/download (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
@@ -7074,12 +7110,12 @@ export default async (c: Context) => {
       "Content-Length": String(share.fileSize),
     },
   });
-};
+};' public=True source='custom
 ```
 
-### `/api/sites` (api, public)
+## /api/sites (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 // Query Zo API for real space routes (Sites/Spaces)
@@ -7126,12 +7162,12 @@ export default async (c: Context) => {
       error: "Failed to fetch sites"
     }, 500);
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/skills-gallery` (api, public)
+## /api/skills-gallery (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readdir, readFile, stat } from "fs/promises";
 import { join, relative } from "path";
@@ -7152,14 +7188,9 @@ function requireAuth(c: Context): boolean {
 
 // Simple frontmatter parser (no external deps)
 function parseFrontmatter(raw: string): { data: Record<string, any>; content: string } {
-  const s = raw.replace(/\r\
-/g, "\
-");
-  if (!s.startsWith("---\
-")) return { data: {}, content: raw };
-  const end = s.indexOf("\
----\
-", 4);
+  const s = raw.replace(/\r\n/g, "\n");
+  if (!s.startsWith("---\n")) return { data: {}, content: raw };
+  const end = s.indexOf("\n---\n", 4);
   if (end === -1) return { data: {}, content: raw };
   const fmBlock = s.slice(4, end);
   const content = s.slice(end + 5);
@@ -7170,8 +7201,7 @@ function parseFrontmatter(raw: string): { data: Record<string, any>; content: st
   let inNestedObj = "";
   const nestedData: Record<string, Record<string, any>> = {};
 
-  for (const line of fmBlock.split("\
-")) {
+  for (const line of fmBlock.split("\n")) {
     // Nested object key (e.g. "metadata:")
     const nestedMatch = line.match(/^([a-zA-Z_][a-zA-Z0-9_-]*):\s*$/);
     if (nestedMatch && !inArray) {
@@ -7288,9 +7318,7 @@ function stringifyFrontmatter(data: Record<string, any>, content: string): strin
     }
   }
   lines.push("---");
-  return lines.join("\
-") + "\
-" + content;
+  return lines.join("\n") + "\n" + content;
 }
 
 async function findSkillFiles(dir: string): Promise<string[]> {
@@ -7475,12 +7503,12 @@ export default async (c: Context) => {
   } catch (err: any) {
     return c.json({ error: err.message || "Failed to read skills" }, 500);
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/speech-game-auth` (api, public)
+## /api/speech-game-auth (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -7489,12 +7517,12 @@ export default async (c: Context) => {
   const passcode = c.req.header("X-Passcode") || "";
   if (passcode === secret) return c.json({ authenticated: true });
   return c.json({ error: "Invalid passcode" }, 401);
-};
+};' public=True source='custom
 ```
 
-### `/api/speech-game-data` (api, public)
+## /api/speech-game-data (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { timingSafeEqual } from "node:crypto";
 
@@ -7718,19 +7746,19 @@ export default async (c: Context) => {
 
   return c.json({ error: "Method not allowed" }, 405);
 };
+' public=True source='custom
 ```
 
-### `/api/system-stats` (api, public)
+## /api/system-stats (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 function readMemInfo() {
   const text = readFileSync("/proc/meminfo", "utf8");
   const values: Record<string, number> = {};
-  for (const line of text.split("\
-")) {
+  for (const line of text.split("\n")) {
     const match = line.match(/^([^:]+):\s+(\d+)/);
     if (match) values[match[1]] = Number(match[2]);
   }
@@ -7757,12 +7785,12 @@ export default (c: Context) => {
     cpu: { load1, load5: Number(loadavg[1] || 0), load15: Number(loadavg[2] || 0), cpuCount, percent: cpuCount ? Math.round((load1 / cpuCount) * 1000) / 10 : 0 },
     uptime: { seconds: uptimeSeconds, hours: Math.round((uptimeSeconds / 3600) * 10) / 10, days: Math.round((uptimeSeconds / 86400) * 10) / 10 },
   });
-};
+};' public=True source='custom
 ```
 
-### `/api/telemetry-data` (api, public)
+## /api/telemetry-data (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -7775,8 +7803,7 @@ function readJsonl(path: string): any[] {
   if (!existsSync(path)) return [];
   const raw = readFileSync(path, "utf-8").trim();
   if (!raw) return [];
-  return raw.split("\
-").map(line => { try { return JSON.parse(line); } catch { return null; } }).filter(Boolean);
+  return raw.split("\n").map(line => { try { return JSON.parse(line); } catch { return null; } }).filter(Boolean);
 }
 
 export default async (c: Context) => {
@@ -7869,12 +7896,12 @@ export default async (c: Context) => {
       totalCost: parseFloat(totalCost.toFixed(4))
     }
   });
-};
+};' public=True source='custom
 ```
 
-### `/api/temporal-auth-check` (api, public)
+## /api/temporal-auth-check (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 // Check if user is authenticated via Zo session
@@ -7911,11 +7938,12 @@ export default async (c: Context) => {
   
   return c.json({ authenticated: false, error: "Unauthorized" }, 401);
 };
+' public=True source='custom
 ```
 
-### `/api/temporal/*` (api, public)
+## /api/temporal/* (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 // Proxy to internal Temporal gRPC endpoint
@@ -7967,11 +7995,12 @@ export default async (c: Context) => {
   
   return response;
 };
+' public=True source='custom
 ```
 
-### `/api/test-deps` (api, public)
+## /api/test-deps (api, public=true)
 
-```typescript
+```
 export default async (c) => {
   const fs = require("fs");
   const path = require("path");
@@ -7983,11 +8012,12 @@ export default async (c) => {
     return c.json({ error: e.message, cwd: process.cwd() });
   }
 };
+' public=True source='custom
 ```
 
-### `/api/test-env` (api, public)
+## /api/test-env (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -7997,11 +8027,12 @@ export default async (c: Context) => {
   });
   return c.json({ headers, reqHeader: c.req.header() });
 };
+' public=True source='custom
 ```
 
-### `/api/test-exec` (api, public)
+## /api/test-exec (api, public=true)
 
-```typescript
+```
 import { exec } from "node:child_process";
 import { promisify } from "node:util";
 import type { Context } from "hono";
@@ -8016,11 +8047,12 @@ export default async (c: Context) => {
     return c.json({ success: false, error: String(e) }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/api/test-write` (api, public)
+## /api/test-write (api, public=true)
 
-```typescript
+```
 import { promises as fs } from "node:fs";
 import type { Context } from "hono";
 
@@ -8032,11 +8064,12 @@ export default async (c: Context) => {
     return c.json({ success: false, error: String(e) }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/api/trivia` (api, public)
+## /api/trivia (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -8221,11 +8254,12 @@ export default async (c: Context) => {
     db.close();
   }
 };
+' public=True source='custom
 ```
 
-### `/api/trivia/by-date` (api, public)
+## /api/trivia/by-date (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -8359,12 +8393,12 @@ export default async (c: Context) => {
     console.error("Trivia by-date API error:", error);
     return c.json({ error: "Internal server error" }, 500);
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/trivia/dates` (api, public)
+## /api/trivia/dates (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -8391,12 +8425,12 @@ export default async (c: Context) => {
     console.error("Trivia dates API error:", error);
     return c.json({ error: "Internal server error" }, 500);
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/trivia/leaderboard` (api, public)
+## /api/trivia/leaderboard (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -8477,11 +8511,12 @@ export default async (c: Context) => {
     db.close();
   }
 };
+' public=True source='custom
 ```
 
-### `/api/trivia/random` (api, public)
+## /api/trivia/random (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -8561,12 +8596,12 @@ export default async (c: Context) => {
     console.error("Random trivia API error:", error);
     return c.json({ error: "Internal server error" }, 500);
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/trivia/subscribe` (api, public)
+## /api/trivia/subscribe (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 const TEABLE_BASE = "https://app.teable.io/api";
@@ -8686,11 +8721,12 @@ export default async (c: Context) => {
     }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/api/trivia/unsubscribe` (api, public)
+## /api/trivia/unsubscribe (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -8807,12 +8843,12 @@ export default async (c: Context) => {
     console.error("Unsubscribe error:", error);
     return c.html(`<!DOCTYPE html><html><body style="padding:40px;text-align:center;"><h2>Error</h2><p>Something went wrong. Please try again.</p></body></html>`, 500);
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/trivia/user-stats` (api, public)
+## /api/trivia/user-stats (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -8883,11 +8919,12 @@ export default async (c: Context) => {
     db.close();
   }
 };
+' public=True source='custom
 ```
 
-### `/api/twinmind` (api, public)
+## /api/twinmind (api, public=true)
 
-```typescript
+```
 /**
  * TwinMind Synthesis API - Phase 3.3
  * Provides meeting insights and action items from TwinMind recordings
@@ -8981,12 +9018,12 @@ export default async (c: Context) => {
       details: error instanceof Error ? error.message : String(error)
     }, 500);
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/twinmind-callback` (api, public)
+## /api/twinmind-callback (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 // This route captures the OAuth authorization code from TwinMind
@@ -9019,11 +9056,12 @@ export default async (c: Context) => {
     </html>
   `);
 };
+' public=True source='custom
 ```
 
-### `/api/updates` (api, public)
+## /api/updates (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, writeFileSync, existsSync, statSync, readdirSync } from "node:fs";
 import { resolve, join } from "node:path";
@@ -9110,9 +9148,7 @@ function fetchNotes(): UpdateItem[] {
   for (const file of files) {
     try {
       const content = readFileSync(join(notesDir, file), "utf-8");
-      const match = content.match(/^---\
-([\s\S]*?)\
----/);
+      const match = content.match(/^---\n([\s\S]*?)\n---/);
       if (match) {
         const fm = match[1];
         const titleMatch = fm.match(/title:\s*(.+)/);
@@ -9169,12 +9205,12 @@ export default async (c: Context) => {
   allUpdates.sort((a, b) => b.timestamp - a.timestamp);
   
   return c.json({ source: cacheOk ? "cache" : "fresh", updates: allUpdates });
-};
+};' public=True source='custom
 ```
 
-### `/api/voi-zos` (api, public)
+## /api/voi-zos (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 const VOI_LOCKDOWN = (process.env.VOI_LOCKDOWN ?? "true") !== "false";
@@ -9204,8 +9240,7 @@ const HOMEPAGE_KB: Record<string, string> = {
 
 const KB_TEXT = Object.entries(HOMEPAGE_KB)
   .map(([k, v]) => `[${k}] ${v}`)
-  .join("\
-");
+  .join("\n");
 
 const REFUSAL = "I can only answer based on information publicly shown on the homepage.";
 
@@ -9426,8 +9461,7 @@ const OUTPUT_SCHEMA = {
 } as const;
 
 function sanitizeAnswer(s: string): string {
-  let out = s.replace(/[\r\
-\t]+/g, " ");
+  let out = s.replace(/[\r\n\t]+/g, " ");
   out = out.replace(/^[\s`*_>#\-]+/, "");
   out = out.replace(/[\s`*_]+$/, "");
   out = out.replace(/\*\*([^*]+)\*\*/g, "$1");
@@ -9441,9 +9475,7 @@ function sanitizeAnswer(s: string): string {
 async function callAskZo(question: string): Promise<VoiResponse> {
   if (!ZO_TOKEN) return refusal();
 
-  const input = `Homepage question: ${question}\
-\
-Reminder: call final_result once. Plain text only. No markdown. No leading/trailing whitespace or newlines.`;
+  const input = `Homepage question: ${question}\n\nReminder: call final_result once. Plain text only. No markdown. No leading/trailing whitespace or newlines.`;
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 8000);
@@ -9538,11 +9570,12 @@ export default async (c: Context) => {
   if (result.allowed) cacheSet(key, result);
   return c.json({ ...result, lockdown: VOI_LOCKDOWN });
 };
+' public=True source='custom
 ```
 
-### `/api/x-feed` (api, public)
+## /api/x-feed (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, writeFileSync, existsSync, statSync } from "node:fs";
 import { resolve } from "node:path";
@@ -9705,11 +9738,12 @@ export default async (c: Context) => {
   saveCache(posts);
   return c.json({ source: "fresh", cached: false, posts });
 };
+' public=True source='custom
 ```
 
-### `/api/zo-city-data` (api, public)
+## /api/zo-city-data (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFile, readdir, stat, access } from "node:fs/promises";
 import path from "node:path";
@@ -9793,12 +9827,12 @@ export default async (c: Context) => {
       note: "Live counts from filesystem + census. Timeline from Data/zo-city/timeline.json with real creation dates.",
     },
   });
-};
+};' public=True source='custom
 ```
 
-### `/api/zo-space-theme-gallery` (api, public)
+## /api/zo-space-theme-gallery (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync } from "fs";
 
@@ -9836,12 +9870,12 @@ export default (c: Context) => {
   }
 
   return c.json(filtered);
-};
+};' public=True source='custom
 ```
 
-### `/api/zo-space-theme-gallery/:id` (api, public)
+## /api/zo-space-theme-gallery/:id (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, existsSync } from "fs";
 
@@ -9866,8 +9900,7 @@ export default (c: Context) => {
       const content = readFileSync(SKILL_PATH, "utf-8");
       return c.text(content);
     } catch {
-      return c.text("# Error\
-Skill file not found.", 500);
+      return c.text("# Error\nSkill file not found.", 500);
     }
   }
 
@@ -9887,12 +9920,12 @@ Skill file not found.", 500);
   const prompt = existsSync(promptPath) ? readFileSync(promptPath, "utf-8") : null;
 
   return c.json({ ...theme, prompt });
-};
+};' public=True source='custom
 ```
 
-### `/api/zo-space-theme-gallery/skill` (api, public)
+## /api/zo-space-theme-gallery/skill (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync } from "fs";
 
@@ -9912,16 +9945,14 @@ export default (c: Context) => {
     const skillContent = readFileSync(SKILL_PATH, "utf-8");
     return c.text(skillContent);
   } catch {
-    return c.text("# Skill not found\
-\
-The zo-space-themer skill could not be loaded.", 404);
+    return c.text("# Skill not found\n\nThe zo-space-themer skill could not be loaded.", 404);
   }
-};
+};' public=True source='custom
 ```
 
-### `/api/zoboard/*` (api, public)
+## /api/zoboard/* (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import {
   readFileSync,
@@ -10011,14 +10042,10 @@ function generateId(): string {
 }
 
 function parseFrontmatter(raw: string): { data: Record<string, any>; content: string } {
-  const match = raw.match(/^---\r?\
-([\s\S]*?)\r?\
----\r?\
-([\s\S]*)$/);
+  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
   if (!match) return { data: {}, content: raw };
   const data: Record<string, any> = {};
-  match[1].split("\
-").forEach((line) => {
+  match[1].split("\n").forEach((line) => {
     const idx = line.indexOf(":");
     if (idx === -1) return;
     const key = line.slice(0, idx).trim();
@@ -10041,11 +10068,7 @@ function stringifyFrontmatter(data: Record<string, unknown>, content: string): s
     if (typeof v === "string" && (v.includes(":") || v.includes("#") || v.includes("'"))) return `${k}: '${v}'`;
     return `${k}: ${v}`;
   });
-  return `---\
-${fmLines.join("\
-")}\
----\
-${content}`;
+  return `---\n${fmLines.join("\n")}\n---\n${content}`;
 }
 
 function readIndex() {
@@ -10188,8 +10211,7 @@ export default async (c: Context) => {
           timestamp: ts, action: "create", card_id: id,
           card_title: fm.title, board_slug: route.slug, origin: "api",
           mengram_id: mengramId || undefined,
-        }) + "\
-", "utf-8");
+        }) + "\n", "utf-8");
         return c.json({ card: { id, ...fm, body: body.body || "" } }, 201);
       }
 
@@ -10219,8 +10241,7 @@ export default async (c: Context) => {
           timestamp: ts,
           action: body.column_id && body.column_id !== data.column_id ? "move" : "update",
           card_id: route.id, card_title: merged.title, board_slug: entry.board_slug, origin: "api",
-        }) + "\
-", "utf-8");
+        }) + "\n", "utf-8");
         return c.json({ card: { ...merged, body: newContent } });
       }
 
@@ -10241,8 +10262,7 @@ export default async (c: Context) => {
         appendFileSync(ACTIVITY_PATH, JSON.stringify({
           timestamp: ts, action: "delete",
           card_id: route.id, card_title: entry.title, board_slug: entry.board_slug, origin: "api",
-        }) + "\
-", "utf-8");
+        }) + "\n", "utf-8");
         if (existsSync(cardPath)) unlinkSync(cardPath);
         rebuildIndex();
         return c.json({ deleted: route.id });
@@ -10271,8 +10291,7 @@ export default async (c: Context) => {
           : [];
         let recentActivity: any[] = [];
         if (existsSync(ACTIVITY_PATH)) {
-          const lines = readFileSync(ACTIVITY_PATH, "utf-8").trim().split("\
-").filter(Boolean);
+          const lines = readFileSync(ACTIVITY_PATH, "utf-8").trim().split("\n").filter(Boolean);
           recentActivity = lines
             .map((l) => {
               try { return JSON.parse(l); } catch { return null; }
@@ -10307,8 +10326,7 @@ export default async (c: Context) => {
 
       case "activity": {
         if (!existsSync(ACTIVITY_PATH)) return c.json({ activity: [] });
-        const lines = readFileSync(ACTIVITY_PATH, "utf-8").trim().split("\
-").filter(Boolean);
+        const lines = readFileSync(ACTIVITY_PATH, "utf-8").trim().split("\n").filter(Boolean);
         const entries = lines.map((l) => JSON.parse(l));
         if (!route.since) return c.json({ activity: entries });
         return c.json({ activity: entries.filter((e: any) => e.timestamp > route.since!) });
@@ -10322,11 +10340,12 @@ export default async (c: Context) => {
     return c.json({ error: err.message || "Internal error" }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/api/zos/build-log` (api, public)
+## /api/zos/build-log (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -10347,11 +10366,12 @@ export default (c: Context) => {
     stripe_products: 2
   });
 };
+' public=True source='custom
 ```
 
-### `/api/zos/now` (api, public)
+## /api/zos/now (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -10369,18 +10389,19 @@ export default (c: Context) => {
     themes: ["oxidized", "signal", "lunar"],
     easter_eggs: 6,
     links: {
-      zos: "https://{{HANDLE}}.zo.space/zos",
+      zos: "https://curtastrophe.zo.space/zos",
       github: "https://github.com/Zenlyte",
       x: "https://x.com/z3nlyte",
-      about_the_build: "https://{{HANDLE}}.zo.space/about-the-build"
+      about_the_build: "https://curtastrophe.zo.space/about-the-build"
     }
   });
 };
+' public=True source='custom
 ```
 
-### `/api/zos/signals` (api, public)
+## /api/zos/signals (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -10396,11 +10417,12 @@ export default (c: Context) => {
     ]
   });
 };
+' public=True source='custom
 ```
 
-### `/blog` (page, public)
+## /blog (page, public=true)
 
-```tsx
+```
 import { useState, useEffect, useRef } from "react";
 import { ArrowRight, ArrowLeft, Clock, Tag, Search, Filter, X, Menu, Lock } from "lucide-react";
 
@@ -10792,12 +10814,12 @@ export default function Blog() {
       </div>
     </>
   );
-}
+}' public=True source='custom
 ```
 
-### `/blog/:slug` (page, public)
+## /blog/:slug (page, public=true)
 
-```tsx
+```
 import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Clock, Tag, Share2, ChevronUp } from "lucide-react";
 
@@ -10911,8 +10933,7 @@ function GlobalNav() {
 }
 
 function MarkdownRenderer({ content }: { content: string }) {
-  const lines = content.trim().split("\
-");
+  const lines = content.trim().split("\n");
   const elements: React.ReactNode[] = [];
   let i = 0, inCodeBlock = false, codeLines: string[] = [], codeLang = "";
 
@@ -10930,8 +10951,7 @@ function MarkdownRenderer({ content }: { content: string }) {
           <div key={`code-${i}`} className="my-6 rounded-xl overflow-hidden" style={{ border: `1px solid ${COLORS.border}` }}>
             {codeLang && <div className="px-4 py-2 text-xs font-mono tracking-wider uppercase" style={{ background: COLORS.card, borderBottom: `1px solid ${COLORS.border}`, color: `${COLORS.cyan}99` }}>{codeLang}</div>}
             <pre className="p-4 overflow-x-auto" style={{ background: "#06060a" }}>
-              <code className="text-sm font-mono leading-relaxed" style={{ color: "#e2e8f0" }}>{codeLines.join("\
-")}</code>
+              <code className="text-sm font-mono leading-relaxed" style={{ color: "#e2e8f0" }}>{codeLines.join("\n")}</code>
             </pre>
           </div>
         );
@@ -11132,7 +11152,7 @@ export default function BlogPost() {
             <span className="text-sm font-mono tracking-wider uppercase group-hover:text-white transition-colors" style={{ color: COLORS.muted }}>Blog</span>
           </a>
           <button onClick={() => {
-            const cleanUrl = `https://{{HANDLE}}.zo.space/blog/${window.location.pathname.split("/").pop()}`;
+            const cleanUrl = `https://curtastrophe.zo.space/blog/${window.location.pathname.split("/").pop()}`;
             navigator.clipboard?.writeText(cleanUrl);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
@@ -11200,12 +11220,12 @@ export default function BlogPost() {
       <GlobalNav />
     </>
   );
-}
+}' public=True source='custom
 ```
 
-### `/buildin-auth` (page, private)
+## /buildin-auth (page, public=false)
 
-```tsx
+```
 import { useState, useEffect } from "react";
 
 export default function BuildinAuth() {
@@ -11234,7 +11254,7 @@ export default function BuildinAuth() {
 
   const handleAuthorize = () => {
     const clientId = process.env.BUILDIN_CLIENT_ID || "";
-    const redirectUri = encodeURIComponent("https://{{HANDLE}}.zo.space/api/buildin/callback");
+    const redirectUri = encodeURIComponent("https://curtastrophe.zo.space/api/buildin/callback");
     const state = Math.random().toString(36).substring(7);
     const authUrl = `https://api.buildin.ai/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=all&state=${state}`;
     window.open(authUrl, "_blank");
@@ -11340,11 +11360,12 @@ export default function BuildinAuth() {
     </div>
   );
 }
+' public=False source='custom
 ```
 
-### `/byok-reference` (page, private)
+## /byok-reference (page, public=false)
 
-```tsx
+```
 import { useEffect, useMemo, useState } from "react";
 import { Copy, Check, RefreshCw, Database, Search, ExternalLink, AlertCircle, Clock } from "lucide-react";
 
@@ -11515,8 +11536,7 @@ export default function ByokReference() {
                 backgroundColor: theme.card,
                 color: isStale ? "#fca5a5" : theme.muted,
               }}
-              title={`Source: ${data.source}\
-Fetched: ${data.fetchedAt}`}
+              title={`Source: ${data.source}\nFetched: ${data.fetchedAt}`}
             >
               {isStale ? <AlertCircle className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
               <span className="font-mono">{fmtAge(now - new Date(data.fetchedAt).getTime())}</span>
@@ -11705,11 +11725,12 @@ Fetched: ${data.fetchedAt}`}
     </main>
   );
 }
+' public=False source='custom
 ```
 
-### `/career-ops` (page, private)
+## /career-ops (page, public=false)
 
-```tsx
+```
 import { useState, useEffect, useCallback } from "react";
 import {
   Briefcase, FileText, TrendingUp, BarChart3, Plus,
@@ -12054,11 +12075,12 @@ export default function CareerOpsDashboard() {
     </div>
   );
 }
+' public=False source='custom
 ```
 
-### `/dashboard` (page, private)
+## /dashboard (page, public=false)
 
-```tsx
+```
 /**
  * Family Butler Dashboard - Phase 3.3, 4.1 & 4.2
  * Updates: TwinMind Synthesis (3.3), Mobile PWA (4.1), Interactive Actions (4.2)
@@ -12565,12 +12587,12 @@ export default function FamilyDashboard() {
       `}</style>
     </div>
   );
-}
+}' public=False source='custom
 ```
 
-### `/data-explorer` (page, private)
+## /data-explorer (page, public=false)
 
-```tsx
+```
 import { useEffect } from "react";
 
 export default function DataExplorerRedirect() {
@@ -12580,12 +12602,12 @@ export default function DataExplorerRedirect() {
       <p className="text-gray-400">Redirecting to Data Explorer...</p>
     </div>
   );
-}
+}' public=False source='custom
 ```
 
-### `/data/zo-trivia/` (page, private)
+## /data/zo-trivia/ (page, public=false)
 
-```tsx
+```
 import React, { useEffect, useState } from "react";
 import { 
   Bar, 
@@ -12896,11 +12918,12 @@ function StatCard({ title, value, icon, color }: { title: string, value: any, ic
     </Card>
   );
 }
+' public=False source='custom
 ```
 
-### `/data/zo-trivia/api/query` (api, public)
+## /data/zo-trivia/api/query (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { Database } from "bun:sqlite";
 
@@ -12985,21 +13008,23 @@ export default async (c: Context) => {
     return c.json({ error: "Database error" }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/docs` (api, public)
+## /docs (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default (c: Context) => {
   return c.redirect("https://docs-curtastrophe.zocomputer.io");
 };
+' public=True source='custom
 ```
 
-### `/icon-configurator` (page, public)
+## /icon-configurator (page, public=true)
 
-```tsx
+```
 import { useState, useCallback, useEffect, useRef } from "react";
 import { 
   Download, Loader2, Wand2, ArrowLeft, Zap, Sparkles, Info, Menu, X, Lock,
@@ -13455,9 +13480,7 @@ export default function IconConfigurator() {
           return;
         } else if (result.status === "error") {
           setAiAttempt(null);
-          const detail = result.detail ? `\
-\
-Detail: ${result.detail}` : "";
+          const detail = result.detail ? `\n\nDetail: ${result.detail}` : "";
           const retryNote = result.retriesExhausted ? " (retries exhausted)" : "";
           throw new Error((result.error || "AI generation failed") + retryNote + detail);
         }
@@ -13742,11 +13765,12 @@ Detail: ${result.detail}` : "";
     </div>
   );
 }
+' public=True source='custom
 ```
 
-### `/job-ops` (page, private)
+## /job-ops (page, public=false)
 
-```tsx
+```
 import React, { useState, useEffect, useRef } from "react";
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -13929,11 +13953,12 @@ export default function JobOps() {
     </>
   );
 }
+' public=False source='custom
 ```
 
-### `/kg-browse` (api, public)
+## /kg-browse (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 import { readFileSync, readdirSync } from "fs";
 import { join } from "path";
@@ -13948,14 +13973,11 @@ export default async (c: Context) => {
     for (const file of files) {
       try {
         const content = readFileSync(join(vaultPath, file), "utf-8");
-        const frontmatterMatch = content.match(/^---\
-([\s\S]*?)\
----/);
+        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
         
         if (frontmatterMatch) {
           const fm: Record<string, string> = {};
-          for (const line of frontmatterMatch[1].split("\
-")) {
+          for (const line of frontmatterMatch[1].split("\n")) {
             const [key, ...vals] = line.split(":");
             if (key && vals.length) {
               fm[key.trim()] = vals.join(":").trim();
@@ -13992,11 +14014,12 @@ export default async (c: Context) => {
     return c.json({ error: "Failed to read vault" }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/kg-by-type` (api, public)
+## /kg-by-type (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -14024,11 +14047,12 @@ export default async (c: Context) => {
     return c.json({ error: "Failed to fetch" }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/kg-entity` (api, public)
+## /kg-entity (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -14056,11 +14080,12 @@ export default async (c: Context) => {
     return c.json({ error: `Connection failed: ${error.message}` }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/kg-graph` (api, public)
+## /kg-graph (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -14085,11 +14110,12 @@ export default async (c: Context) => {
     return c.json({ error: `Connection failed: ${error.message}` }, 500);
   }
 };
+' public=True source='custom
 ```
 
-### `/kg-recall` (api, public)
+## /kg-recall (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -14110,12 +14136,12 @@ export default async (c: Context) => {
   } catch {
     return c.json({ error: "Mengram unreachable" }, 502);
   }
-};
+};' public=True source='custom
 ```
 
-### `/kg-search` (api, public)
+## /kg-search (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -14136,12 +14162,12 @@ export default async (c: Context) => {
   } catch {
     return c.json({ error: "Mengram unreachable" }, 502);
   }
-};
+};' public=True source='custom
 ```
 
-### `/kg-stats` (api, public)
+## /kg-stats (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default async (c: Context) => {
@@ -14156,12 +14182,12 @@ export default async (c: Context) => {
   } catch {
     return c.json({ error: "Mengram unreachable" }, 502);
   }
-};
+};' public=True source='custom
 ```
 
-### `/knowledge-graph` (page, private)
+## /knowledge-graph (page, public=false)
 
-```tsx
+```
 import React, { useState, useEffect, useRef } from "react";
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -15006,11 +15032,12 @@ export default function KnowledgeGraph() {
     </>
   );
 }
+' public=False source='custom
 ```
 
-### `/model-advisor` (page, public)
+## /model-advisor (page, public=true)
 
-```tsx
+```
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { Brain, Zap, DollarSign, Download, ChevronDown, ChevronUp, Sparkles, ArrowUpDown, Check, Info, Calculator, Trophy, Star, Target, MessageSquare, Code, BookOpen, Scale, Cpu, Sun, Moon, Bot, X, Filter, Search } from "lucide-react";
 
@@ -15558,12 +15585,12 @@ export default function ModelAdvisor() {
       </div>
     </div>
   );
-}
+}' public=True source='custom
 ```
 
-### `/model-explorer` (page, private)
+## /model-explorer (page, public=false)
 
-```tsx
+```
 import { useState, useEffect, useMemo, useCallback, Fragment, type CSSProperties } from "react";
 import {
   Search, Filter, Database, Zap, ChevronDown, ChevronRight, X,
@@ -16760,12 +16787,444 @@ function PromptWorkbench() {
       const rows = (data.providers || []) as OmniImportProvider[];
       const refreshed = rows.find((row) => row.prefix === prefix);
       setOmniProviders(rows);
-      if (r
+      if (refreshed) {
+        const match = refreshed.suggested_secret_name || refreshed.current_secret_name || "";
+        setOmniSelections((current) => ({ ...current, [prefix]: match }));
+      }
+    } catch (error: any) {
+      setOmniProviders(previousRows);
+      setOmniError(error.message || "Could not refresh Zo Secret matches");
+    } finally {
+      setOmniLoading(false);
+    }
+  };
+
+  const importOmniProviders = async () => {
+    setOmniImporting(true);
+    setOmniError("");
+    try {
+      const prefixes = omniProviders.filter((row) => omniSelected[row.prefix]).map((row) => row.prefix);
+      const response = await fetch("/api/model-explorer/import-omniroute", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ mode: omniMode, prefixes, selections: omniSelections }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || `OmniRoute import failed (${response.status})`);
+      await fetchProviders();
+      setOmniModalOpen(false);
+    } catch (error: any) {
+      setOmniError(error.message || "OmniRoute import failed");
+    } finally {
+      setOmniImporting(false);
+    }
+  };
+
+  // Fetch providers
+  useEffect(() => {
+    fetch("/api/model-explorer/providers", { headers: { Accept: "application/json" } })
+      .then((r) => r.json())
+      .then((d) => {
+        const ps = d.providers || [];
+        setProviders(ps);
+        const firstActive = ps.find((p) => p.sync_status === "success" && p.model_count > 0);
+        if (firstActive) setSelectedProviderId(firstActive.id);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Fetch models for selected provider
+  useEffect(() => {
+    if (selectedProviderId === "") { setProviderModels([]); return; }
+    fetch(`/api/model-explorer/models?provider_id=${selectedProviderId}&limit=500&sort_by=model_id&sort_dir=asc`, {
+      credentials: "same-origin",
+      headers: { Accept: "application/json" },
+    })
+      .then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data.error || `Model request failed (${r.status})`);
+        return data;
+      })
+      .then((d: ModelsResponse) => {
+        setProviderModels(d.models || []);
+        setSelectedModel("");
+      })
+      .catch(() => setProviderModels([]));
+  }, [selectedProviderId]);
+
+  const handleSend = async () => {
+    setLoading(true);
+    setResult(null);
+    try {
+      const body: any = {
+        messages: [
+          ...(systemPrompt ? [{ role: "system", content: systemPrompt }] : []),
+          { role: "user", content: userMessage },
+        ],
+        temperature,
+        max_tokens: maxTokens,
+        stream,
+      };
+      if (mode === "stored") {
+        body.provider_id = selectedProviderId;
+        body.model = selectedModel;
+      } else {
+        body.base_url = customBaseUrl;
+        body.api_key = customApiKey;
+        body.model = customModel;
+      }
+      const r = await fetch("/api/model-explorer/workbench", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: stream ? "text/event-stream" : "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (stream) {
+        if (!r.ok || !r.body) {
+          const detail = await r.text();
+          setResult({ error: `HTTP ${r.status}`, detail });
+        } else {
+          const startedAt = Date.now();
+          const reader = r.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+          let content = "";
+          let usage: any = null;
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() || "";
+            for (const line of lines) {
+              if (!line.startsWith("data:")) continue;
+              const payload = line.slice(5).trim();
+              if (!payload || payload === "[DONE]") continue;
+              try {
+                const chunk = JSON.parse(payload);
+                content += chunk.choices?.[0]?.delta?.content || "";
+                if (chunk.usage) usage = chunk.usage;
+                setResult({
+                  response: { choices: [{ message: { content } }], usage },
+                  elapsed_ms: Date.now() - startedAt,
+                });
+              } catch {}
+            }
+          }
+        }
+      } else {
+        const d: WorkbenchResult = await r.json();
+        setResult(d);
+      }
+    } catch (e: any) {
+      setResult({ error: e.message });
+    }
+    setLoading(false);
+  };
+
+  const canSend = mode === "stored"
+    ? selectedProviderId !== "" && selectedModel && userMessage.trim()
+    : customBaseUrl.trim() && customModel.trim() && userMessage.trim();
+
+  return (
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[400px_1fr]" style={{ minHeight: "calc(100vh - 120px)" }}>
+      {/* Config Panel */}
+      <div className="space-y-4">
+        {/* Mode toggle */}
+        <div className="flex gap-1 rounded-lg p-1" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
+          <button
+            onClick={() => setMode("stored")}
+            className="flex-1 rounded-md px-3 py-2 text-sm font-medium transition"
+            style={{ background: mode === "stored" ? theme.accentDim : "transparent", color: mode === "stored" ? theme.accent : theme.muted }}
+          >
+            <Database className="size-3.5 inline mr-1" /> Stored Provider
+          </button>
+          <button
+            onClick={() => setMode("custom")}
+            className="flex-1 rounded-md px-3 py-2 text-sm font-medium transition"
+            style={{ background: mode === "custom" ? theme.accentDim : "transparent", color: mode === "custom" ? theme.accent : theme.muted }}
+          >
+            <Settings2 className="size-3.5 inline mr-1" /> Custom Endpoint
+          </button>
+        </div>
+
+        {/* Provider config */}
+        <div className="rounded-xl p-4 space-y-3" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
+          {mode === "stored" ? (
+            <>
+              <div>
+                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.muted }}>BYOK Provider</label>
+                <select
+                  value={selectedProviderId}
+                  onChange={(e) => setSelectedProviderId(e.target.value === "" ? "" : Number(e.target.value))}
+                  className="w-full rounded-lg px-3 py-2 text-sm outline-none"
+                  style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
+                >
+                  <option value="">Select a provider...</option>
+                  {providers.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} {p.sync_status === "success" ? "✓" : "○"} ({p.model_count})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.muted }}>Model</label>
+                <select
+                  value={selectedModel}
+                  onChange={(e) => setSelectedModel(e.target.value)}
+                  className="w-full rounded-lg px-3 py-2 text-sm font-mono outline-none"
+                  style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
+                >
+                  <option value="">Select a model...</option>
+                  {providerModels.map((m) => (
+                    <option key={m.id} value={m.model_id}>{m.model_id}</option>
+                  ))}
+                </select>
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.muted }}>Base URL</label>
+                <input
+                  type="text"
+                  value={customBaseUrl}
+                  onChange={(e) => setCustomBaseUrl(e.target.value)}
+                  placeholder="https://api.example.com/v1"
+                  className="w-full rounded-lg px-3 py-2 text-sm font-mono outline-none"
+                  style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.muted }}>API Key</label>
+                <input
+                  type="password"
+                  value={customApiKey}
+                  onChange={(e) => setCustomApiKey(e.target.value)}
+                  placeholder="sk-... or your provider key"
+                  className="w-full rounded-lg px-3 py-2 text-sm font-mono outline-none"
+                  style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.muted }}>Model ID</label>
+                <input
+                  type="text"
+                  value={customModel}
+                  onChange={(e) => setCustomModel(e.target.value)}
+                  placeholder="gpt-4o, claude-3-opus, etc."
+                  className="w-full rounded-lg px-3 py-2 text-sm font-mono outline-none"
+                  style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
+                />
+              </div>
+            </>
+          )}
+
+          {/* Parameters */}
+          <div className="grid grid-cols-2 gap-3 pt-1">
+            <div>
+              <label className="text-xs font-medium mb-1 block" style={{ color: theme.muted }}>
+                Temperature: {temperature.toFixed(1)}
+              </label>
+              <input
+                type="range" min="0" max="2" step="0.1"
+                value={temperature}
+                onChange={(e) => setTemperature(Number(e.target.value))}
+                className="w-full"
+                style={{ accentColor: theme.accent }}
+              />
+            </div>
+            <div>
+              <label className="text-xs font-medium mb-1 block" style={{ color: theme.muted }}>Max Tokens</label>
+              <input
+                type="number"
+                value={maxTokens}
+                onChange={(e) => setMaxTokens(Number(e.target.value))}
+                className="w-full rounded-lg px-3 py-1.5 text-sm outline-none"
+                style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
+              />
+            </div>
+          </div>
+          <button
+            type="button"
+            aria-pressed={stream}
+            onClick={() => setStream(!stream)}
+            className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm"
+            style={{ background: stream ? theme.accentDim : "transparent", border: `1px solid ${stream ? theme.borderActive : theme.border}` }}
+          >
+            <span style={{ color: stream ? theme.accent : theme.muted }}>Stream response</span>
+            {stream ? <ToggleRight className="size-5" style={{ color: theme.accent }} /> : <ToggleLeft className="size-5" style={{ color: theme.dim }} />}
+          </button>
+          <button type="button" onClick={() => setProviderModalOpen(true)} className="rounded-lg px-3 py-2 text-xs font-semibold" style={{ background: theme.accentDim, color: theme.accent, border: `1px solid ${theme.borderActive}` }}>
+            <Plus className="mr-1 inline size-3.5" /> Add Provider
+          </button>
+          <button type="button" onClick={openOmniImport} className="rounded-lg px-3 py-2 text-xs font-semibold" style={{ color: theme.blue, border: `1px solid ${theme.border}` }}>
+            <Database className="mr-1 inline size-3.5" /> Import from OmniRoute
+          </button>
+        </div>
+
+        {/* Send button */}
+        <button
+          onClick={handleSend}
+          disabled={!canSend || loading}
+          className="flex w-full items-center justify-center gap-2 rounded-lg py-3 text-sm font-bold transition disabled:opacity-40"
+          style={{ background: theme.accent, color: "#1a1a18" }}
+        >
+          {loading ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+          {loading ? "Generating..." : "Send Prompt"}
+        </button>
+      </div>
+
+      {/* Prompt + Response Panel */}
+      <div className="space-y-4">
+        {/* System prompt */}
+        <div className="rounded-xl p-4" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
+          <label className="text-xs font-medium mb-2 block" style={{ color: theme.muted }}>System Prompt (optional)</label>
+          <textarea
+            value={systemPrompt}
+            onChange={(e) => setSystemPrompt(e.target.value)}
+            placeholder="You are a helpful assistant..."
+            rows={2}
+            className="w-full resize-y rounded-lg p-3 text-sm outline-none"
+            style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
+          />
+        </div>
+
+        {/* User message */}
+        <div className="rounded-xl p-4" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
+          <label className="text-xs font-medium mb-2 block" style={{ color: theme.muted }}>User Message</label>
+          <textarea
+            value={userMessage}
+            onChange={(e) => setUserMessage(e.target.value)}
+            placeholder="Type your prompt here..."
+            rows={6}
+            className="w-full resize-y rounded-lg p-3 text-sm outline-none"
+            style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }}
+          />
+        </div>
+
+        {/* Response */}
+        <div className="rounded-xl p-4 min-h-[200px]" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: theme.muted }}>Response</span>
+            {result?.elapsed_ms && (
+              <span className="flex items-center gap-1 text-xs" style={{ color: theme.dim }}>
+                <Clock className="size-3" /> {result.elapsed_ms}ms
+              </span>
+            )}
+          </div>
+          {!result && !loading && (
+            <div className="flex flex-col items-center justify-center py-12" style={{ color: theme.dim }}>
+              <Zap className="size-6 mb-2 opacity-40" />
+              <span className="text-sm">Send a prompt to see the response here.</span>
+            </div>
+          )}
+          {loading && (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="size-5 animate-spin" style={{ color: theme.accent }} />
+            </div>
+          )}
+          {result?.error && (
+            <div className="rounded-lg p-3" style={{ background: "rgba(234,105,98,0.1)", border: `1px solid ${theme.red}` }}>
+              <div className="flex items-center gap-1.5 text-sm font-medium" style={{ color: theme.red }}>
+                <AlertCircle className="size-4" /> Error
+              </div>
+              <pre className="mt-2 text-xs whitespace-pre-wrap" style={{ color: theme.muted }}>{result.detail || result.error}</pre>
+            </div>
+          )}
+          {result?.response && (
+            <div className="space-y-3">
+              {/* Content */}
+              {result.response.choices?.[0]?.message?.content && (
+                <div className="rounded-lg p-3 text-sm" style={{ background: theme.bg, border: `1px solid ${theme.border}`, color: theme.fg }}>
+                  {result.response.choices[0].message.content}
+                </div>
+              )}
+              {/* Usage */}
+              {result.response.usage && (
+                <div className="flex flex-wrap gap-3 text-xs" style={{ color: theme.dim }}>
+                  <span>Prompt: {result.response.usage.prompt_tokens} tok</span>
+                  <span>Completion: {result.response.usage.completion_tokens} tok</span>
+                  <span>Total: {result.response.usage.total_tokens} tok</span>
+                  {result.response.model && <span>Model: {result.response.model}</span>}
+                </div>
+              )}
+              {/* Raw JSON */}
+              <details className="rounded-lg" style={{ background: theme.bg, border: `1px solid ${theme.border}` }}>
+                <summary className="cursor-pointer px-3 py-2 text-xs font-medium" style={{ color: theme.muted }}>
+                  Raw response JSON
+                </summary>
+                <pre className="overflow-x-auto p-3 text-xs font-mono" style={{ color: theme.dim }}>
+                  {JSON.stringify(result.response, null, 2)}
+                </pre>
+              </details>
+            </div>
+          )}
+        </div>
+        {providerModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true" aria-labelledby="add-provider-title">
+            <div className="w-full max-w-lg rounded-2xl p-5" style={{ background: theme.surface, border: `1px solid ${theme.border}` }}>
+              <div className="mb-4 flex items-center justify-between"><h2 id="add-provider-title" className="text-lg font-bold" style={{ color: theme.fg }}>Add Provider</h2><button type="button" onClick={() => setProviderModalOpen(false)} aria-label="Close">×</button></div>
+              <div className="space-y-3">
+                {([["name", "Provider name", "OpenRouter"], ["prefix", "Provider prefix", "openrouter"], ["base_url", "Base URL", "https://api.example.com/v1"], ["secret_name", "Zo Secret API Name", "MY_PROVIDER_API_KEY"]] as const).map(([key, label, placeholder]) => <label key={key} className="block text-xs font-medium" style={{ color: theme.muted }}>{label}<input value={providerForm[key]} onChange={(e) => setProviderForm({ ...providerForm, [key]: e.target.value })} placeholder={placeholder} className="mt-1 w-full rounded-lg px-3 py-2 text-sm outline-none" style={{ background: theme.bg, color: theme.fg, border: `1px solid ${theme.border}` }} /></label>)}
+                <p className="text-xs" style={{ color: theme.dim }}>Save the API key separately in Zo Secrets under this exact name. Model Explorer stores only the name.</p>
+                <button type="button" disabled={providerSaving || !providerForm.name || !providerForm.prefix || !providerForm.base_url || !providerForm.secret_name} onClick={addProvider} className="w-full rounded-lg py-2.5 text-sm font-bold disabled:opacity-40" style={{ background: theme.accent, color: "#1a1a18" }}>{providerSaving ? "Saving…" : "Add and Sync Provider"}</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {omniModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true" aria-labelledby="omniroute-import-title" onClick={() => !omniImporting && setOmniModalOpen(false)}>
+            <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl p-5" style={{ background: theme.surface, border: `1px solid ${theme.border}` }} onClick={(event) => event.stopPropagation()}>
+              <div className="mb-4 flex items-start justify-between gap-4">
+                <div><h2 id="omniroute-import-title" className="text-lg font-bold" style={{ color: theme.fg }}>Import from OmniRoute</h2><p className="mt-1 text-xs" style={{ color: theme.muted }}>Dry-run preview. API-key values are never copied. Model Explorer stores only Zo Secret names.</p></div>
+                <button type="button" onClick={() => setOmniModalOpen(false)} aria-label="Close OmniRoute import" disabled={omniImporting}><X className="size-4" /></button>
+              </div>
+              <div className="mb-4 flex flex-wrap items-center gap-3">
+                <label className="text-xs" style={{ color: theme.muted }}>Import mode
+                  <select value={omniMode} onChange={(event) => setOmniMode(event.target.value as typeof omniMode)} className="ml-2 rounded-md px-2 py-1.5" style={{ background: theme.bg, border: `1px solid ${theme.border}` }}>
+                    <option value="providers_only">Providers only</option>
+                    <option value="providers_and_models">Providers and sync models</option>
+                  </select>
+                </label>
+                <button type="button" onClick={selectAllNewOmniProviders} disabled={omniLoading || omniImporting} className="rounded-md px-2.5 py-1.5 text-xs" style={{ border: `1px solid ${theme.border}` }}>Select all new</button>
+                <button type="button" onClick={deselectAllOmniProviders} disabled={omniLoading || omniImporting} className="rounded-md px-2.5 py-1.5 text-xs" style={{ border: `1px solid ${theme.border}` }}>Deselect all</button>
+                <button type="button" onClick={() => loadOmniPreview(false)} disabled={omniLoading || omniImporting} className="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs" style={{ border: `1px solid ${theme.border}` }}><RefreshCw className={`size-3 ${omniLoading ? "animate-spin" : ""}`} /> Refresh matches</button>
+                <span className="text-xs" style={{ color: theme.dim }}>{omniProviders.filter((row) => omniSelected[row.prefix]).length} selected</span>
+              </div>
+              {omniLoading ? <div className="py-12 text-center"><Loader2 className="mx-auto size-5 animate-spin" /></div> : (
+                <div className="space-y-2">
+                  {omniProviders.map((row) => (
+                    <div key={row.omni_id} className="grid gap-3 rounded-lg p-3 md:grid-cols-[auto_1.2fr_1.5fr_1.4fr]" style={{ background: theme.bg, border: `1px solid ${theme.border}` }}>
+                      <input type="checkbox" checked={Boolean(omniSelected[row.prefix])} onChange={(event) => setOmniSelected((current) => ({ ...current, [row.prefix]: event.target.checked }))} aria-label={`Import ${row.name}`} />
+                      <div><div className="flex flex-wrap items-center gap-2 text-sm font-semibold">{row.name}{row.action === "update" && <span className="rounded-full px-1.5 py-0.5 text-[10px] font-medium" style={{ color: theme.warn, background: theme.warnDim }}>Already imported</span>}</div><div className="text-[11px]" style={{ color: theme.dim }}>{row.action} · {row.prefix}</div></div>
+                      <div className="min-w-0"><div className="truncate text-xs font-mono" title={row.base_url}>{row.base_url}</div><div className="mt-1 text-[11px]" style={{ color: theme.dim }}>{row.models_path || "/models"}</div></div>
+                      <label className="text-[11px]" style={{ color: theme.muted }}>Zo Secret API Name
+                        <input value={omniSelections[row.prefix] || ""} onChange={(event) => setOmniSelections((current) => ({ ...current, [row.prefix]: event.target.value }))} placeholder="e.g. OPENROUTER_API_KEY" className="mt-1 w-full rounded-md px-2 py-1.5 text-xs" style={{ background: theme.surface, border: `1px solid ${row.secret_status === "missing" ? theme.warn : theme.border}` }} />
+                        {row.secret_candidates.length > 0 && <div className="mt-1 flex flex-wrap gap-1">{row.secret_candidates.slice(0, 4).map((name) => <button type="button" key={name} onClick={() => setOmniSelections((current) => ({ ...current, [row.prefix]: name }))} className="rounded px-1.5 py-0.5 text-[10px]" style={{ color: theme.accent, background: theme.accentDim }}>{name}</button>)}</div>}
+                        <span className="mt-1 flex flex-wrap items-center gap-2" style={{ color: row.secret_status === "matched" ? theme.success : row.secret_status === "needs_selection" ? theme.warn : theme.dim }}>{row.secret_status === "matched" ? "Matched" : row.secret_status === "needs_selection" ? "Needs secret selection" : "No logical Zo Secret match"}<button type="button" onClick={() => retryOmniSecretMatch(row.prefix)} disabled={omniLoading || omniImporting} className="underline underline-offset-2 disabled:opacity-50">Try match</button></span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {omniError && <div className="mt-4 rounded-lg p-3 text-xs" style={{ color: theme.danger, background: theme.dangerDim }}>{omniError}</div>}
+              <div className="mt-5 flex justify-end gap-2"><button type="button" onClick={() => setOmniModalOpen(false)} disabled={omniImporting} className="rounded-md px-3 py-2 text-xs" style={{ border: `1px solid ${theme.border}` }}>Cancel</button><button type="button" onClick={importOmniProviders} disabled={omniLoading || omniImporting || !omniProviders.some((row) => omniSelected[row.prefix])} className="rounded-md px-3 py-2 text-xs font-semibold disabled:opacity-50" style={{ background: theme.accent, color: "#071019" }}>{omniImporting ? "Importing…" : "Import selected"}</button></div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+' public=False source='custom
 ```
 
-### `/openclaw-dashboard` (page, private)
+## /openclaw-dashboard (page, public=false)
 
-```tsx
+```
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from 'lucide-react';
 
@@ -16974,11 +17433,12 @@ export default function OpenClawDashboard() {
     </div>
   );
 }
+' public=False source='custom
 ```
 
-### `/press` (page, public)
+## /press (page, public=true)
 
-```tsx
+```
 import { useState, useEffect } from "react";
 
 export default function PressPage() {
@@ -17170,13 +17630,13 @@ const PR_CSS = [
   ".pr-foot{text-align:center;padding:40px 0 20px;border-top:1px solid rgba(232,224,212,0.08)}",
   ".pr-foot-note{font-size:11px;color:#6b6b78;margin-top:16px;letter-spacing:0.5px}",
   "@media (max-width:640px){.pr{padding:32px 16px}.pr-hero{padding:24px 0 40px;margin-bottom:40px}.pr-section{margin-bottom:40px}.pr-route{padding:14px}}",
-].join("\
-");
+].join("\n");
+' public=True source='custom
 ```
 
-### `/profile` (page, public)
+## /profile (page, public=true)
 
-```tsx
+```
 import React, { useState, useEffect, useRef } from "react";
 import { MapPin, ExternalLink, Github, ChevronUp, ArrowUpRight, Layers, Cpu, Bot, Puzzle, Zap, Rss, BookOpen, FolderKanban, LayoutGrid, Clock, Tag, Heart, MessageCircle, Menu, X, Lock, PenLine, Palette, Settings, Share2, Briefcase, LayoutDashboard, Sparkles } from "lucide-react";
 
@@ -17746,11 +18206,12 @@ function GlobalNav({ links = [] }: { links?: any[] }) {
     </>
   );
 }
+' public=True source='custom
 ```
 
-### `/receipts` (page, public)
+## /receipts (page, public=true)
 
-```tsx
+```
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   Upload, Search, Image as ImageIcon, Loader2, Lock, ArrowUpDown, ArrowUp, ArrowDown, CheckCircle2, RefreshCw, AlertCircle, X, ZoomIn, ZoomOut, RotateCw, Maximize2, Minimize2, Receipt, ArrowLeft, Menu,
@@ -18391,12 +18852,12 @@ export default function RetailReceiptTracker() {
       )}
     </div>
   );
-}
+}' public=True source='custom
 ```
 
-### `/repurpose` (page, private)
+## /repurpose (page, public=false)
 
-```tsx
+```
 import { useMemo, useState } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Copy, Check, Lock, Sparkles, Globe, Clock3, Shield } from "lucide-react";
@@ -18704,11 +19165,12 @@ export default function ContentRepurposer() {
     </div>
   );
 }
+' public=False source='custom
 ```
 
-### `/s/:id` (page, public)
+## /s/:id (page, public=true)
 
-```tsx
+```
 // @zo-theme: web3 | applied: 2026-03-02T07:00:00Z
 import { useState, useEffect, useRef } from "react";
 import { Download, Check, Zap, Menu, X, Lock } from "lucide-react";
@@ -19064,12 +19526,12 @@ function GlobalNav() {
       </div>
     </>
   );
-}
+}' public=True source='custom
 ```
 
-### `/secret` (page, public)
+## /secret (page, public=true)
 
-```tsx
+```
 import { useState, useEffect } from "react";
 
 export default function SecretPage() {
@@ -19182,13 +19644,13 @@ const SEC_CSS = [
   ".sec-links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}",
   ".sec-link{padding:10px 20px;border-radius:8px;border:1px solid rgba(232,224,212,0.1);background:rgba(232,224,212,0.03);color:#e8e0d4;text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:12px;transition:all 0.2s}",
   ".sec-link:hover{border-color:#c08b5c;background:rgba(192,139,92,0.08);color:#c08b5c}",
-].join("\
-");
+].join("\n");
+' public=True source='custom
 ```
 
-### `/share` (page, private)
+## /share (page, public=false)
 
-```tsx
+```
 import { useState, useEffect, useRef } from "react";
 import { FolderIcon, FileIcon, ChevronLeft, ChevronRight, Copy, Check, Trash2, Link, Download, Users, ExternalLink, Menu, X, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -19727,12 +20189,12 @@ export default function SharePage() {
       </div>
     </>
   );
-}
+}' public=False source='custom
 ```
 
-### `/skills-gallery` (page, private)
+## /skills-gallery (page, public=false)
 
-```tsx
+```
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Search, Loader2, X, Tag, FolderOpen, ChevronRight, Menu, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -20144,12 +20606,12 @@ export default function SkillsGallery() {
       <GlobalNav />
     </div>
   );
-}
+}' public=False source='custom
 ```
 
-### `/speech-game` (page, public)
+## /speech-game (page, public=true)
 
-```tsx
+```
 import { useState, useEffect, useCallback } from "react";
 import { Lock, Loader2 } from "lucide-react";
 
@@ -20767,11 +21229,12 @@ export default function SpeechGame() {
     </div>
   );
 }
+' public=True source='custom
 ```
 
-### `/speech-game-manifest.json` (api, public)
+## /speech-game-manifest.json (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 export default (c: Context) => {
@@ -20798,11 +21261,12 @@ export default (c: Context) => {
     },
   });
 };
+' public=True source='custom
 ```
 
-### `/speech-game-sw.js` (api, public)
+## /speech-game-sw.js (api, public=true)
 
-```typescript
+```
 import type { Context } from "hono";
 
 const SW_CODE = `
@@ -20855,11 +21319,12 @@ export default (c: Context) => {
     },
   });
 };
+' public=True source='custom
 ```
 
-### `/speech-game/stats` (page, public)
+## /speech-game/stats (page, public=true)
 
-```tsx
+```
 import { useState, useEffect } from "react";
 import { Lock, Loader2 } from "lucide-react";
 
@@ -21325,11 +21790,12 @@ export default function StatsPage() {
     </div>
   );
 }
+' public=True source='custom
 ```
 
-### `/speech-game/stickers` (page, public)
+## /speech-game/stickers (page, public=true)
 
-```tsx
+```
 import { useState, useEffect } from "react";
 import { Lock, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -21637,11 +22103,12 @@ export default function Stickers() {
     </div>
   );
 }
+' public=True source='custom
 ```
 
-### `/telemetry` (page, private)
+## /telemetry (page, public=false)
 
-```tsx
+```
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, ArrowLeft, Activity, RefreshCw, Terminal, Users, Zap, TrendingUp, Lock, ExternalLink, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -21949,12 +22416,12 @@ export default function TelemetryDashboard() {
       </div>
     </div>
   );
-}
+}' public=False source='custom
 ```
 
-### `/temporal` (page, private)
+## /temporal (page, public=false)
 
-```tsx
+```
 import { useEffect, useState, useRef } from "react";
 
 const COLORS = {
@@ -22222,11 +22689,12 @@ export default function TemporalDashboard() {
     </>
   );
 }
+' public=False source='custom
 ```
 
-### `/trivia` (page, public)
+## /trivia (page, public=true)
 
-```tsx
+```
 import React, { useState, useEffect, useRef } from "react";
 import { 
   Trophy, Calendar, Shuffle, ChevronLeft, CheckCircle, XCircle, 
@@ -23105,12 +23573,12 @@ export default function TriviaQuiz() {
       </div>
     </>
   );
-}
+}' public=True source='custom
 ```
 
-### `/trivia/archive` (page, private)
+## /trivia/archive (page, public=false)
 
-```tsx
+```
 import React, { useState, useEffect, useRef } from "react";
 import { 
   Calendar, ChevronLeft, ChevronRight, Clock, 
@@ -23440,11 +23908,12 @@ export default function TriviaArchive() {
     </>
   );
 }
+' public=False source='custom
 ```
 
-### `/trivia/leaderboard` (page, private)
+## /trivia/leaderboard (page, public=false)
 
-```tsx
+```
 import React, { useState, useEffect, useRef } from "react";
 import { 
   Trophy, Medal, Users, ArrowLeft, ArrowRight, 
@@ -23691,8 +24160,7 @@ export default function TriviaLeaderboard() {
             {userStats && (
               <div className="p-6 rounded-2xl border flex items-center gap-6" style={{ background: COLORS.card, borderColor: COLORS.border }}>
                 <div className="text-center">
-                  <p className="text-[10px] font-mono uppercase tracking-widest mb-1" style={{ color: COLORS.dimmed }}>Streak</p>\
-                  <p className="text-2xl font-bold font-heading" style={{ color: "#fb923c" }}>🔥 {userStats.best_streak || 0}</p>
+                  <p className="text-[10px] font-mono uppercase tracking-widest mb-1" style={{ color: COLORS.dimmed }}>Streak</p>\n                  <p className="text-2xl font-bold font-heading" style={{ color: "#fb923c" }}>🔥 {userStats.best_streak || 0}</p>
                 </div>
                 <div className="w-px h-10 bg-white/10" />
                 <div className="text-center">
@@ -23795,8 +24263,7 @@ export default function TriviaLeaderboard() {
                 <Calendar className="w-5 h-5" style={{ color: COLORS.indigo }} />
               </div>
               <h3 className="font-heading font-bold text-sm">View Archive</h3>
-              <p className="text-[10px]" style={{ color: COLORS.muted }}>Browse past questions and stats.</p>\
-            </a>
+              <p className="text-[10px]" style={{ color: COLORS.muted }}>Browse past questions and stats.</p>\n            </a>
             <div className="p-6 rounded-2xl border flex flex-col items-center text-center gap-3" style={{ background: COLORS.card, borderColor: COLORS.border }}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.05)", border: `1px solid ${COLORS.border}` }}>
                 <Users className="w-5 h-5" style={{ color: COLORS.muted }} />
@@ -23816,11 +24283,12 @@ export default function TriviaLeaderboard() {
     </>
   );
 }
+' public=False source='custom
 ```
 
-### `/zo-city` (page, public)
+## /zo-city (page, public=true)
 
-```tsx
+```
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 
 const TW = 16, TH = 8;
@@ -24453,11 +24921,12 @@ export default function ZoCity() {
     </div>
   );
 }
+' public=True source='custom
 ```
 
-### `/zo-city-three-test` (page, public)
+## /zo-city-three-test (page, public=true)
 
-```tsx
+```
 import { useEffect, useRef, useState } from "react";
 
 export default function Page() {
@@ -24528,11 +24997,12 @@ export default function Page() {
 
   return <div className="min-h-screen bg-slate-950 text-white p-6"><h1 className="text-2xl font-bold mb-2">ZoCity Three.js Test</h1><p className="text-cyan-300 mb-4">{status}</p><div ref={ref} className="w-[800px] max-w-full min-h-[420px] border border-cyan-500/20 rounded-xl overflow-hidden bg-black/40" /></div>;
 }
+' public=True source='custom
 ```
 
-### `/zo-control-deck` (page, private)
+## /zo-control-deck (page, public=false)
 
-```tsx
+```
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Activity, Server, Bot, CreditCard, Shield, AlertTriangle, FileText, Globe, Menu, X, ChevronDown, ChevronRight, ExternalLink, Lock, LayoutDashboard, Palette, Settings, Share2, Clock, Briefcase, Sparkles, PenLine } from "lucide-react";
 
@@ -25452,12 +25922,12 @@ function StatCard({ label, value, sub, onClick, accent }: { label: string; value
       <p className="text-xs font-mono" style={{ color: COLORS.dimmed }}>{sub}</p>
     </div>
   );
-}
+}' public=False source='custom
 ```
 
-### `/zo-space-theme-gallery` (page, public)
+## /zo-space-theme-gallery (page, public=true)
 
-```tsx
+```
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { 
   Search, SunMedium, Moon, Filter, ChevronRight, Palette, Copy, Check, Eye, X, Menu, Lock,
@@ -25837,7 +26307,7 @@ function ThemeDetailModal({
                 <h3 className="text-sm font-semibold mb-2">Apply this theme</h3>
                 <div className="space-y-1.5 text-xs text-zinc-300">
                   <p className="text-zinc-500 italic">Already have the skill? Skip to step 2.</p>
-                  <p>1. Install the skill (one time): Tell your Zo: <code className="bg-zinc-800 px-1.5 py-0.5 rounded">Install the Zo Space theming skill from https://{{HANDLE}}.zo.space/api/zo-space-theme-gallery/skill</code></p>
+                  <p>1. Install the skill (one time): Tell your Zo: <code className="bg-zinc-800 px-1.5 py-0.5 rounded">Install the Zo Space theming skill from https://curtastrophe.zo.space/api/zo-space-theme-gallery/skill</code></p>
                   <p>2. Apply: <code className="bg-zinc-800 px-1.5 py-0.5 rounded">Apply the {theme.id} theme to my /about page</code></p>
                   <p>3. Or globally: <code className="bg-zinc-800 px-1.5 py-0.5 rounded">Apply the {theme.id} theme to all my pages</code></p>
                   <p>4. Zo fetches the design prompt from this gallery and creates backups automatically.</p>
@@ -25892,7 +26362,7 @@ function ThemeDetailModal({
 
 function SkillInstallBanner() {
   const [copied, setCopied] = useState(false);
-  const installPrompt = `Install the Zo Space theming skill from https://{{HANDLE}}.zo.space/api/zo-space-theme-gallery/skill`;
+  const installPrompt = `Install the Zo Space theming skill from https://curtastrophe.zo.space/api/zo-space-theme-gallery/skill`;
 
   function copy() {
     navigator.clipboard.writeText(installPrompt);
@@ -26076,12 +26546,12 @@ export default function ThemeGallery() {
       </div>
     </>
   );
-}
+}' public=True source='custom
 ```
 
-### `/zo-space-theme-gallery/:id` (page, public)
+## /zo-space-theme-gallery/:id (page, public=true)
 
-```tsx
+```
 import { useEffect, useMemo, useState, useRef } from "react";
 import { ArrowLeft, Copy, Palette, Check, SunMedium, Moon, Eye, X } from "lucide-react";
 import { marked } from "marked";
@@ -26316,7 +26786,7 @@ export default function ThemeDetail() {
           <h2 className="text-lg font-semibold mb-3">Apply this theme</h2>
           <div className="space-y-2 text-sm text-zinc-300">
             <p className="text-zinc-500 italic">Already have the skill? Skip to step 2.</p>
-            <p>1. Install the skill (one time): Tell your Zo: <code className="bg-zinc-800 px-1.5 py-0.5 rounded">Install the Zo Space theming skill from https://{{HANDLE}}.zo.space/api/zo-space-theme-gallery/skill</code></p>
+            <p>1. Install the skill (one time): Tell your Zo: <code className="bg-zinc-800 px-1.5 py-0.5 rounded">Install the Zo Space theming skill from https://curtastrophe.zo.space/api/zo-space-theme-gallery/skill</code></p>
             <p>2. Apply: <code className="bg-zinc-800 px-1.5 py-0.5 rounded">Apply the {theme.id} theme to my /about page</code></p>
             <p>3. Or globally: <code className="bg-zinc-800 px-1.5 py-0.5 rounded">Apply the {theme.id} theme to all my pages</code></p>
             <p>4. Zo fetches the design prompt from this gallery and creates backups automatically.</p>
@@ -26363,11 +26833,12 @@ export default function ThemeDetail() {
     </div>
   );
 }
+' public=True source='custom
 ```
 
-### `/zo-status` (page, public)
+## /zo-status (page, public=true)
 
-```tsx
+```
 import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { 
@@ -27063,11 +27534,12 @@ function GlobalNav() {
     </>
   );
 }
+' public=True source='custom
 ```
 
-### `/zoboard` (page, private)
+## /zoboard (page, public=false)
 
-```tsx
+```
 import { useState, useEffect } from "react";
 import { Layout, AlertCircle, Loader2 } from "lucide-react";
 
@@ -27167,11 +27639,12 @@ export default function ZoBoard() {
     </main>
   );
 }
+' public=False source='custom
 ```
 
-### `/zoboard/:slug` (page, private)
+## /zoboard/:slug (page, public=false)
 
-```tsx
+```
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
@@ -27800,11 +28273,12 @@ function CardDrawer({
     </div>
   );
 }
+' public=False source='custom
 ```
 
-### `/zos` (page, private)
+## /zos (page, public=true)
 
-```tsx
+```
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
 const BOOT_LINES: [string, number][] = [
@@ -28027,7 +28501,7 @@ function AboutApp(p:{role:string}){
   const fileContent=()=>{
     if(activeFile==="skills")return(<><div className="za-cmd">$ ls skills/</div><div className="za-skill-grid">{[["Languages",["Python","SQL","TypeScript","React","JavaScript"]],["Data & Analytics",["Data Modeling","Visualization","ETL/ELT","dbt","Power BI"]],["AI & ML",["LLM Agents","RAG","Prompt Engineering","Automation","NLP"]],["Platforms",["Zo Computer","AWS","GCP","Vercel","Docker"]],["Tools",["Git","Notion","Figma","Jira","VS Code"]]].map(([cat,items])=>(<div key={cat as string} className="za-skill-cat"><div className="za-skill-cat-name">{cat}</div><div className="za-skill-tags">{(items as string[]).map(s=><span key={s} className="za-skill-tag">{s}</span>)}</div></div>))}</div></>);
     if(activeFile==="principles")return(<><div className="za-cmd">$ cat principles.txt</div><ul className="za-principles"><li>Build systems, not just features</li><li>Automate the boring, humanize the interesting</li><li>Ship fast, iterate faster</li><li>Every tool should feel like leverage</li><li>Documentation is a love letter to your future self</li><li>The best code is the code you don't have to write</li></ul></>);
-    if(activeFile==="contact")return(<><div className="za-cmd">$ cat contact.json</div><div className="za-json"><div className="za-json-line">{'{'}</div><div className="za-json-line">{'  '}<span className="za-json-key">"github"</span>: <a href="https://github.com/Zenlyte" target="_blank" rel="noopener" className="za-json-val">"github.com/Zenlyte"</a>,</div><div className="za-json-line">{'  '}<span className="za-json-key">"x"</span>: <a href="https://x.com/z3nlyte" target="_blank" rel="noopener" className="za-json-val">"x.com/z3nlyte"</a>,</div><div className="za-json-line">{'  '}<span className="za-json-key">"email"</span>: <a href="mailto:info@zenlytics.net" className="za-json-val">"info@zenlytics.net"</a>,</div><div className="za-json-line">{'  '}<span className="za-json-key">"site"</span>: <a href="https://{{HANDLE}}.zo.space" target="_blank" rel="noopener" className="za-json-val">"curtastrophe.zo.space"</a></div><div className="za-json-line">{'}'}</div></div></>);
+    if(activeFile==="contact")return(<><div className="za-cmd">$ cat contact.json</div><div className="za-json"><div className="za-json-line">{'{'}</div><div className="za-json-line">{'  '}<span className="za-json-key">"github"</span>: <a href="https://github.com/Zenlyte" target="_blank" rel="noopener" className="za-json-val">"github.com/Zenlyte"</a>,</div><div className="za-json-line">{'  '}<span className="za-json-key">"x"</span>: <a href="https://x.com/z3nlyte" target="_blank" rel="noopener" className="za-json-val">"x.com/z3nlyte"</a>,</div><div className="za-json-line">{'  '}<span className="za-json-key">"email"</span>: <a href="mailto:info@zenlytics.net" className="za-json-val">"info@zenlytics.net"</a>,</div><div className="za-json-line">{'  '}<span className="za-json-key">"site"</span>: <a href="https://curtastrophe.zo.space" target="_blank" rel="noopener" className="za-json-val">"curtastrophe.zo.space"</a></div><div className="za-json-line">{'}'}</div></div></>);
     if(activeFile==="experience")return(<><div className="za-cmd">$ ls experience/</div><div className="za-timeline">{[["Data & Analytics Professional","Building data pipelines, dashboards, and analytics solutions"],["AI Builder","Developing LLM agents, automation workflows, and AI-powered tools"],["Zo Computer Creator","Building interactive experiences and personal projects on Zo"],["Open Source Contributor","Contributing to tools that make developers more productive"]].map(([title,desc],i)=>(<div key={i} className="za-timeline-item"><div className="za-timeline-dot"/><div className="za-timeline-content"><div className="za-timeline-title">{title}</div><div className="za-timeline-desc">{desc}</div></div></div>))}</div></>);
     if(activeFile==="secret")return(<><div className="za-cmd">$ ls secret/</div><div className="za-secret">🔒 ACCESS DENIED</div><div className="za-secret-sub">Try the Konami code on the desktop to unlock...</div><div className="za-secret-hint">(↑↑↓↓←→←→BA)</div></>);
     return(<><div className="za-cmd">$ cat README.md</div><p className="za-hi">Hey, I’m <span className="za-name">Zenlyte</span> (Zenlyte).</p><p className="za-desc">Data & Analytics professional by trade. AI builder, automation tinkerer, and systems thinker by obsession.</p><p className="za-desc">I turn raw data into decisions and explore the frontier of AI agents, automation, and tool-building on Zo Computer.</p></>);
@@ -28287,12 +28761,425 @@ function CmdPalette(p:{onClose:()=>void;onAction:(a:string)=>void}){
   const actions=[["about","Open About Me"],["terminal","Open Terminal"],["projects","Open Projects"],["voi","Open Voi-ZOS"],["command","Open Command Centre"],["lab","Open Lab"],["games","Open Games"],["settings","Open Settings"],["mail","Open Briefings"],["calendar","Open Book Time"],["store","Open App Store"],["theme-oxidized","Theme: Oxidized Future"],["theme-signal","Theme: Signal Lab"],["theme-lunar","Theme: Lunar Archive"],["easter-egg","🥚 Secret Easter Egg"]];
   const filtered=q?actions.filter(a=>a[1].toLowerCase().includes(q.toLowerCase())):actions;
   useEffect(()=>{const esc=(e:KeyboardEvent)=>{if(e.key==="Escape")p.onClose();};addEventListener("keydown",esc);return()=>removeEventListener("keydown",esc);},[p.onClose]);
-  return(<><div className="zov" onClick={p.onClose}/><div className="zcp"><input className="zcp-input" placeholder="Type a command..." value={q} onChange={e=>setQ(e.target.value)} autoFocus/><div className="zcp-list">{filtered.map(([id,label])=>(<button key={id} className="zcp-item" onClick={()=>{p.onAction(id);p.onClose();}}>{label}</button>))}
+  return(<><div className="zov" onClick={p.onClose}/><div className="zcp"><input className="zcp-input" placeholder="Type a command..." value={q} onChange={e=>setQ(e.target.value)} autoFocus/><div className="zcp-list">{filtered.map(([id,label])=>(<button key={id} className="zcp-item" onClick={()=>{p.onAction(id);p.onClose();}}>{label}</button>))}</div></div></>);
+}
+
+function Screensaver(p:{onDismiss:()=>void}){
+  const ref=useRef<HTMLCanvasElement>(null);
+  useEffect(()=>{const c=ref.current;if(!c)return;const ctx=c.getContext("2d");if(!ctx)return;
+    c.width=innerWidth;c.height=innerHeight;
+    const cols=Math.floor(c.width/14);const drops=Array(cols).fill(1);
+    const chars="ZOSZENLYTE0123456789";
+    let anim=0,lastStep=0;
+    const draw=(ts=0)=>{
+      if(ts-lastStep<32){anim=requestAnimationFrame(draw);return;}
+      lastStep=ts;
+      ctx.fillStyle="rgba(0,0,0,0.05)";ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle="#c08b5c";ctx.font="14px monospace";
+      for(let i=0;i<drops.length;i++){const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*14,drops[i]*14);if(drops[i]*14>c.height&&Math.random()>0.975)drops[i]=0;drops[i]++;}
+      anim=requestAnimationFrame(draw);
+    };
+    draw();
+    const dismiss=()=>p.onDismiss();
+    addEventListener("click",dismiss);addEventListener("mousemove",dismiss);addEventListener("keydown",dismiss);
+    return()=>{cancelAnimationFrame(anim);removeEventListener("click",dismiss);removeEventListener("mousemove",dismiss);removeEventListener("keydown",dismiss);};
+  },[p.onDismiss]);
+  return <canvas ref={ref} className="zss-canvas"/>;
+}
+
+function ToastContainer(p:{toasts:{id:number;msg:string;type:string}[];onRemove:(id:number)=>void}){
+  return(<div className="ztoast-container">{p.toasts.map(t=>(<div key={t.id} className={"ztoast ztoast-"+t.type}><span className="ztoast-msg">{t.msg}</span><button className="ztoast-close" onClick={()=>p.onRemove(t.id)}>✕</button></div>))}</div>);
+}
+
+function DesktopWatermark(p:{onEasterEgg?:()=>void}){
+  const clickRef=useRef(0);const timerRef=useRef<ReturnType<typeof setTimeout>|null>(null);
+  const handleClick=()=>{clickRef.current++;if(timerRef.current)clearTimeout(timerRef.current);timerRef.current=setTimeout(()=>{clickRef.current=0;},2000);if(clickRef.current>=5){clickRef.current=0;p.onEasterEgg?.();}};
+  return <div className="zos-watermark zos-wm-clickable" onClick={handleClick}><img src={ZOS_WATERMARK_LOGO_SRC} alt="ZOS" className="zos-wm-logo"/><div className="zos-wm-sub">ZenOS v1.0.0</div></div>;
+}
+function DesktopClock(){const [now,setNow]=useState(new Date());useEffect(()=>{const iv=setInterval(()=>setNow(new Date()),1000);return()=>clearInterval(iv);},[]);return <div className="zos-dclock"><div className="zos-dclock-time">{now.getHours().toString().padStart(2,"0")}:{now.getMinutes().toString().padStart(2,"0")}<span className="zos-dclock-sec">:{now.getSeconds().toString().padStart(2,"0")}</span></div><div className="zos-dclock-date">{now.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"})}</div></div>;}
+function DesktopStatus(p:{role:string;windowCount:number;foundCount:number;totalPoints:number}){return(<div className="zos-dstatus"><div className="zos-dstatus-row"><span className="zos-dstatus-dot green"/>System Online</div><div className="zos-dstatus-row"><span className="zos-dstatus-dot copper"/>Mode: {p.role}</div><div className="zos-dstatus-row"><span className="zos-dstatus-dot amber"/>{p.windowCount} window{p.windowCount!==1?"s":""} open</div><div className="zos-dstatus-row"><span className="zos-dstatus-dot verd"/>{p.totalPoints} signal points</div><div className="zos-dstatus-row"><span className="zos-dstatus-dot copper"/>{p.foundCount}/{SIGNALS.length} signals logged</div><div className="zos-dstatus-hint">Press ⌘K for command palette</div></div>);}
+
+export default function ZOS(){
+  const [phase,setPhase]=useState<"boot"|"desktop">("boot");
+  const [role,setRole]=useState("visitor");const [theme,setTheme]=useState("oxidized");
+  const [wins,setWins]=useState<WS[]>([]);const [active,setActive]=useState<string|null>(null);
+  const [startOpen,setStartOpen]=useState(false);const [cmdOpen,setCmdOpen]=useState(false);
+  const [helpOpen,setHelpOpen]=useState(false);
+  const [zC,setZC]=useState(100);const [ctxMenu,setCtxMenu]=useState<{x:number;y:number}|null>(null);
+  const [konamiIdx,setKonamiIdx]=useState(0);const [konamiActive,setKonamiActive]=useState(false);
+  const [foundSignals,setFoundSignals]=useState<string[]>([]);
+  const [screenSaver,setScreenSaver]=useState(false);const idleRef=useRef<ReturnType<typeof setTimeout>|null>(null);
+  const [toasts,setToasts]=useState<{id:number;msg:string;type:string}[]>([]);const toastId=useRef(0);
+  const addToast=useCallback((msg:string,type="info")=>{const id=++toastId.current;setToasts(t=>[...t,{id,msg,type}]);setTimeout(()=>setToasts(t=>t.filter(x=>x.id!==id)),4000);},[]);
+  const removeToast=useCallback((id:number)=>{setToasts(t=>t.filter(x=>x.id!==id));},[]);
+
+  useEffect(()=>{try{const st=localStorage.getItem("zos-theme");const sr=localStorage.getItem("zos-role");const ss=localStorage.getItem("zos-found-signals");if(st&&["oxidized","signal","lunar"].includes(st))setTheme(st);if(sr)setRole(sr);if(ss){const parsed=JSON.parse(ss);if(Array.isArray(parsed))setFoundSignals(parsed);}}catch(e){}},[]);
+  useEffect(()=>{try{localStorage.setItem("zos-theme",theme);}catch(e){}},[theme]);
+  useEffect(()=>{try{localStorage.setItem("zos-role",role);}catch(e){}},[role]);
+  useEffect(()=>{try{localStorage.setItem("zos-found-signals",JSON.stringify(foundSignals));}catch(e){}},[foundSignals]);
+
+  useEffect(()=>{if(phase!=="desktop")return;const resetIdle=()=>{if(idleRef.current)clearTimeout(idleRef.current);setScreenSaver(false);idleRef.current=setTimeout(()=>setScreenSaver(true),30000);};resetIdle();addEventListener("mousemove",resetIdle);addEventListener("keydown",resetIdle);addEventListener("click",resetIdle);return()=>{if(idleRef.current)clearTimeout(idleRef.current);removeEventListener("mousemove",resetIdle);removeEventListener("keydown",resetIdle);removeEventListener("click",resetIdle);};},[phase]);
+
+  const nz=useCallback(()=>{setZC(c=>c+1);return zC+1;},[zC]);
+  const triggerSignal=useCallback((id:string)=>{const match=SIGNALS.find(s=>s[0]===id);if(!match)return;const name=match[2];const points=match[4];setFoundSignals(prev=>{if(prev.includes(id))return prev;setTimeout(()=>addToast(name+" unlocked! +"+points+" signal points","egg"),0);return [...prev,id];});},[addToast]);
+  const totalPoints=useMemo(()=>foundSignals.reduce((sum,id)=>{const match=SIGNALS.find(s=>s[0]===id);return sum+(match?match[4]:0);},0),[foundSignals]);
+  const bootDone=useCallback((r:string)=>{setRole(r);setPhase("desktop");try{localStorage.setItem("zos-role",r);}catch(e){}setTimeout(()=>addToast("Welcome to ZOS. Press ⌘K for command palette.","success"),500);setTimeout(()=>addToast("Tip: press ? or F1 for shortcuts.","info"),1400);},[addToast]);
+  const handleContextMenu=useCallback((e:React.MouseEvent)=>{e.preventDefault();setCtxMenu({x:e.clientX,y:e.clientY});},[]);
+
+  useEffect(()=>{if(phase!=="desktop")return;const h=(e:KeyboardEvent)=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();setCmdOpen(v=>!v);setHelpOpen(false);}if(e.key==="/"&&!cmdOpen&&document.activeElement?.tagName!=="INPUT"&&document.activeElement?.tagName!=="TEXTAREA"){e.preventDefault();setCmdOpen(true);setHelpOpen(false);}if((e.key==="?"||e.key==="F1")&&document.activeElement?.tagName!=="INPUT"&&document.activeElement?.tagName!=="TEXTAREA"){e.preventDefault();setHelpOpen(v=>!v);setCmdOpen(false);}if(e.key==="Escape"){if(helpOpen){setHelpOpen(false);return;}if(cmdOpen){setCmdOpen(false);return;}const ordered=[...wins].filter(w=>!w.min).sort((a,b)=>b.z-a.z);if(ordered[0])close(ordered[0].id);}};addEventListener("keydown",h);return()=>removeEventListener("keydown",h);},[phase,cmdOpen,helpOpen,wins]);
+  useEffect(()=>{const h=(e:any)=>{if(e?.detail)open(e.detail);};window.addEventListener("zos-open-app",h);return()=>window.removeEventListener("zos-open-app",h);},[]);
+
+  useEffect(()=>{if(phase!=="desktop")return;const h=(e:KeyboardEvent)=>{if(e.key===konamiSeq[konamiIdx]){const next=konamiIdx+1;setKonamiIdx(next);if(next===konamiSeq.length){setKonamiActive(true);setKonamiIdx(0);setTimeout(()=>setKonamiActive(false),5000);triggerSignal("konami");}}else{setKonamiIdx(0);}};addEventListener("keydown",h);return()=>removeEventListener("keydown",h);},[phase,konamiIdx,triggerSignal]);
+
+  useEffect(()=>{const r=document.documentElement;const themes:Record<string,Record<string,string>>={oxidized:{"--bg":"#0e0e11","--card":"#151519","--hdr":"#1a1a20","--bone":"#e8e0d4","--copper":"#c08b5c","--verd":"#5daa96","--amber":"#d4a847","--dim":"#6b6b78","--muted":"#94938e"},signal:{"--bg":"#080c08","--card":"#0d120d","--hdr":"#111811","--bone":"#d4e8d4","--copper":"#00ff88","--verd":"#00cc6a","--amber":"#88ff00","--dim":"#5a7a5a","--muted":"#8aaa8a"},lunar:{"--bg":"#0e1117","--card":"#131820","--hdr":"#181d28","--bone":"#d4dce8","--copper":"#8eaadc","--verd":"#6b9fd4","--amber":"#a8c4e0","--dim":"#5a6a7a","--muted":"#8a9aaa"}};const t=themes[theme]||themes.oxidized;Object.entries(t).forEach(([k,v])=>r.style.setProperty(k,v));},[theme]);
+
+  const open=(appId:string)=>{const ex=wins.find(w=>w.id===appId);if(ex){setWins(ws=>ws.map(w=>w.id===appId?{...w,min:false,z:nz()}:w));setActive(appId);return;}const app=APPS.find(a=>a[0]===appId);if(!app)return;const wW=Math.min(innerWidth-80,Math.max(960,Math.floor(innerWidth*0.72)));const wH=Math.min(innerHeight-120,Math.max(680,Math.floor((innerHeight-48)*0.74)));const cx=Math.max(0,Math.floor((innerWidth-wW)/2));const cy=Math.max(0,Math.floor((innerHeight-48-wH)/2));const cascade=(wins.length%8)*30;setWins(ws=>[...ws,{id:appId,title:app[1],icon:app[2],x:cx+cascade,y:cy+cascade,w:wW,h:wH,z:nz(),min:false,max:false}]);setActive(appId);};
+  const close=(id:string)=>{setWins(ws=>ws.filter(w=>w.id!==id));if(active===id)setActive(null);};
+  const focus=(id:string)=>{setWins(ws=>ws.map(w=>w.id===id?{...w,z:nz()}:w));setActive(id);};
+  const togMin=(id:string)=>{const w=wins.find(w=>w.id===id);if(w&&!w.min&&active===id){setWins(ws=>ws.map(w=>w.id===id?{...w,min:true}:w));setActive(null);}else{setWins(ws=>ws.map(w=>w.id===id?{...w,min:false,z:nz()}:w));setActive(id);}};
+  const togMax=(id:string)=>{setWins(ws=>ws.map(w=>w.id===id?{...w,max:!w.max}:w));};
+  const mv=(id:string,x:number,y:number)=>{setWins(ws=>ws.map(w=>w.id===id?{...w,x,y}:w));};
+  const rsz=(id:string,nw:number,nh:number)=>{setWins(ws=>ws.map(w=>w.id===id?{...w,w:nw,h:nh}:w));};
+
+  const content=(id:string)=>{if(id==="about")return <AboutApp role={role}/>;if(id==="terminal")return <TerminalApp onSignal={triggerSignal} onNavigate={open}/>;if(id==="projects")return <ProjectsApp/>;if(id==="voi")return <VoiZosApp role={role} onNavigate={open}/>;if(id==="games")return <GamesHub/>;if(id==="settings")return <SettingsApp theme={theme} onTheme={setTheme} role={role} onRole={setRole}/>;if(id==="command")return <CommandCentre role={role} windowCount={wins.length}/>;if(id==="lab")return <LabApp foundSignals={foundSignals} totalPoints={totalPoints} onSignal={triggerSignal}/>;if(id==="mail")return <XFeedApp/>;if(id==="calendar")return <BookTimeApp/>;if(id==="store")return <AppStoreApp/>;return <div className="zph"><span className="zph-ico">{"🚧"}</span><span className="zph-name">{id}</span></div>;};
+  const tbClick=(id:string)=>{const w=wins.find(w=>w.id===id);if(!w)return;if(w.min){setWins(ws=>ws.map(w=>w.id===id?{...w,min:false,z:nz()}:w));setActive(id);}else if(active===id){setWins(ws=>ws.map(w=>w.id===id?{...w,min:true}:w));setActive(null);}else focus(id);};
+  const cmdAction=(a:string)=>{if(["about","terminal","projects","voi","command","lab","games","settings","mail","calendar","store"].includes(a))open(a);if(a==="theme-oxidized"){setTheme("oxidized");addToast("Theme: Oxidized Future","success");}if(a==="theme-signal"){setTheme("signal");addToast("Theme: Signal Lab","success");}if(a==="theme-lunar"){setTheme("lunar");addToast("Theme: Lunar Archive","success");}if(a==="easter-egg"){setKonamiActive(true);setTimeout(()=>setKonamiActive(false),5000);triggerSignal("palette");}if(a==="about-zos"){open("about");}};
+  const ctxAction=(a:string)=>{setCtxMenu(null);if(["about","terminal","projects"].includes(a))open(a);else if(a==="refresh")window.location.reload();else if(a==="source")window.open("https://github.com/Zenlyte","_blank");else if(a==="about-zos")open("about");};
+
+  return(<><style>{CSS_STYLES}</style>{phase==="boot"&&<BootScreen onDone={bootDone}/>}{phase==="desktop"&&(<div className="zos-desk" onContextMenu={handleContextMenu}><img src="/images/ZOS/zos-wallpaper.png" alt="" className="zos-wp"/><CursorHalo/><Particles/><DesktopWatermark onEasterEgg={()=>{setKonamiActive(true);setTimeout(()=>setKonamiActive(false),5000);triggerSignal("watermark");}}/><DesktopClock/><DesktopStatus role={role} windowCount={wins.length} foundCount={foundSignals.length} totalPoints={totalPoints}/>
+    <div className="zi">{APPS.map(([id,name,icon])=><DIcon key={id} icon={icon} name={name} onOpen={()=>open(id)}/>)}</div>
+    {wins.map(w=><Win key={w.id} s={w} active={active===w.id} onFocus={()=>focus(w.id)} onClose={()=>close(w.id)} onMin={()=>togMin(w.id)} onMax={()=>togMax(w.id)} onMove={(x,y)=>mv(w.id,x,y)} onResize={(nw,nh)=>rsz(w.id,nw,nh)}>{content(w.id)}</Win>)}
+    {startOpen&&<StartMenu onLaunch={open} onClose={()=>setStartOpen(false)}/>}
+    {cmdOpen&&<CmdPalette onClose={()=>setCmdOpen(false)} onAction={cmdAction}/>}
+    {helpOpen&&<HelpOverlay onClose={()=>setHelpOpen(false)} />}
+    {ctxMenu&&<ContextMenu x={ctxMenu.x} y={ctxMenu.y} onClose={()=>setCtxMenu(null)} onAction={ctxAction}/>}
+    {konamiActive&&<div className="zk-overlay"><div className="zk-text">{"🎉"} EASTER EGG FOUND! {"🎉"}</div><div className="zk-sub">Signal logged to the hunt. Keep exploring.</div></div>}
+    {screenSaver&&<Screensaver onDismiss={()=>setScreenSaver(false)}/>}
+    <ToastContainer toasts={toasts} onRemove={removeToast}/>
+    <Taskbar wins={wins} active={active} onWinClick={tbClick} onStart={()=>setStartOpen(s=>!s)} startOpen={startOpen} role={role} onLogoSecret={()=>{triggerSignal("palette");addToast("Persistent signal unlocked via taskbar logo.","egg");}}/>
+  </div>)}</>);
+}
+
+const CSS_STYLES = [
+  "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap');",
+  "*{box-sizing:border-box;margin:0;padding:0}",
+  ":root{--bg:#0e0e11;--card:#151519;--hdr:#1a1a20;--bone:#e8e0d4;--copper:#c08b5c;--verd:#5daa96;--amber:#d4a847;--dim:#6b6b78;--muted:#94938e;--bord:rgba(232,224,212,0.08);--bord2:rgba(232,224,212,0.15)}",
+  "body{overflow:hidden;background:var(--bg);font-family:'Inter',sans-serif;color:var(--bone);cursor:none}",
+  "::-webkit-scrollbar{width:6px},::-webkit-scrollbar-track{background:transparent},::-webkit-scrollbar-thumb{background:rgba(192,139,92,0.3);border-radius:3px},::-webkit-scrollbar-thumb:hover{background:rgba(192,139,92,0.4)}",
+  "::selection{background:rgba(192,139,92,0.3);color:white}",
+  ".zc-halo{position:fixed;width:24px;height:24px;border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);border:1.5px solid var(--copper);opacity:0.6;mix-blend-mode:screen;box-shadow:0 0 15px rgba(192,139,92,0.15)}",
+  ".zb{position:fixed;inset:0;background:#000;z-index:9999;display:flex;align-items:center;justify-content:center}",
+  ".zb-scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.15) 2px,rgba(0,0,0,0.15) 4px);pointer-events:none;z-index:2}",
+  ".zb-vig{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,0.7));pointer-events:none;z-index:2}",
+  ".zb-body{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--bone);width:70%;max-width:700px;max-height:80vh;overflow-y:auto;z-index:3;text-shadow:0 0 8px rgba(192,139,92,0.4);cursor:default}",
+  ".zb-logo-wrap{text-align:center;margin-bottom:24px}",
+  ".zb-logo{width:180px;height:auto;opacity:0;animation:zfade 0.8s 0.1s forwards;filter:drop-shadow(0 0 30px rgba(192,139,92,0.4))}",
+  ".zb-line{min-height:1.6em;opacity:0;animation:zfade 0.15s forwards}",".zb-cursor{color:var(--copper)}","@keyframes zfade{to{opacity:1;transform:translateX(0)}}",
+  ".zb-roles{margin-top:24px;display:flex;flex-direction:column;gap:8px}",
+  ".zb-prompt{color:var(--bone);font-size:13px;margin-bottom:8px;opacity:0;animation:zfade 0.3s 0.2s forwards}",
+  ".zb-role{display:flex;align-items:center;gap:16px;padding:10px 16px;border-radius:6px;border:1px solid var(--bord);background:transparent;color:var(--bone);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:13px;text-align:left;transition:all 0.2s;opacity:0;animation:zfade 0.3s forwards}",
+  ".zb-role:nth-child(2){animation-delay:0.3s}.zb-role:nth-child(3){animation-delay:0.4s}.zb-role:nth-child(4){animation-delay:0.5s}.zb-role:nth-child(5){animation-delay:0.6s}",
+  ".zb-role:hover{border-color:var(--copper);background:rgba(192,139,92,0.12);transform:translateX(4px)}",
+  ".zb-role-label{color:var(--copper);font-weight:700;min-width:160px}",".zb-role-desc{color:var(--muted);font-size:11px}",
+  ".zos-desk{position:fixed;inset:0;background:var(--bg)}",
+  ".zos-wp{position:fixed;inset:0;width:100vw;height:100vh;object-fit:cover;z-index:0;opacity:0.5;pointer-events:none}",
+  ".zp-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}",
+  ".zi{position:fixed;top:16px;left:16px;z-index:1;display:grid;grid-template-columns:80px 80px;gap:4px;padding:8px}",
+  ".zd{width:80px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;border-radius:8px;cursor:pointer;transition:background 0.15s;user-select:none}",
+  ".zd:hover{background:rgba(232,224,212,0.06)}",".zd-ico{font-size:32px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))}",
+  ".zd-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;text-align:center;color:var(--bone);text-shadow:0 1px 3px rgba(0,0,0,0.8);white-space:nowrap}",
+  ".zt{position:fixed;bottom:0;left:0;right:0;height:48px;background:rgba(14,14,17,0.92);backdrop-filter:blur(20px);border-top:1px solid var(--bord);z-index:1000;display:flex;align-items:center;padding:0 8px;font-family:'JetBrains Mono',monospace;font-size:12px}",
+  ".zt-start{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;border:none;background:transparent;color:var(--copper);cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:1px;transition:all 0.15s}",
+  ".zt-logo{width:18px;height:18px;object-fit:contain}",
+  ".zt-start.open,.zt-start:hover{background:rgba(192,139,92,0.15)}",".zt-div{width:1px;height:24px;background:var(--bord);margin:0 8px}",
+  ".zt-tabs{flex:1;display:flex;gap:2px;overflow-x:auto;align-items:center}",
+  ".zt-tab{padding:4px 12px;border-radius:4px;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--dim);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;white-space:nowrap;transition:all 0.15s}",
+  ".zt-tab.active{background:rgba(192,139,92,0.12);color:var(--bone);border-bottom-color:var(--copper)}",".zt-tab.dim{opacity:0.5}",
+  ".zt-tray{margin-left:auto;display:flex;align-items:center;gap:12px;padding:0 8px}",".zt-role{color:var(--verd);font-size:10px;text-transform:uppercase;letter-spacing:1px}",".zt-time{color:var(--muted);font-size:11px}",
+  ".zw{background:var(--card);border:1px solid var(--bord);display:flex;flex-direction:column;overflow:hidden;transition:box-shadow 0.2s,border-color 0.2s;animation:zwOpen 0.25s cubic-bezier(0.16,1,0.3,1)}",
+  "@keyframes zwOpen{from{opacity:0;transform:scale(0.92) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}",
+  ".zw.active{border-color:rgba(192,139,92,0.3);box-shadow:0 0 40px -10px rgba(192,139,92,0.15)}",
+  ".zw-hdr{height:38px;min-height:38px;background:var(--hdr);display:flex;align-items:center;padding:0 12px;cursor:grab;user-select:none;border-bottom:1px solid var(--bord)}",
+  ".zw-icon{margin-right:8px;font-size:14px}",".zw-title{flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".zw-btns{display:flex;gap:8px}",".zw-b{width:12px;height:12px;border-radius:50%;border:none;cursor:pointer;opacity:0.8;transition:opacity 0.15s}",".zw-b:hover{opacity:1}",
+  ".zw-b.min{background:var(--amber)}",".zw-b.max{background:var(--verd)}",".zw-b.cls{background:#e87171}",
+  ".zw-body{flex:1;overflow:auto;position:relative}",".zw-rsz{position:absolute;bottom:0;right:0;width:16px;height:16px;cursor:nwse-resize}",
+  ".zov{position:fixed;inset:0;z-index:998}",
+  ".zsm{position:fixed;bottom:56px;left:8px;width:260px;background:rgba(21,21,25,0.95);backdrop-filter:blur(20px);border:1px solid var(--bord);border-radius:12px;padding:8px 0;z-index:999;box-shadow:0 20px 60px rgba(0,0,0,0.6)}",
+  ".zsm-hdr{padding:8px 16px 12px;border-bottom:1px solid var(--bord);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--copper)}",
+  ".zsm-item{display:flex;align-items:center;gap:12px;width:100%;padding:10px 16px;border:none;background:transparent;color:var(--bone);cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;transition:background 0.15s;text-align:left}",
+  ".zsm-item:hover{background:rgba(192,139,92,0.08)}",".zsm-ico{font-size:18px;width:24px;text-align:center}",
+  ".zsm-foot{padding:8px 16px;border-top:1px solid var(--bord);font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);margin-top:4px}",
+  ".zcp{position:fixed;top:20%;left:50%;transform:translateX(-50%);width:480px;max-width:90vw;background:rgba(21,21,25,0.98);backdrop-filter:blur(20px);border:1px solid var(--bord2);border-radius:12px;z-index:9999;box-shadow:0 20px 60px rgba(0,0,0,0.6)}",
+  ".zcp-input{width:100%;padding:16px 20px;background:transparent;border:none;border-bottom:1px solid var(--bord);outline:none;color:var(--bone);font-family:'JetBrains Mono',monospace;font-size:14px;caret-color:var(--copper)}",
+  ".zcp-input::placeholder{color:var(--dim)}",".zcp-list{max-height:300px;overflow-y:auto;padding:8px 0}",
+  ".zcp-item{display:block;width:100%;padding:10px 20px;border:none;background:transparent;color:var(--bone);cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;text-align:left;transition:background 0.15s}",
+  ".zcp-item:hover{background:rgba(192,139,92,0.1)}",
+  ".zhelp{position:fixed;top:16%;left:50%;transform:translateX(-50%);width:min(620px,92vw);background:rgba(21,21,25,0.98);backdrop-filter:blur(20px);border:1px solid var(--bord2);border-radius:14px;z-index:10000;box-shadow:0 24px 80px rgba(0,0,0,0.65);padding:20px}",
+  ".zhelp-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}",
+  ".zhelp-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--bone)}",
+  ".zhelp-sub{font-family:'Inter',sans-serif;font-size:13px;color:var(--muted);margin-top:4px}",
+  ".zhelp-close{background:transparent;border:1px solid var(--bord);color:var(--bone);border-radius:8px;width:34px;height:34px;cursor:pointer}",
+  ".zhelp-grid{display:grid;grid-template-columns:1fr;gap:10px}",
+  ".zhelp-row{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:center;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.025);border:1px solid rgba(232,224,212,0.08)}",
+  ".zhelp-row kbd{display:inline-flex;align-items:center;justify-content:center;min-width:fit-content;width:max-content;padding:6px 10px;border-radius:8px;border:1px solid rgba(192,139,92,0.25);background:rgba(192,139,92,0.08);color:var(--bone);font-family:'JetBrains Mono',monospace;font-size:12px;box-shadow:inset 0 -2px 0 rgba(0,0,0,0.2)}",
+  ".zph{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px}",
+  ".zph-ico{font-size:48px;opacity:0.4}",".zph-name{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;color:var(--bone)}",
+  ".zos-watermark{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:0;pointer-events:none;text-align:center;user-select:none}",
+  ".zos-wm-clickable{pointer-events:auto;cursor:default}",
+  ".zos-wm-logo{width:clamp(200px,30vw,420px);height:auto;opacity:0.12;pointer-events:none;filter:drop-shadow(0 0 60px rgba(192,139,92,0.1))}",
+  ".zos-wm-sub{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--verd);margin-top:8px;letter-spacing:6px;text-transform:uppercase;opacity:0.6}",
+  ".zos-dclock{position:fixed;top:20px;right:20px;z-index:1;text-align:right;pointer-events:none;user-select:none;}",
+  ".zos-dclock-time{font-family:'Space Grotesk',sans-serif;font-size:48px;font-weight:700;color:rgba(232,224,212,0.12);line-height:1;letter-spacing:-1px}",
+  ".zos-dclock-sec{font-size:24px;opacity:0.5}",
+  ".zos-dclock-date{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--verd);margin-top:4px;letter-spacing:1px}",
+  ".zos-dstatus{position:fixed;bottom:60px;right:20px;z-index:1;text-align:right;pointer-events:none;user-select:none;display:flex;flex-direction:column;gap:6px}",
+  ".zos-dstatus-dot{width:6px;height:6px;border-radius:50%;display:inline-block}",
+  ".zos-dstatus-dot.green{background:var(--verd);box-shadow:0 0 6px var(--verd)}",".zos-dstatus-dot.copper{background:var(--copper);box-shadow:0 0 6px var(--copper)}",".zos-dstatus-dot.amber{background:var(--amber);box-shadow:0 0 6px var(--amber)}",
+  ".zos-dstatus-hint{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);margin-top:4px}",
+  ".za{padding:16px;font-family:'JetBrains Mono',monospace;font-size:13px}",
+  ".za-path{font-size:12px;color:var(--dim);margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--bord)}",
+  ".za-role-msg{font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--copper);margin-bottom:16px;padding:12px;border-left:2px solid var(--copper);border-radius:0 6px 6px 0}",
+  ".za-files{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}",
+  ".za-file{padding:8px 12px;border-radius:6px;display:flex;align-items:center;gap:10px;background:rgba(232,224,212,0.03);border:1px solid var(--bord);cursor:pointer;transition:all 0.15s;font-size:12px}",
+  ".za-file:hover{border-color:rgba(192,139,92,0.3);background:rgba(192,139,92,0.04)}",".za-file.active{border-color:var(--copper);background:rgba(192,139,92,0.08)}",
+  ".za-readme{padding:16px;border-radius:8px;background:rgba(192,139,92,0.04);border:1px solid rgba(192,139,92,0.15);line-height:1.7}",
+  ".za-cmd{color:var(--copper);font-size:11px;opacity:0.6;margin-bottom:8px}",
+  ".za-hi{color:var(--muted);margin-bottom:4px}",
+  ".za-name{color:var(--copper);font-weight:600}",
+  ".za-desc{color:var(--muted);margin-bottom:4px}",
+  ".za-principles{list-style:none;padding:0}",
+  ".za-principles li{padding:4px 0;color:var(--muted);font-size:12px}",
+  ".za-principles li::before{content:'▸ ';color:var(--copper)}",
+  ".za-skill-grid{display:flex;flex-direction:column;gap:12px;margin-top:8px}",
+  ".za-skill-cat{padding:10px;border-radius:6px;border:1px solid var(--bord);background:rgba(232,224,212,0.02)}",
+  ".za-skill-cat-name{font-size:11px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}",
+  ".za-skill-tags{display:flex;flex-wrap:wrap;gap:6px}",
+  ".za-skill-tag{font-size:11px;padding:3px 10px;border-radius:4px;background:rgba(192,139,92,0.08);border:1px solid rgba(192,139,92,0.15);color:var(--bone)}",
+  ".za-json{font-family:'JetBrains Mono',monospace;font-size:12px;margin-top:8px}",
+  ".za-json-line{padding:2px 0;color:var(--muted)}",
+  ".za-json-key{color:var(--copper)}",
+  ".za-json-val{color:var(--verd);text-decoration:none}",
+  ".za-json-val:hover{text-decoration:underline}",
+  ".za-timeline{display:flex;flex-direction:column;gap:0;margin-top:8px;padding-left:16px;border-left:2px solid var(--bord)}",
+  ".za-timeline-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;position:relative}",
+  ".za-timeline-dot{width:10px;height:10px;border-radius:50%;background:var(--copper);border:2px solid var(--card);position:absolute;left:-22px;top:14px;box-shadow:0 0 6px var(--copper)}",
+  ".za-timeline-content{padding-left:4px}",
+  ".za-timeline-title{font-size:13px;font-weight:600;color:var(--bone);margin-bottom:2px}",
+  ".za-timeline-desc{font-size:11px;color:var(--muted)}",
+  ".za-secret{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:#e87171;text-align:center;margin:24px 0 8px}",
+  ".za-secret-sub{text-align:center;font-size:12px;color:var(--muted);margin-bottom:4px}",
+  ".za-secret-hint{text-align:center;font-size:14px;color:var(--dim);letter-spacing:2px}",
+  ".zterm{display:flex;flex-direction:column;height:100%;background:#080808;font-family:'JetBrains Mono',monospace;font-size:13px}",
+  ".zterm-scroll{flex:1;overflow-y:auto;padding:12px}",
+  ".zterm-line{min-height:1.4em;color:var(--copper);opacity:0.9}",
+  ".zterm-in{display:flex;align-items:center;gap:8px;padding:8px 12px;border-top:1px solid var(--bord)}",
+  ".zterm-prompt{color:var(--copper);font-weight:600}",
+  ".zterm-inp{flex:1;background:transparent;border:none;outline:none;color:var(--bone);font-family:inherit;font-size:inherit;caret-color:var(--copper)}",
+  ".zproj{padding:16px;font-family:'JetBrains Mono',monospace;font-size:13px;height:100%;overflow-y:auto}",
+  ".zproj-path{font-size:12px;color:var(--dim);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bord)}",
+  ".zproj-filters{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}",
+  ".zproj-fbtn{padding:4px 12px;border-radius:4px;border:1px solid var(--bord);background:transparent;color:var(--dim);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;transition:all 0.15s}",
+  ".zproj-fbtn:hover{border-color:var(--copper);color:var(--bone)}",
+  ".zproj-fbtn.active{background:rgba(192,139,92,0.15);border-color:var(--copper);color:var(--copper)}",
+  ".zproj-loading{color:var(--dim);text-align:center;padding:40px}",
+  ".zproj-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}",
+  ".zproj-card{padding:16px;border-radius:8px;border:1px solid var(--bord);background:rgba(232,224,212,0.02);cursor:pointer;transition:all 0.2s}",
+  ".zproj-card:hover{border-color:rgba(192,139,92,0.3);background:rgba(192,139,92,0.04);transform:translateY(-2px)}",
+  ".zproj-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}",
+  ".zproj-card-id{font-size:10px;color:var(--dim);letter-spacing:1px}",
+  ".zproj-card-status{font-size:10px;padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:0.5px}",
+  ".st-done{background:rgba(93,170,150,0.15);color:var(--verd);border:1px solid rgba(93,170,150,0.3)}",
+  ".st-wip{background:rgba(192,139,92,0.15);color:var(--copper);border:1px solid rgba(192,139,92,0.3)}",
+  ".st-plan{background:rgba(212,168,71,0.15);color:var(--amber);border:1px solid rgba(212,168,71,0.3)}",
+  ".zproj-card-name{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;color:var(--bone);margin-bottom:6px}",
+  ".zproj-card-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}",
+  ".zproj-tags{display:flex;gap:6px;flex-wrap:wrap}",
+  ".zproj-tag{font-size:10px;padding:2px 8px;border-radius:3px;background:rgba(232,224,212,0.05);color:var(--dim);border:1px solid var(--bord)}",
+  ".zproj-back{padding:6px 12px;border-radius:4px;border:1px solid var(--bord);background:transparent;color:var(--copper);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;margin-bottom:16px;transition:all 0.15s}",
+  ".zproj-back:hover{background:rgba(192,139,92,0.1)}",
+  ".zproj-detail{padding:16px;border-radius:8px;border:1px solid var(--bord);background:rgba(232,224,212,0.02)}",
+  ".zproj-detail-hdr{margin-bottom:12px}",
+  ".zproj-status{display:inline-block;font-size:10px;padding:3px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:0.5px}",
+  ".zproj-detail-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--bone);margin-bottom:8px}",
+  ".zproj-detail-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px}",
+  ".zproj-detail-section{margin-bottom:16px}",
+  ".zproj-detail-label{font-size:10px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}",
+  ".zproj-link{color:var(--copper);text-decoration:none;font-size:12px}",
+  ".zproj-link:hover{opacity:0.7}",
+  ".zsnake{display:flex;flex-direction:column;align-items:center;height:100%;background:#080808;padding:16px}",
+  ".zsnake-hud{display:flex;justify-content:space-between;width:320px;margin-bottom:12px;font-family:'JetBrains Mono',monospace;font-size:12px}",
+  ".zsnake-score{color:var(--copper)}",
+  ".zsnake-over{color:#e87171;font-weight:700}",
+  ".zsnake-start{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:16px}",
+  ".zsnake-title{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;color:var(--bone)}",
+  ".zsnake-sub{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim)}",
+  ".zsnake-btn{padding:10px 24px;border-radius:6px;border:1px solid var(--copper);background:rgba(192,139,92,0.1);color:var(--copper);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;transition:all 0.2s}",
+  ".zsnake-btn:hover{background:rgba(192,139,92,0.2);transform:scale(1.05)}",
+  ".zsnake-canvas{border:1px solid var(--bord);border-radius:4px}",
+  ".zsnake-retry{margin-top:16px}",
+  ".zctx{position:fixed;z-index:9999;width:200px;background:rgba(21,21,25,0.96);backdrop-filter:blur(20px);border:1px solid var(--bord2);border-radius:8px;padding:4px 0;box-shadow:0 8px 30px rgba(0,0,0,0.5)}",
+  ".zctx-item{display:block;width:100%;padding:8px 14px;border:none;background:transparent;color:var(--bone);cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;text-align:left;transition:background 0.15s}",
+  ".zctx-item:hover{background:rgba(192,139,92,0.1)}",
+  ".zctx-div{height:1px;background:var(--bord);margin:4px 0}",
+  ".zset{padding:20px;font-family:'JetBrains Mono',monospace;font-size:13px;height:100%;overflow-y:auto}",
+  ".zset-section{margin-bottom:28px}",
+  ".zset-label{font-size:10px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px}",
+  ".zset-sub{font-size:12px;color:var(--dim);margin-bottom:14px}",
+  ".zset-themes{display:flex;flex-direction:column;gap:8px}",
+  ".zset-theme{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:8px;border:1px solid var(--bord);background:transparent;cursor:pointer;transition:all 0.2s;text-align:left;color:var(--bone);font-family:inherit}",
+  ".zset-theme:hover{border-color:rgba(192,139,92,0.3);background:rgba(192,139,92,0.04)}",
+  ".zset-theme.active{border-color:var(--copper);background:rgba(192,139,92,0.08)}",
+  ".zset-theme-preview{width:40px;height:28px;border-radius:4px;position:relative;overflow:hidden;flex-shrink:0}",
+  ".zset-theme-bg{position:absolute;inset:0;border-radius:4px}",
+  ".zset-theme-bg[data-theme=oxidized]{background:#0e0e11}",
+  ".zset-theme-bg[data-theme=signal]{background:#080c08}",
+  ".zset-theme-bg[data-theme=lunar]{background:#0e1117}",
+  ".zset-theme-accent{position:absolute;bottom:0;left:0;right:0;height:4px}",
+  ".zset-theme-accent[data-theme=oxidized]{background:#c08b5c}",
+  ".zset-theme-accent[data-theme=signal]{background:#00ff88}",
+  ".zset-theme-accent[data-theme=lunar]{background:#8eaadc}",
+  ".zset-theme-info{flex:1}",
+  ".zset-theme-name{font-size:13px;font-weight:600;color:var(--bone)}",
+  ".zset-theme-desc{font-size:11px;color:var(--dim);margin-top:2px}",
+  ".zset-check{color:var(--copper);font-size:16px;font-weight:700}",
+  ".zset-roles{display:flex;flex-direction:column;gap:6px}",
+  ".zset-role{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:6px;border:1px solid var(--bord);background:transparent;cursor:pointer;transition:all 0.15s;text-align:left;color:var(--bone);font-family:inherit}",
+  ".zset-role:hover{border-color:rgba(192,139,92,0.3)}",
+  ".zset-role.active{border-color:var(--copper);background:rgba(192,139,92,0.08)}",
+  ".zset-role-name{font-size:12px;font-weight:600;min-width:120px}",
+  ".zset-role-desc{font-size:11px;color:var(--dim);flex:1}",
+  ".zset-info-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}",
+  ".zset-info-item{padding:10px 12px;border-radius:6px;border:1px solid var(--bord);display:flex;flex-direction:column;gap:4px}",
+  ".zset-info-key{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}",
+  ".zset-info-val{font-size:12px;color:var(--bone)}",
+  ".zcmd{padding:16px;font-family:'JetBrains Mono',monospace;font-size:12px;height:100%;overflow-y:auto}",
+  ".zcmd-hdr{margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--bord)}",
+  ".zcmd-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:var(--bone)}",
+  ".zcmd-time{color:var(--dim);font-size:11px}",
+  ".zcmd-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}",
+  ".zcmd-panel{padding:14px;border-radius:8px;border:1px solid var(--bord);background:rgba(232,224,212,0.02)}",
+  ".zcmd-panel.wide{grid-column:1/-1}",
+  ".zcmd-panel-label{font-size:10px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}",
+  ".zcmd-stat-row{display:flex;align-items:center;gap:8px;padding:4px 0;color:var(--muted);font-size:12px}",
+  ".zcmd-stat-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}",
+  ".zcmd-stat-dot.green{background:var(--verd);box-shadow:0 0 6px var(--verd)}",
+  ".zcmd-stat-dot.copper{background:var(--copper);box-shadow:0 0 6px var(--copper)}",
+  ".zcmd-stat-dot.amber{background:var(--amber);box-shadow:0 0 6px var(--amber)}",
+  ".zcmd-stat-dot.verd{background:var(--verd);box-shadow:0 0 4px var(--verd)}",
+  ".zcmd-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}",
+  ".zcmd-metric{text-align:center;padding:10px 0}",
+  ".zcmd-metric-val{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--copper);line-height:1}",
+  ".zcmd-metric-lbl{font-size:10px;color:var(--dim);margin-top:4px;text-transform:uppercase;letter-spacing:1px}",
+  ".zcmd-feed{display:flex;flex-direction:column;gap:6px}",
+  ".zcmd-feed-item{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:4px;transition:background 0.15s}",
+  ".zcmd-feed-item:hover{background:rgba(232,224,212,0.03)}",
+  ".zcmd-feed-id{font-size:10px;color:var(--dim);min-width:60px}",
+  ".zcmd-feed-name{flex:1;color:var(--bone);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".zcmd-feed-status{font-size:9px;padding:2px 6px;border-radius:3px;text-transform:uppercase}",
+  ".zcmd-loading{color:var(--dim);text-align:center;padding:16px}",
+  ".zcmd-log{display:flex;flex-direction:column;gap:2px}",
+  ".zcmd-log-line{font-size:11px;color:var(--muted);padding:3px 0}",
+  ".zcmd-log-time{color:var(--copper);margin-right:8px;min-width:70px;display:inline-block}",
+  ".zlab{padding:20px;font-family:'JetBrains Mono',monospace;font-size:13px;height:100%;overflow-y:auto}",
+  ".zlab-tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--bord);padding-bottom:8px}",
+  ".zlab-tab{padding:8px 16px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--dim);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;transition:all 0.15s}",
+  ".zlab-tab:hover{color:var(--bone)}",
+  ".zlab-tab.active{background:rgba(192,139,92,0.12);border-color:var(--bord);color:var(--copper)}",
+  ".zlab-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--bone);margin-bottom:6px}",
+  ".zlab-desc{font-size:12px;color:var(--dim);margin-bottom:16px}",
+  ".zlab-input{width:100%;padding:12px;border-radius:6px;border:1px solid var(--bord);background:rgba(232,224,212,0.03);color:var(--bone);font-family:'JetBrains Mono',monospace;font-size:12px;resize:vertical;outline:none;transition:border-color 0.15s}",
+  ".zlab-input:focus{border-color:var(--copper)}",
+  ".zlab-input::placeholder{color:var(--dim)}",
+  ".zlab-btn{margin-top:10px;padding:8px 20px;border-radius:6px;border:1px solid var(--copper);background:rgba(192,139,92,0.15);color:var(--copper);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;transition:all 0.2s}",
+  ".zlab-btn:hover{background:rgba(192,139,92,0.25);transform:scale(1.05)}",
+  ".zlab-btn:disabled{opacity:0.4;cursor:not-allowed}",
+  ".zlab-results{margin-top:16px;padding:14px;border-radius:8px;border:1px solid rgba(192,139,92,0.2);background:rgba(192,139,92,0.04)}",
+  ".zlab-results-label{font-size:10px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}",
+  ".zlab-result{padding:6px 0;color:var(--muted);font-size:12px;line-height:1.5;border-bottom:1px solid var(--bord)}",
+  ".zlab-result:last-child{border-bottom:none}",
+  ".zlab-signal-grid{display:flex;flex-direction:column;gap:8px}",
+  ".zlab-signal{display:flex;align-items:center;gap:12px;padding:12px;border-radius:8px;border:1px solid var(--bord);background:rgba(232,224,212,0.02);transition:all 0.2s}",
+  ".zlab-signal.found{border-color:var(--verd);background:rgba(93,170,150,0.06)}",
+  ".zlab-signal-icon{font-size:24px;width:36px;text-align:center}",
+  ".zlab-signal-name{font-size:13px;font-weight:600;color:var(--bone);margin-bottom:2px}",
+  ".zlab-signal-hint{font-size:11px;color:var(--dim)}",
+  ".zlab-signal-check{font-size:16px;color:var(--dim)}",
+  ".zlab-signal.found .zlab-signal-check{color:var(--verd)}",
+  ".zlab-signal-count{margin-top:14px;text-align:center;font-size:12px;color:var(--dim)}",
+  ".zk-overlay{position:fixed;inset:0;z-index:99998;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px)}",
+  ".zk-text{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;color:var(--copper);text-shadow:0 0 30px var(--copper);animation:zpulse 1s infinite}",
+  "@keyframes zpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.8;transform:scale(1.05)}}",
+  ".zk-sub{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--verd);margin-top:12px}",
+  ".zbrf{padding:20px;font-family:'JetBrains Mono',monospace;font-size:13px;height:100%;overflow-y:auto}",
+  ".zbrf-header{margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--bord)}",
+  ".zbrf-greeting{font-family:'Playfair Display',serif;font-size:24px;color:var(--bone);margin-bottom:4px}",
+  ".zbrf-date{font-size:12px;color:var(--dim)}",
+  ".zbrf-section{margin-bottom:20px}",
+  ".zbrf-label{font-size:10px;color:var(--verd);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}",
+  ".zbrf-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:6px;border:1px solid var(--bord);background:rgba(232,224,212,0.02);margin-bottom:6px;font-size:12px;color:var(--bone)}",
+  ".zbrf-days{display:flex;flex-wrap:wrap;gap:6px}",
+  ".zbrf-day{padding:8px 14px;border-radius:6px;border:1px solid var(--bord);background:transparent;color:var(--muted);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;transition:all 0.15s}",
+  ".zbrf-day:hover{border-color:var(--copper);color:var(--bone)}",
+  ".zbrf-day.active{background:rgba(192,139,92,0.15);border-color:var(--copper);color:var(--copper)}",
+  ".zbrf-slots{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}",
+  ".zbrf-slot{padding:10px;border-radius:6px;border:1px solid var(--bord);background:transparent;color:var(--bone);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;text-align:center;transition:all 0.15s}",
+  ".zbrf-slot:hover:not(:disabled){border-color:var(--copper);background:rgba(192,139,92,0.06)}",
+  ".zbrf-slot.active{background:rgba(192,139,92,0.15);border-color:var(--copper);color:var(--copper)}",
+  ".zbrf-slot.busy{opacity:0.35;cursor:not-allowed;text-decoration:line-through}",
+  ".zbrf-slot-time{font-size:10px;color:var(--dim)}",
+  ".zbrf-input{display:block;width:100%;padding:10px 14px;margin-bottom:8px;border-radius:6px;border:1px solid var(--bord);background:rgba(232,224,212,0.03);color:var(--bone);font-family:'JetBrains Mono',monospace;font-size:12px;outline:none;transition:border-color 0.15s}",
+  ".zbrf-input:focus{border-color:var(--copper)}",
+  ".zbrf-input::placeholder{color:var(--dim)}",
+  ".zbrf-submit{margin-top:8px;padding:10px 24px;border-radius:6px;border:1px solid var(--copper);background:rgba(192,139,92,0.15);color:var(--copper);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;transition:all 0.2s}",
+  ".zbrf-submit:hover{background:rgba(192,139,92,0.25)}",
+  ".zbrf-submit:disabled{opacity:0.4;cursor:not-allowed}",
+  ".zbrf-confirmed{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;text-align:center}",
+  ".zbrf-confirmed-icon{font-size:56px}",
+  ".zbrf-confirmed-title{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:var(--bone)}",
+  ".zbrf-confirmed-detail{font-size:14px;color:var(--copper)}",
+  ".zbrf-confirmed-sub{font-size:12px;color:var(--dim)}",
+  ".zbrf-reset{margin-top:12px;padding:8px 20px;border-radius:6px;border:1px solid var(--bord);background:transparent;color:var(--bone);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;transition:all 0.15s}",
+  ".zbrf-reset:hover{border-color:var(--copper)}",
+  ".zbrf-footer{margin-top:16px;text-align:center;font-size:10px;color:var(--dim);padding-top:12px;border-top:1px solid var(--bord)}",
+  ".zbrf-footer a{color:var(--copper);text-decoration:none}",
+  ".zbrf-footer a:hover{text-decoration:underline}",
+  ".zstore{padding:20px;font-family:'JetBrains Mono',monospace;font-size:13px;height:100%;overflow-y:auto}",
+  ".zstore-hdr{margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--bord)}",
+  ".zstore-title{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--bone)}",
+  ".zstore-sub{font-size:12px;color:var(--dim);margin-left:12px}",
+  ".zstore-grid{display:flex;flex-direction:column;gap:10px}",
+  ".zstore-card{display:flex;align-items:center;gap:16px;padding:16px;border-radius:8px;border:1px solid var(--bord);background:rgba(232,224,212,0.02);transition:all 0.2s}",
+  ".zstore-card:hover{border-color:rgba(192,139,92,0.3);background:rgba(192,139,92,0.04)}",
+  ".zstore-card-icon{font-size:32px;width:48px;text-align:center;flex-shrink:0}",
+  ".zstore-card-info{flex:1}",
+  ".zstore-card-name{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:var(--bone);margin-bottom:3px}",
+  ".zstore-card-desc{font-size:11px;color:var(--muted);margin-bottom:6px}",
+  ".zstore-card-bottom{display:flex;gap:10px;align-items:center}",
+  ".zstore-price{color:var(--copper);font-weight:700;font-size:14px}",
+  ".zstore-tag{font-size:9px;padding:2px 8px;border-radius:3px;background:rgba(232,224,212,0.05);color:var(--dim);border:1px solid var(--bord);text-transform:uppercase;letter-spacing:0.5px}",
+  ".zstore-buy{padding:8px 18px;border-radius:6px;border:1px solid var(--copper);background:rgba(192,139,92,0.12);color:var(--copper);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;transition:all 0.2s;flex-shrink:0}",
+  ".zstore-buy:hover{background:rgba(192,139,92,0.25);transform:scale(1.05)}",
+  ".zss-canvas{position:fixed;inset:0;z-index:99997;cursor:pointer}",
+  ".ztoast-container{position:fixed;top:12px;right:12px;z-index:99999;display:flex;flex-direction:column;gap:8px;pointer-events:none}",
+  ".ztoast{pointer-events:auto;display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:8px;background:rgba(21,21,25,0.95);backdrop-filter:blur(16px);border:1px solid var(--bord2);box-shadow:0 8px 24px rgba(0,0,0,0.4);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--bone);animation:ztoastIn 0.3s ease}",
+  "@keyframes ztoastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}",
+  ".ztoast-success{border-color:rgba(93,170,150,0.3)}",
+  ".ztoast-egg{border-color:rgba(192,139,92,0.4);background:rgba(30,25,20,0.95)}",
+  ".ztoast-msg{flex:1}",
+  ".ztoast-close{background:none;border:none;color:var(--dim);cursor:pointer;font-size:14px;padding:0 4px}",
+  "@media(max-width:768px){body{cursor:auto}.zc-halo{display:none}.zp-canvas{opacity:0.3}.zos-wm-logo{width:120px}.zos-dclock{top:12px;right:12px}.zos-dclock-time{font-size:28px}.zos-dstatus{display:none}.zi{position:fixed;top:60px;left:0;right:0;bottom:56px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:16px;align-content:start;overflow-y:auto}.zd{width:auto}.zw{position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:calc(100vh - 48px)!important;border-radius:0!important;z-index:500!important}.zw-rsz{display:none}.zt{height:52px;padding:0 4px}.zt-start{padding:6px 10px;font-size:11px}.zt-tabs{gap:1px}.zt-tab{padding:4px 8px;font-size:10px}.zt-tray{gap:8px;padding:0 4px}.zsm{width:calc(100vw - 16px);left:8px;bottom:60px;border-radius:16px}.zcp{width:calc(100vw - 16px);top:10%;left:8px;transform:none;border-radius:16px}.zhelp{top:8%;left:8px;transform:none;width:calc(100vw - 16px)}.zhelp-row{grid-template-columns:1fr;gap:8px}.zctx{display:none}.za-files{grid-template-columns:1fr 1fr}.zproj-grid{grid-template-columns:1fr}.zcmd-grid{grid-template-columns:1fr}.zcmd-panel.wide{grid-column:1}.zset-info-grid{grid-template-columns:1fr}.zbrf-slots{grid-template-columns:1fr}}",
+  "@media(max-width:480px){.zi{grid-template-columns:repeat(3,1fr)}.zd-ico{font-size:28px}.zd-lbl{font-size:9px}.za-files{grid-template-columns:1fr}.zcmd-metrics{grid-template-columns:1fr 1fr}.zset-info-grid{grid-template-columns:1fr}.zbrf-slots{grid-template-columns:1fr}}",
+  ".zbrf-tweet-text{color:var(--bone);font-size:12px;line-height:1.5;margin-bottom:4px}",
+  ".zbrf-tweet-meta{font-size:10px;color:var(--dim)}",
+  ".zstore-note{margin-top:16px;padding:12px;border-radius:6px;background:rgba(93,170,150,0.06);border:1px solid rgba(93,170,150,0.15);font-size:11px;color:var(--verd);text-align:center}",
+  ".zbrf-error{color:#e87171;font-size:12px;margin-top:6px;padding:8px;border-radius:4px;background:rgba(232,113,113,0.08)}",
+].join("\n");
+' public=True source='custom
 ```
 
-### `/zos-lite` (page, public)
+## /zos-lite (page, public=true)
 
-```tsx
+```
 import { useState, useEffect, useMemo } from "react";
 
 const CALENDLY_URL = "https://calendly.com/zenlytics/discovery-session";
@@ -28586,89 +29473,65 @@ const STYLES = `
     .zl-hero { flex-direction: column; }
     .zl-input-row { flex-direction: column; }
   }
-`;
+`;' public=True source='custom
 ```
 
-## Dependencies
+## Assets
 
-**npm packages** (not in default zo.space):
-- ` + new Date(_meta.fetched_at).toLocaleString() : `
-- `Jess and Curt`
-- `bun:sqlite`
-
-**Components** (install via shadcn CLI):
-- `shadcn:card`
-- `shadcn:chart`
-
-## Setup
-
-**Directories to create:**
-- `Data`
-- `Documents/blog`
-- `Data/buildin`
-- `Data/bydesign`
-- `Data/career-ops`
-- `Data/zo-trivia`
-- `Data/skill-execution-logs`
-- `Projects/zo-icon-generations`
-- `Projects`
-- `memory`
-- `Data/flowpulse`
-- `zo-icon-generations/images`
-- `zo-icon-generations/source`
-- `.zo`
-- `Projects/model-explorer`
-- `ZoSpace`
-- `Data/oauth-mcp`
-- `Data/zo-project-ops`
-- `Data/ReceiptTracker/Images`
-- `Data/shared-files`
-- `Skills`
-- `Skills/`
-- `Data/breadcrumb-telemetry`
-- `.zo/.temp`
-- `Documents/blog/notes`
-- `Skills/zo-theme-gallery/assets`
-- `Skills/zo-theme-gallery/assets/themes`
-- `memory/zoboard`
-- `config/zoboard`
-- `Projects/mengram-self-hosted/vault`
-
-**Files to initialize:**
-- `Data/aa_benchmarks.json` with content: `[]`
-- `Data/buildin/token.json` with content: `[]`
-- `Data/bydesign/oauth-callback.json` with content: `[]`
-- `Data/career-ops/scan-history.json` with content: `[]`
-- `memory/heartbeat-state.json` with content: `[]`
-- `.zo/status-check-cache.json` with content: `[]`
-- `ZoSpace/nav-config.json` with content: `[]`
-- `Data/zo-project-ops/projects.json` with content: `[]`
-- `Data/zo-project-ops/conversations.json` with content: `[]`
-- `Data/shares.json` with content: `[]`
-- `Data/breadcrumb-telemetry/agent-metadata.json` with content: `[]`
-- `.zo/.temp/x_feed_cache.json` with content: `[]`
-- `Skills/zo-theme-gallery/assets/theme-registry.json` with content: `[]`
-- `config/zoboard/theme.json` with content: `[]`
-
-**Secrets required** (configure in [Settings > Advanced](/?t=settings&s=advanced)):
-- `ZO_API_KEY`
-- `AI_ANALYSIS_API_KEY`
-- `BEARER_SECRET`
-- `BUILDIN_CLIENT_ID`
-- `BUILDIN_CLIENT_SECRET`
-- `OMNIROUTE_ADMIN_API`
-- `TEABLE_API_KEY`
-- `RECEIPT_TRACKER_PASSCODE`
-- `COSTCO_APP_PASSCODE`
-- `SPEECH_GAME_PASSCODE`
-- `SENDFOX_ACCESS_TOKEN`
-- `VOI_LOCKDOWN`
-- `MENGRAM_URL`
-- `MENGRAM_API_KEY`
-
-## Variables
-
-| Placeholder | Description |
-|---|---|
-| `{{HANDLE}}` | Your zo.space handle (replaces `curtastrophe`) |
-
+- /assets/apps-ledger.json (size=141664)
+- /data/zo-trivia-api.ts (size=3235)
+- /icons/speech-game-180.png (size=6255)
+- /icons/speech-game-192.png (size=6722)
+- /icons/speech-game-512.png (size=12097)
+- /images/ZOS/zos-logo-black.png (size=2436411)
+- /images/ZOS/zos-logo-transparent.png (size=545712)
+- /images/ZOS/zos-logo.png (size=440537)
+- /images/ZOS/zos-wallpaper.png (size=4592180)
+- /images/avatar-profile.jpg (size=12075)
+- /images/avatar.png (size=1127638)
+- /images/cover-profile.png (size=694955)
+- /images/memory-architecture.png (size=105688)
+- /images/memory-system-flow.png (size=105688)
+- /images/pixel-banana-v2.png (size=153470)
+- /images/pixel-banana.png (size=1699)
+- /images/profile-cover.png (size=1626622)
+- /images/themes/academia-preview.jpg (size=1094082)
+- /images/themes/art-deco-preview.jpg (size=207550)
+- /images/themes/bauhaus-preview.jpg (size=225473)
+- /images/themes/bold-typography-preview.jpg (size=140212)
+- /images/themes/botanical-preview.jpg (size=140539)
+- /images/themes/claymorphism-preview.jpg (size=183446)
+- /images/themes/cyberpunk-preview.jpg (size=180598)
+- /images/themes/enterprise-preview.jpg (size=162638)
+- /images/themes/flat-design-preview.jpg (size=114964)
+- /images/themes/industrial-preview.jpg (size=165044)
+- /images/themes/kinetic-preview.jpg (size=279004)
+- /images/themes/luxury-preview.jpg (size=331236)
+- /images/themes/material-design-preview.jpg (size=155942)
+- /images/themes/maximalism-preview.jpg (size=180598)
+- /images/themes/minimal-dark-preview.jpg (size=143633)
+- /images/themes/modern-dark-preview.jpg (size=143692)
+- /images/themes/monochrome-preview.jpg (size=235969)
+- /images/themes/neo-brutalism-preview.jpg (size=472118)
+- /images/themes/neumorphism-preview.jpg (size=135980)
+- /images/themes/newsprint-preview.jpg (size=194569)
+- /images/themes/organic-preview.jpg (size=146505)
+- /images/themes/playful-geometric-preview.jpg (size=281303)
+- /images/themes/professional-preview.jpg (size=149429)
+- /images/themes/retro-preview.jpg (size=337912)
+- /images/themes/saas-preview.jpg (size=406192)
+- /images/themes/sketch-preview.jpg (size=96607)
+- /images/themes/swiss-minimalist-preview.jpg (size=161570)
+- /images/themes/terminal-preview.jpg (size=162664)
+- /images/themes/vaporwave-preview.jpg (size=141365)
+- /images/themes/web3-preview.jpg (size=175701)
+- /images/zo-logo-black.png (size=108080)
+- /images/zo-logo-white.png (size=114725)
+- /images/zo-trivia-logo.png (size=108080)
+- /openclaw-export.tar.gz (size=34691995)
+- /pets/zenny-idle-v1.png (size=183143)
+- /pets/zenny-idle-v2.png (size=229674)
+- /pets/zenny-running-left-v1.png (size=282373)
+- /pets/zenny-running-left-v2.png (size=276215)
+- /pets/zenny-running-right-v1.png (size=280526)
+- /pets/zenny-running-right-v2.png (size=275774)
