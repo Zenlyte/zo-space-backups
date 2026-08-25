@@ -1,8 +1,10 @@
 {
   "status": "changed",
-  "route_count": 0,
-  "asset_count": 0,
-  "timestamp": "2026-08-23T21:02:51.008354+00:00",
-  "last_hash": "f565a2aa0d42875576d2ba995b83628ca39832d229bd72f566da6b5689e4dd5c",
-  "file": "zo-space-backup-20260823T210251Z.json"
+  "route_count": 144,
+  "asset_count": 57,
+  "timestamp": "2026-08-24T13:11:36.082444+00:00",
+  "last_hash": "3510b4302e11f17f2c6a8da0573bd1fda987e59adc3c4d9aa9fa7d2cd225719a",
+  "file": "zo-space-backup-20260824T131136Z.json",
+  "route_list_hash": "c77a5c8f8672187604ed4f470eedac54cad762f2eb30bfe87e49f50a0a1e9a73",
+  "asset_list_hash": "600ac0f854fc2f4959f913a4629117090cf23f11f5fdb3b443edd9c98f4a5b67"
 }
